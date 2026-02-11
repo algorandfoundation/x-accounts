@@ -25,14 +25,3 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/logicsig-cd.yaml
     needs: logicsig-validate
-
-  2-logicsig-frontend-validate:
-    name: Run 2-logicsig-frontend release
-    secrets: inherit
-    uses: ./.github/workflows/2-logicsig-frontend-ci.yaml
-
-  2-logicsig-frontend-release:
-    name: Run 2-logicsig-frontend release
-    secrets: inherit
-    uses: ./.github/workflows/2-logicsig-frontend-cd.yaml
-    needs: 2-logicsig-frontend-validate

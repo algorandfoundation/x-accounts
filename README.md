@@ -10,9 +10,8 @@ This starter full stack project has been generated using AlgoKit. See below for 
 3. Run `algokit project bootstrap all` in the project directory. This command sets up your environment by installing necessary dependencies, setting up a Python virtual environment, and preparing your `.env` file.
 4. In the case of a smart contract project, execute `algokit generate env-file -a target_network localnet` from the `logicsig` directory to create a `.env.localnet` file with default configuration for `localnet`.
 5. To build your project, execute `algokit project run build`. This compiles your project and prepares it for running.
-6. For project-specific instructions, refer to the READMEs of the child projects:
+6. For project-specific instructions, refer to the README of the child project:
    - Smart Contracts: [logicsig](projects/logicsig/README.md)
-   - Frontend Application: [2-logicsig-frontend](projects/2-logicsig-frontend/README.md)
 
 > This project is structured as a monorepo, refer to the [documentation](https://github.com/algorandfoundation/algokit-cli/blob/main/docs/features/project/run.md) to learn more about custom command orchestration via `algokit project run`.
 
@@ -27,28 +26,23 @@ This project uses [GitHub Actions](https://docs.github.com/en/actions/learn-gith
 
 For pushes to `main` branch, after the above checks pass, the following deployment actions are performed:
   - The smart contract(s) are deployed to TestNet using [AlgoNode](https://algonode.io).
-  - The frontend application is deployed to a provider of your choice (Netlify, Vercel, etc.). See [frontend README](frontend/README.md) for more information.
 
 > Please note deployment of smart contracts is done via `algokit deploy` command which can be invoked both via CI as seen on this project, or locally. For more information on how to use `algokit deploy` please see [AlgoKit documentation](https://github.com/algorandfoundation/algokit-cli/blob/main/docs/features/deploy.md).
 
 ## Tools
 
-This project makes use of Python and React to build Algorand smart contracts and to provide a base project configuration to develop frontends for your Algorand dApps and interactions with smart contracts. The following tools are in use:
+This project makes use of Algorand smart contracts. The following tools are in use:
 
 - Algorand, AlgoKit, and AlgoKit Utils
 - Python dependencies including Poetry, Black, Ruff or Flake8, mypy, pytest, and pip-audit
-- React and related dependencies including AlgoKit Utils, Tailwind CSS, daisyUI, use-wallet, npm, jest, playwright, Prettier, ESLint, and Github Actions workflows for build validation
 
 ### VS Code
 
-It has also been configured to have a productive dev experience out of the box in [VS Code](https://code.visualstudio.com/), see the [backend .vscode](./backend/.vscode) and [frontend .vscode](./frontend/.vscode) folders for more details.
+It has also been configured to have a productive dev experience out of the box in [VS Code](https://code.visualstudio.com/).
 
-## Integrating with smart contracts and application clients
+## Integrating with smart contracts
 
-Refer to the [logicsig](projects/logicsig/README.md) folder for overview of working with smart contracts, [projects/2-logicsig-frontend](projects/2-logicsig-frontend/README.md) for overview of the React project and the [projects/2-logicsig-frontend/contracts](projects/2-logicsig-frontend/src/contracts/README.md) folder for README on adding new smart contracts from backend as application clients on your frontend. The templates provided in these folders will help you get started.
-When you compile and generate smart contract artifacts, your frontend component will automatically generate typescript application clients from smart contract artifacts and move them to `frontend/src/contracts` folder, see [`generate:app-clients` in package.json](projects/2-logicsig-frontend/package.json). Afterwards, you are free to import and use them in your frontend application.
-
-The frontend starter also provides an example of interactions with your LiquidevmClient in [`AppCalls.tsx`](projects/2-logicsig-frontend/src/components/AppCalls.tsx) component by default.
+Refer to the [logicsig](projects/logicsig/README.md) folder for overview of working with smart contracts.
 
 ## Next Steps
 

@@ -8,7 +8,3 @@ jobs:
     name: Run logicsig validation
     uses: ./.github/workflows/logicsig-ci.yaml
 
-  2-logicsig-frontend-ci:
-    name: Run 2-logicsig-frontend validation
-    uses: ./.github/workflows/2-logicsig-frontend-ci.yaml
-

@@ -7,9 +7,6 @@
     {
       "path": "./projects/logicsig"
     },
-    {
-      "path": "./projects/2-logicsig-frontend"
-    }
   ],
   "settings": {
     "files.exclude": {
@@ -52,13 +49,12 @@
     "compounds": [
       {
         "preLaunchTask": "Build artifacts (+ LocalNet)",
-        "name": "Run Frontend (+ LocalNet and Smart Contract)",
+        "name": "Deploy contracts (+ LocalNet)",
         "configurations": [
           {
             "name": "Deploy contracts",
             "folder": "logicsig"
-          },
-          { "name": "Run dApp", "folder": "2-logicsig-frontend" }
+          }
         ],
         "presentation": {
           "hidden": false,
