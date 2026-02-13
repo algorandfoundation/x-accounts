@@ -5,6 +5,6 @@ on: [pull_request]
 
 jobs:
   logicsig-ci:
-    name: Run logicsig validation
-    uses: ./.github/workflows/logicsig-ci.yaml
+    name: Run evm-logicsig validation
+    uses: ./.github/workflows/evm-logicsig-ci.yaml
 

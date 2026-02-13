@@ -1,16 +1,12 @@
-import { useRef, useState } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useSignMessage } from "wagmi";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useWallet } from "./use-wallet-react.tsx";
 import { AlgorandClient } from "@algorandfoundation/algokit-utils";
-import { LiquidEvmSdk } from "liquid-evm-sdk";
 import algosdk from "algosdk";
 import "./App.css";
 import base32 from "hi-base32";
 
 const algorand = AlgorandClient.defaultLocalNet();
 algorand.setDefaultValidityWindow(1000);
-const sdk = new LiquidEvmSdk({ algorand });
 
 function bytesToBase32(bytes: Uint8Array): string {
   return base32.encode(bytes).replace(/=+$/, ""); // Remove padding
@@ -45,100 +41,170 @@ function PayloadDisplay({ payload }: { payload: PayloadInfo }) {
   );
 }
 
-function Algorand() {
-  const { address } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+function WalletConnect() {
+  const { wallets, activeWallet, activeAccount } = useWallet();
+
+  if (activeAccount) {
+    return (
+      <div className="connect-wrapper">
+        <div className="card">
+          <p>
+            Connected: <code>{activeAccount.name}</code>{" "}
+            {activeWallet?.metadata?.icon && (
+              <img
+                src={activeWallet.metadata.icon}
+                alt={activeWallet.metadata.name}
+                style={{ width: 20, height: 20, verticalAlign: "middle", marginLeft: 4 }}
+              />
+            )}
+          </p>
+          <button onClick={() => activeWallet?.disconnect()}>Disconnect</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="connect-wrapper">
+      <div className="card">
+        <p>Select a wallet:</p>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {wallets.map((wallet) => (
+            <button key={wallet.id} onClick={() => wallet.connect()} disabled={wallet.isConnected}>
+              {wallet.metadata.icon && (
+                <img
+                  src={wallet.metadata.icon}
+                  alt={wallet.metadata.name}
+                  style={{ width: 64, height: 64, verticalAlign: "middle", marginLeft: 4 }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AlgorandActions() {
+  const { activeAccount, signTransactions } = useWallet();
   const [sendState, setSendState] = useState<SendState>({ status: "idle" });
-  const payloadRef = useRef<PayloadInfo | undefined>(undefined);
+  const [lastPayload, setLastPayload] = useState<PayloadInfo | undefined>();
 
-  const {
-    data: algoAddress,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["algorandAddress", address],
-    queryFn: () => sdk.getAddress({ evmAddress: address! }),
-    enabled: !!address,
-  });
+  const [assetId, setAssetId] = useState("");
 
-  const captureAndSign = (msg: Uint8Array, type: PayloadInfo["type"]) => {
-    const payload: PayloadInfo = { bytes: msg, type };
-    payloadRef.current = payload;
-    setSendState({ status: "signing", payload });
-    return signMessageAsync({ message: { raw: msg } });
-  };
+  const optInToAsset = async () => {
+    if (!activeAccount) return;
+    const id = parseInt(assetId, 10);
+    if (isNaN(id) || id <= 0) return;
 
-  const send = async (numTxns: number, forceGroup = false) => {
     try {
-      payloadRef.current = undefined;
       setSendState({ status: "idle" });
+      setLastPayload(undefined);
 
-      if (numTxns === 1 && !forceGroup) {
-        // Standalone: getSigner signs the txn ID
-        const { addr, signer } = await sdk.getSigner({
-          evmAddress: address!,
-          signMessage: (msg) => captureAndSign(msg, "Txn ID"),
-        });
-        const result = await algorand.send.payment({
-          sender: addr,
-          receiver: addr,
-          amount: (0).algos(),
-          note: crypto.getRandomValues(new Uint8Array(4)),
-          signer,
-        });
-        setSendState({ status: "success", txId: result.txIds[0], payload: payloadRef.current! });
-      } else if (numTxns === 1 && forceGroup) {
-        // Single txn forced into a group: use signTxn with manual assignGroupID
-        const addr = await sdk.getAddress({ evmAddress: address! });
-        const txn = await algorand.createTransaction.payment({
-          sender: addr,
-          receiver: addr,
-          amount: (0).algos(),
-          note: crypto.getRandomValues(new Uint8Array(4)),
-        });
-        const [gtxn] = algosdk.assignGroupID([txn]);
-        const [signed] = await sdk.signTxn({
-          evmAddress: address!,
-          txns: [gtxn],
-          signMessage: (msg) => captureAndSign(msg, "Group ID"),
-        });
-        await algorand.client.algod.sendRawTransaction(signed).do();
-        setSendState({ status: "success", txId: gtxn.txID(), payload: payloadRef.current! });
-      } else {
-        // Multiple txns: getSigner signs the group ID
-        const { addr, signer } = await sdk.getSigner({
-          evmAddress: address!,
-          signMessage: (msg) => captureAndSign(msg, "Group ID"),
-        });
-        const group = algorand.newGroup();
-        for (let i = 0; i < numTxns; i++) {
-          group.addPayment({
-            sender: addr,
-            receiver: addr,
-            amount: (0).algos(),
-            note: crypto.getRandomValues(new Uint8Array(4)),
-            signer,
-          });
-        }
-        const result = await group.send();
-        setSendState({ status: "success", txId: result.txIds[0], payload: payloadRef.current! });
-      }
+      const txn = await algorand.createTransaction.assetOptIn({
+        sender: activeAccount.address,
+        assetId: BigInt(id),
+      });
+
+      const payload: PayloadInfo = { bytes: txn.rawTxID(), type: "Txn ID" };
+      setLastPayload(payload);
+      setSendState({ status: "signing", payload });
+
+      const signedTxns = await signTransactions([txn]);
+      await algorand.client.algod.sendRawTransaction(signedTxns[0]!).do();
+
+      setSendState({ status: "success", txId: txn.txID(), payload });
     } catch (e) {
-      const payload = payloadRef.current ?? { bytes: new Uint8Array(), type: "Txn ID" as const };
+      const payload = lastPayload ?? { bytes: new Uint8Array(), type: "Txn ID" as const };
       setSendState({ status: "error", message: (e as Error).message, payload });
     }
   };
 
-  if (!address) return null;
-  if (isLoading) return <p>Deriving Algorand address…</p>;
-  if (error) return <p>Error: {(error as Error).message}</p>;
+  const send = async (numTxns: number, forceGroup = false) => {
+    if (!activeAccount) return;
+
+    try {
+      setSendState({ status: "idle" });
+      setLastPayload(undefined);
+
+      if (numTxns === 1 && !forceGroup) {
+        // Standalone transaction
+        const txn = await algorand.createTransaction.payment({
+          sender: activeAccount.address,
+          receiver: activeAccount.address,
+          amount: (0).algos(),
+          note: crypto.getRandomValues(new Uint8Array(4)),
+        });
+
+        const payload: PayloadInfo = { bytes: txn.rawTxID(), type: "Txn ID" };
+        setLastPayload(payload);
+        setSendState({ status: "signing", payload });
+
+        const signedTxns = await signTransactions([txn]);
+        await algorand.client.algod.sendRawTransaction(signedTxns[0]!).do();
+
+        setSendState({ status: "success", txId: txn.txID(), payload });
+      } else if (numTxns === 1 && forceGroup) {
+        // Single txn forced into a group
+        const txn = await algorand.createTransaction.payment({
+          sender: activeAccount.address,
+          receiver: activeAccount.address,
+          amount: (0).algos(),
+          note: crypto.getRandomValues(new Uint8Array(4)),
+        });
+        const [gtxn] = algosdk.assignGroupID([txn]);
+
+        // For single transaction group, the payload is the txn ID, not group ID
+        const payload: PayloadInfo = {
+          bytes: gtxn.rawTxID(),
+          type: "Txn ID",
+        };
+        setLastPayload(payload);
+        setSendState({ status: "signing", payload });
+
+        const signedTxns = await signTransactions([gtxn]);
+        await algorand.client.algod.sendRawTransaction(signedTxns[0]!).do();
+
+        setSendState({ status: "success", txId: gtxn.txID(), payload });
+      } else {
+        // Multiple txns
+        const txns: algosdk.Transaction[] = [];
+        for (let i = 0; i < numTxns; i++) {
+          txns.push(
+            await algorand.createTransaction.payment({
+              sender: activeAccount.address,
+              receiver: activeAccount.address,
+              amount: (0).algos(),
+              note: crypto.getRandomValues(new Uint8Array(4)),
+            }),
+          );
+        }
+        const groupedTxns = algosdk.assignGroupID(txns);
+
+        const payload: PayloadInfo = { bytes: groupedTxns[0].group!, type: "Group ID" };
+        setLastPayload(payload);
+        setSendState({ status: "signing", payload });
+
+        const signedTxns = await signTransactions(groupedTxns);
+        await algorand.client.algod.sendRawTransaction(signedTxns.map((t) => t!)).do();
+
+        setSendState({ status: "success", txId: groupedTxns[0].txID(), payload });
+      }
+    } catch (e) {
+      const payload = lastPayload ?? { bytes: new Uint8Array(), type: "Txn ID" as const };
+      setSendState({ status: "error", message: (e as Error).message, payload });
+    }
+  };
+
+  if (!activeAccount) return null;
 
   return (
     <div>
       <div className="card">
         <p>Algorand address:</p>
-        <a href={`https://l.algo.surf/${algoAddress}`} target="_blank" rel="noopener noreferrer">
-          <code>{algoAddress}</code>
+        <a href={`https://l.algo.surf/${activeAccount.address}`} target="_blank" rel="noopener noreferrer">
+          <code>{activeAccount.address}</code>
         </a>
       </div>
       <div className="card">
@@ -152,7 +218,19 @@ function Algorand() {
           Send 2x
         </button>
       </div>
-      {sendState.status !== "idle" && <PayloadDisplay payload={sendState.payload} />}
+      <div className="card">
+        <input
+          type="text"
+          placeholder="Asset ID"
+          value={assetId}
+          onChange={(e) => setAssetId(e.target.value)}
+          style={{ marginRight: 8 }}
+        />
+        <button onClick={optInToAsset} disabled={sendState.status === "signing" || !assetId}>
+          Opt In ASA
+        </button>
+      </div>
+      {sendState.status !== "idle" && lastPayload && <PayloadDisplay payload={lastPayload} />}
       {sendState.status === "signing" && (
         <div className="card">
           <p>Waiting for wallet approval…</p>
@@ -181,10 +259,8 @@ function App() {
   return (
     <>
       <h1>Liquid EVM</h1>
-      <div className="connect-wrapper">
-        <ConnectButton showBalance={false} />
-      </div>
-      <Algorand />
+      <WalletConnect />
+      <AlgorandActions />
     </>
   );
 }

@@ -1,9 +1,9 @@
 {
   "version": 3,
   "sources": [
-    "../../liquidevm/contract.algo.ts"
+    "../../liquidevm/logicsig.algo.ts"
   ],
-  "mappings": "AAQyB;;AAAqB;;AAArB;AAAA;;;AAAyB;;AAGlC;AACF;AAAA;;;AACA;;AAAA;;;AACA;;AAAwB;;AAAxB;AACqB;;AAAJ;AAGO;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAN;;AAAA;AAAb;AAGY;AAAA;;AAAA;;AAAA;;AAGsB;AAAb;AAAX;;;AAEG;AAArB;AAAP;AAlByD;;",
+  "mappings": "AAyByB;;AAAqB;;AAArB;AAAA;;;AAAyB;;AAGlC;AACF;AAAA;;;AACA;;AAAA;;;AACA;;AAAwB;;AAAxB;AACqB;;AAAJ;AAIO;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAN;;AAAA;AAAb;AAGY;AAAA;;AAAA;;AAAA;;AAIsB;AAAb;AAAX;;;AAGG;AAArB;AAAP;AArByD;;",
   "op_pc_offset": 1,
   "pc_events": {
     "0": {

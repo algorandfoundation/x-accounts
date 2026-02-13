@@ -40,7 +40,7 @@
     "dotenv": "^16.4.7",
     "eslint": "^9.18.0",
     "ethers": "^6.16.0",
-    "liquid-evm-sdk": "workspace:*",
+    "liquid-accounts-evm": "workspace:*",
     "prettier": "^3.4.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3",

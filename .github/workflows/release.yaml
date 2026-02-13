@@ -16,12 +16,12 @@ permissions:
 
 jobs:
   logicsig-validate:
-    name: Run logicsig release
+    name: Run evm-logicsig validation
     secrets: inherit
-    uses: ./.github/workflows/logicsig-ci.yaml
+    uses: ./.github/workflows/evm-logicsig-ci.yaml
 
   logicsig-release:
-    name: Run logicsig release
+    name: Run evm-logicsig release
     secrets: inherit
-    uses: ./.github/workflows/logicsig-cd.yaml
+    uses: ./.github/workflows/evm-logicsig-cd.yaml
     needs: logicsig-validate

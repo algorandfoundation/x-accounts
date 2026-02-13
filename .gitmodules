@@ -1,0 +1,3 @@
+[submodule "projects/use-wallet"]
+	path = projects/use-wallet
+	url = https://github.com/TxnLab/use-wallet

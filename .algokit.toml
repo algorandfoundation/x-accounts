@@ -6,4 +6,4 @@ type = 'workspace'
 projects_root_path = 'projects'
 
 [project.run]
-build = ['logicsig', 'sdk', 'frontend']
+build = ['evm-logicsig', 'evm-sdk', 'frontend']

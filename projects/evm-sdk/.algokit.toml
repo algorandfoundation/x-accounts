@@ -3,7 +3,7 @@ min_version = "v2.0.0"
 
 [project]
 type = "sdk"
-name = 'sdk'
+name = 'evm-sdk'
 artifacts = "src/"
 
 [project.run]

@@ -1,5 +1,6 @@
 packages:
   - projects/*
+  - projects/use-wallet/packages/*
 linkWorkspacePackages: true
 onlyBuiltDependencies:
   - '@algorandfoundation/puya-ts'

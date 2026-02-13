@@ -1,49 +1,191 @@
-# 2-logicsig
+# Liquid Accounts
 
-This starter full stack project has been generated using AlgoKit. See below for default getting started instructions.
+**EVM-controlled Algorand accounts via ECDSA signature verification**
 
-## Setup
+Liquid EVM enables Ethereum wallets (MetaMask, WalletConnect, etc.) to control Algorand accounts using an ECDSA signature verification LogicSig. Sign once with your Ethereum wallet to authorize transactions on Algorand—no seed phrases, no new accounts.
 
-### Initial setup
-1. Clone this repository to your local machine.
-2. Ensure [Docker](https://www.docker.com/) is installed and operational. Then, install `AlgoKit` following this [guide](https://github.com/algorandfoundation/algokit-cli#install).
-3. Run `algokit project bootstrap all` in the project directory. This command sets up your environment by installing necessary dependencies, setting up a Python virtual environment, and preparing your `.env` file.
-4. In the case of a smart contract project, execute `algokit generate env-file -a target_network localnet` from the `logicsig` directory to create a `.env.localnet` file with default configuration for `localnet`.
-5. To build your project, execute `algokit project run build`. This compiles your project and prepares it for running.
-6. For project-specific instructions, refer to the README of the child project:
-   - Smart Contracts: [logicsig](projects/logicsig/README.md)
+## Overview
 
-> This project is structured as a monorepo, refer to the [documentation](https://github.com/algorandfoundation/algokit-cli/blob/main/docs/features/project/run.md) to learn more about custom command orchestration via `algokit project run`.
+This monorepo contains:
 
-### Subsequently
+- **[Smart Contract](projects/evm-logicsig/)** - LogicSig that verifies ECDSA (secp256k1) signatures from EVM addresses
+- **[SDK](projects/evm-sdk/)** - TypeScript SDK for integrating EVM wallet signing with Algorand
+- **[Frontend](projects/frontend/)** - React demo application with MetaMask integration
+- **[Use Wallet](projects/use-wallet/)** - Enhanced `@txnlab/use-wallet` with MetaMask provider support
 
-1. If you update to the latest source code and there are new dependencies, you will need to run `algokit project bootstrap all` again.
-2. Follow step 3 above.
+## How It Works
 
-### Continuous Integration / Continuous Deployment (CI/CD)
+1. **Derive Algorand Address**: Each EVM address (20 bytes) maps deterministically to a unique Algorand LogicSig address
+2. **Sign with EVM Wallet**: MetaMask signs the transaction/group ID using Ethereum's `personal_sign`
+3. **Verify on Algorand**: The LogicSig recovers the public key from the signature and verifies it matches the template owner
+4. **Execute Transaction**: If verification succeeds, the transaction is approved
 
-This project uses [GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions) to define CI/CD workflows, which are located in the [`.github/workflows`](./.github/workflows) folder. You can configure these actions to suit your project's needs, including CI checks, audits, linting, type checking, testing, and deployments to TestNet.
+### Technical Details
 
-For pushes to `main` branch, after the above checks pass, the following deployment actions are performed:
-  - The smart contract(s) are deployed to TestNet using [AlgoNode](https://algonode.io).
+The LogicSig contract:
 
-> Please note deployment of smart contracts is done via `algokit deploy` command which can be invoked both via CI as seen on this project, or locally. For more information on how to use `algokit deploy` please see [AlgoKit documentation](https://github.com/algorandfoundation/algokit-cli/blob/main/docs/features/deploy.md).
+- Uses `ecdsaPkRecover` (secp256k1) to recover the signer's public key
+- Derives the Ethereum address from the recovered public key (last 20 bytes of keccak256)
+- Compares the recovered address against the template owner
+- Signs either transaction ID (single txn) or group ID (atomic groups)
 
-## Tools
+## Quick Start
 
-This project makes use of Algorand smart contracts. The following tools are in use:
+### Prerequisites
 
-- Algorand, AlgoKit, and AlgoKit Utils
-- Python dependencies including Poetry, Black, Ruff or Flake8, mypy, pytest, and pip-audit
+- [Node.js 22+](https://nodejs.org/en/download)
+- [AlgoKit CLI 2.5+](https://github.com/algorandfoundation/algokit-cli#install)
+- [Docker](https://www.docker.com/) (for LocalNet)
+- [pnpm](https://pnpm.io/installation)
 
-### VS Code
+### Installation
 
-It has also been configured to have a productive dev experience out of the box in [VS Code](https://code.visualstudio.com/).
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/liquid-accounts.git
+cd liquid-accounts
 
-## Integrating with smart contracts
+# Bootstrap the project (installs dependencies)
+algokit project bootstrap all
 
-Refer to the [logicsig](projects/logicsig/README.md) folder for overview of working with smart contracts.
+# Start LocalNet
+algokit localnet start
 
-## Next Steps
+# Build all projects
+algokit project run build
+```
 
-You can take this project and customize it to build your own decentralized applications on Algorand. Make sure to understand how to use AlgoKit and how to write smart contracts for Algorand before you start.
+### Running the Demo
+
+```bash
+# Start the frontend (from root directory)
+cd projects/frontend
+pnpm dev
+```
+
+Open http://localhost:5173 and connect MetaMask to see EVM-controlled Algorand accounts in action.
+
+> **Note**: The derived Algorand address must be funded before it can send transactions. New accounts need a minimum balance of 0.1 ALGO to exist on the network. You can fund the account from AlgoKit LocalNet dispenser or use the frontend to display the address and send funds to it.
+
+## Project Structure
+
+```
+liquid-accounts/
+├── projects/
+│   ├── evm-logicsig/    # Smart contract (Algorand TypeScript)
+│   ├── evm-sdk/         # TypeScript SDK
+│   ├── frontend/        # React demo application
+│   └── use-wallet/      # Enhanced @txnlab/use-wallet with MetaMask support
+├── .algokit.toml        # AlgoKit workspace configuration
+└── pnpm-workspace.yaml  # pnpm monorepo configuration
+```
+
+## SDK Usage
+
+Install the SDK:
+
+```bash
+npm install liquid-accounts-evm
+# or
+pnpm add liquid-accounts-evm
+```
+
+Basic usage:
+
+```typescript
+import { LiquidEvmSdk } from 'liquid-accounts-evm'
+import { AlgorandClient } from '@algorandfoundation/algokit-utils'
+
+// Initialize
+const algorand = AlgorandClient.fromEnvironment()
+const sdk = new LiquidEvmSdk({ algorand })
+
+// Get Algorand address for an EVM address
+const algoAddress = await sdk.getAddress({ 
+  evmAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb' 
+})
+
+// Get a transaction signer
+const { addr, signer } = await sdk.getSigner({
+  evmAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+  signMessage: async (message) => {
+    // Call MetaMask or other EVM wallet
+    return window.ethereum.request({
+      method: 'personal_sign',
+      params: [message, evmAddress]
+    })
+  }
+})
+
+// Use with algokit-utils
+await algorand.send.payment({
+  sender: addr,
+  signer: signer,
+  receiver: recipientAddress,
+  amount: AlgoAmount.Algos(1)
+})
+```
+
+## Development Workflow
+
+### Build
+
+```bash
+algokit project run build
+```
+
+This compiles:
+1. Smart contracts to TEAL
+2. TypeScript SDK
+3. Frontend application
+
+### Test
+
+```bash
+cd projects/evm-logicsig
+algokit project run test
+```
+
+### Deploy
+
+```bash
+# Deploy to LocalNet
+algokit project deploy localnet
+
+# Deploy to TestNet
+algokit project deploy testnet
+```
+
+## Contributing
+
+Contributions are welcome! Please see individual project READMEs for specific development guidelines:
+
+- [Smart Contract Development](projects/evm-logicsig/README.md)
+- [SDK Development](projects/evm-sdk/README.md)
+- [Frontend Development](projects/frontend/README.md)
+
+## Security Considerations
+
+- The LogicSig verifies signatures using ECDSA secp256k1 curve
+- Template variables ensure each EVM address has a unique Algorand address
+- The contract signs transaction/group IDs, preventing signature replay
+- Always verify the derived Algorand address matches expectations
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment. Workflows are located in [`.github/workflows`](./.github/workflows).
+
+On `main` branch pushes:
+- Automated testing and linting
+- Smart contract deployment to TestNet via [AlgoNode](https://algonode.io)
+
+## Resources
+
+- [AlgoKit Documentation](https://github.com/algorandfoundation/algokit-cli)
+- [Algorand Developer Portal](https://developer.algorand.org/)
+- [Algorand TypeScript](https://github.com/algorandfoundation/puya-ts)
+- [ECDSA on Algorand](https://developer.algorand.org/docs/get-details/dapps/smart-contracts/apps/opcodes/#ecdsa_verify)
+
+## License
+
+MIT

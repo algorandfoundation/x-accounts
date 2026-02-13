@@ -1,4 +1,4 @@
-# liquid-evm-sdk
+# liquid-accounts-evm
 
 Use EVM wallets (MetaMask, etc.) to sign and send Algorand transactions.
 
@@ -7,7 +7,7 @@ The SDK compiles a per-address [logic signature](https://developer.algorand.org/
 ## Install
 
 ```bash
-npm install liquid-evm-sdk
+npm install liquid-accounts-evm
 ```
 
 Peer dependencies:
@@ -43,7 +43,7 @@ The logic signature:
 
 ```typescript
 import { AlgorandClient } from "@algorandfoundation/algokit-utils"
-import { LiquidEvmSdk } from "liquid-evm-sdk"
+import { LiquidEvmSdk } from "liquid-accounts-evm"
 
 const algorand = AlgorandClient.fromEnvironment()
 const sdk = new LiquidEvmSdk({ algorand })

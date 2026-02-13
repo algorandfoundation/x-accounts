@@ -1,10 +1,10 @@
 #pragma version 11
 #pragma typetrack false
 
-// smart_contracts/liquidevm/contract.algo.ts::program() -> uint64:
+// smart_contracts/liquidevm/logicsig.algo.ts::program() -> uint64:
 main:
     bytecblock TMPL_OWNER
-    // smart_contracts/liquidevm/contract.algo.ts:9
+    // smart_contracts/liquidevm/logicsig.algo.ts:26
     // const txnIdPayload = Global.groupSize === 1 ? Txn.txId : Global.groupId
     global GroupSize
     pushint 1 // 1
@@ -13,51 +13,51 @@ main:
     txn TxID
 
 main_ternary_merge@3:
-    // smart_contracts/liquidevm/contract.algo.ts:12
+    // smart_contracts/liquidevm/logicsig.algo.ts:29
     // const sig = op.arg(0)
     arg_0
-    // smart_contracts/liquidevm/contract.algo.ts:13
+    // smart_contracts/liquidevm/logicsig.algo.ts:30
     // const r = op.extract(sig, 0, 32)
     dup
     extract 0 32
-    // smart_contracts/liquidevm/contract.algo.ts:14
+    // smart_contracts/liquidevm/logicsig.algo.ts:31
     // const s = op.extract(sig, 32, 32)
     dig 1
     extract 32 32
-    // smart_contracts/liquidevm/contract.algo.ts:15
+    // smart_contracts/liquidevm/logicsig.algo.ts:32
     // const v = op.btoi(op.extract(sig, 64, 1))
     uncover 2
     pushint 64 // 64
     getbyte
-    // smart_contracts/liquidevm/contract.algo.ts:16
-    // const recoveryId: uint64 = v - 27
+    // smart_contracts/liquidevm/logicsig.algo.ts:33
+    // const recoveryId: uint64 = v - 27  // Ethereum uses 27/28, AVM expects 0/1
     pushint 27 // 27
     -
-    // smart_contracts/liquidevm/contract.algo.ts:19
+    // smart_contracts/liquidevm/logicsig.algo.ts:37
     // const digest = op.keccak256(Bytes('\x19Ethereum Signed Message:\n32').concat(txnIdPayload))
     pushbytes "\x19Ethereum Signed Message:\n32"
     uncover 4
     concat
     keccak256
-    // smart_contracts/liquidevm/contract.algo.ts:22
+    // smart_contracts/liquidevm/logicsig.algo.ts:40
     // const [pubkeyX, pubkeyY] = op.ecdsaPkRecover(op.Ecdsa.Secp256k1, digest, recoveryId, r, s)
     swap
     uncover 3
     uncover 3
     ecdsa_pk_recover Secp256k1
-    // smart_contracts/liquidevm/contract.algo.ts:25
+    // smart_contracts/liquidevm/logicsig.algo.ts:44
     // const recoveredAddress = op.extract(op.keccak256(op.concat(pubkeyX, pubkeyY)), 12, 20)
     concat
     keccak256
     extract 12 20
-    // smart_contracts/liquidevm/contract.algo.ts:27
+    // smart_contracts/liquidevm/logicsig.algo.ts:47
     // return recoveredAddress === owner.bytes
     bytec_0 // TMPL_OWNER
     ==
     return
 
 main_ternary_false@2:
-    // smart_contracts/liquidevm/contract.algo.ts:9
+    // smart_contracts/liquidevm/logicsig.algo.ts:26
     // const txnIdPayload = Global.groupSize === 1 ? Txn.txId : Global.groupId
     global GroupID
     b main_ternary_merge@3

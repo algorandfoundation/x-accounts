@@ -6,5 +6,5 @@ author_name: Bit D13
 cloud_provider: none
 contract_name: liquidevm
 preset_name: production
-project_name: 2-logicsig
+project_name: evm-logicsig
 

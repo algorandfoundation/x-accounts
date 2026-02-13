@@ -1,5 +1,5 @@
 {
-  "name": "liquid-evm-sdk",
+  "name": "liquid-accounts-evm",
   "version": "0.0.1",
   "description": "",
   "repository": {
@@ -9,14 +9,14 @@
   "bugs": {
     "url": "https://github.com/d13co/liquid-evm-sdk/issues"
   },
-  "homepage": "https://github.com/d13co/liquid-evm-sdk/tree/main/projects/sdk#readme",
+  "homepage": "https://github.com/d13co/liquid-evm-sdk/tree/main/projects/evm-sdk#readme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
   "scripts": {
-    "prebuild": "cp ../logicsig/smart_contracts/artifacts/liquidevm/LiquidEvmLsig.teal src/generated/ && node -e \"const t=require('fs').readFileSync('src/generated/LiquidEvmLsig.teal','utf8');require('fs').writeFileSync('src/teal.ts','export const ALGO_FUNDING_LSIG_TEAL = '+JSON.stringify(t)+';\\n')\"",
+    "prebuild": "cp ../evm-logicsig/smart_contracts/artifacts/liquidevm/LiquidEvmLsig.teal src/generated/ && node -e \"const t=require('fs').readFileSync('src/generated/LiquidEvmLsig.teal','utf8');require('fs').writeFileSync('src/teal.ts','export const ALGO_FUNDING_LSIG_TEAL = '+JSON.stringify(t)+';\\n')\"",
     "build": "tsc"
   },
   "keywords": [],

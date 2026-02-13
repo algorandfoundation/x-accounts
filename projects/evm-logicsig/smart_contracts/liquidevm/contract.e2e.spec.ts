@@ -3,7 +3,7 @@ import { registerDebugEventHandlers } from '@algorandfoundation/algokit-utils-de
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing'
 import algosdk from 'algosdk'
 import { ethers } from 'ethers'
-import { LiquidEvmSdk } from 'liquid-evm-sdk'
+import { LiquidEvmSdk } from 'liquid-accounts-evm'
 import { beforeAll, beforeEach, describe, expect, test } from 'vitest'
 
 // Fixed EVM test wallet (DO NOT use in production)

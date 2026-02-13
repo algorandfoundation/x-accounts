@@ -11,16 +11,17 @@
   },
   "dependencies": {
     "@algorandfoundation/algokit-utils": "^9.2.0",
-    "@rainbow-me/rainbowkit": "^2.2.10",
+    "@metamask/sdk": "^0.33.1",
     "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-store": "0.8.0",
+    "@txnlab/use-wallet": "file:../use-wallet/packages/use-wallet",
     "algosdk": "^3.5.2",
     "buffer": "^6.0.3",
     "hi-base32": "^0.5.1",
-    "liquid-evm-sdk": "workspace:*",
+    "liquid-accounts-evm": "workspace:*",
+    "lute-connect": "^1.6.3",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "viem": "~2.45.3",
-    "wagmi": "^2.19.5"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
