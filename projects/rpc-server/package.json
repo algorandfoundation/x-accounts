@@ -1,0 +1,17 @@
+{
+  "name": "rpc-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@algorandfoundation/algokit-utils": "^9.2.0",
+    "algosdk": "^3.5.2",
+    "liquid-accounts-evm": "file:../evm-sdk"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

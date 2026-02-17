@@ -13,6 +13,7 @@ This monorepo contains:
 - **[use-wallet](projects/use-wallet/)** - @txnlab/use-wallet with Liquid EVM / MetaMask support
 - **[use-wallet-ui](projects/use-wallet-ui/)** - @txnlab/use-wallet-ui with Liquid EVM / MetaMask support
 - **[frontend](projects/frontend/)** - React demo application with MetaMask integration
+- **[rpc-server](projects/rpc-server/)** - Mock Ethereum JSON-RPC server (Cloudflare Worker) that lets MetaMask Mobile connect to Algorand as a custom network. Responds to standard RPC methods (`eth_chainId`, `eth_blockNumber`, `net_version`, `eth_gasPrice`, `eth_getBlockByNumber`) and serves real ALGO balances via `eth_getBalance` by deriving the Liquid Account address and querying Algorand mainnet, converting from 6-decimal microAlgos to 18-decimal wei.
 
 ## How It Works
 
@@ -85,7 +86,8 @@ liquid-accounts/
 │   ├── evm-logicsig/    # Smart contract (Algorand TypeScript)
 │   ├── evm-sdk/         # TypeScript SDK
 │   ├── frontend/        # React demo application
-│   └── use-wallet/      # Enhanced @txnlab/use-wallet with Liquid EVM support
+│   ├── rpc-server/      # Mock Ethereum JSON-RPC (Cloudflare Worker)
+│   ├── use-wallet/      # Enhanced @txnlab/use-wallet with Liquid EVM support
 │   └── use-wallet-ui/   # Enhanced @txnlab/use-wallet-ui with Liquid EVM support
 ```
 
