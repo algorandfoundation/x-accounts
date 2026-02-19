@@ -140,13 +140,7 @@ The test suite uses:
 
 ### Deploying
 
-> **Note**: This is a LogicSig, not an application contract. It doesn't need deployment in the traditional sense. Instead, the SDK compiles it on-demand with the specific EVM address as a template parameter.
-
-For development/testing purposes:
-
-```bash
-algokit project deploy localnet
-```
+This is a LogicSig, not an application contract. It doesn't need deployment in the traditional sense. Instead, the SDK compiles it on-demand with the specific EVM address as a template parameter.
 
 ## Contract Details
 
@@ -211,17 +205,6 @@ const addr = await sdk.getAddress({
 This project includes AlgoKit AVM Debugger support. Use `F5` or the "Debug TEAL via AlgoKit AVM Debugger" launch configuration to debug contract execution with breakpoints.
 
 Install the extension: [AlgoKit AVM Debugger](https://marketplace.visualstudio.com/items?itemName=algorandfoundation.algokit-avm-vscode-debugger)
-
-## CI/CD
-
-Automated workflows run on every push:
-
-- **Testing**: E2E tests on AlgoKit LocalNet
-- **Linting**: ESLint and Prettier checks  
-- **Build verification**: TEAL compilation and output stability
-- **Deployment**: TestNet deployment on `main` branch merges
-
-See [`.github/workflows`](../../.github/workflows) for workflow definitions.
 
 ## Resources
 
