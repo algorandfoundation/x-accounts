@@ -18,15 +18,13 @@
  * - chainId: 4160 (Algorand constant for all networks)
  *
  * EIP-712 Message Type:
- * - AlgorandTransaction(bytes32 txId)
+ * - AlgorandTransaction(bytes32 Transaction ID)
  */
 import { Bytes, Global, LogicSig, op, TemplateVar, Txn, uint64 } from '@algorandfoundation/algorand-typescript'
 import { StaticBytes } from '@algorandfoundation/algorand-typescript/arc4'
 
 // Template variable: the 20-byte Ethereum address that controls this LogicSig
 const owner = TemplateVar<StaticBytes<20>>('OWNER')
-
-// Template variables for EIP-712 constants (passed from SDK to workaround parsing bug)
 
 export class LiquidEvmLsig extends LogicSig {
   public program() {
@@ -41,7 +39,7 @@ export class LiquidEvmLsig extends LogicSig {
     const v = op.btoi(op.extract(sig, 64, 1))
     const recoveryId: uint64 = v - 27 // Ethereum uses 27/28, AVM expects 0/1
 
-    // EIP-712 Domain Separator (precomputed off-chain, injected as template variable)
+    // EIP-712 Domain Separator (precomputed off-chain)
     // domainSeparator = keccak256(domainTypeHash + nameHash + versionHash + chainId)
     // where:
     //   domainTypeHash = keccak256("EIP712Domain(string name,string version,uint256 chainId)")
@@ -50,9 +48,9 @@ export class LiquidEvmLsig extends LogicSig {
     //   chainId = 4160 (Algorand constant)
     // Value: 0xcd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6
 
-    // EIP-712 Message Type Hash (precomputed off-chain, injected as template variable)
-    // messageTypeHash = keccak256("AlgorandTransaction(bytes32 txId)")
-    // Value: 0x4579c5d8754720fadf0a6f6de5c1533eb5857225a36a16c08b8a3d4ad806ac01
+    // EIP-712 Message Type Hash (precomputed off-chain)
+    // messageTypeHash = keccak256("AlgorandTransaction(bytes32 Transaction ID)")
+    // Value: 0xa0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6
     const domainSeparator = Bytes.fromHex('cd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6')
     const messageTypeHash = Bytes.fromHex('a0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6')
 
