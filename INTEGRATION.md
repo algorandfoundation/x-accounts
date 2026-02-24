@@ -18,25 +18,27 @@ Note: This uses use-wallet v4. Migration should be straightforward/painless if y
 ## 2. Usage
 
 1. Add METAMASK to your WalletManager
-2. Add WalletUIProvider
+2. Add WalletUIProvider + CSS
 3. Replace your "Connect Wallet" button
 
 ```tsx
 import {
   NetworkId, WalletId, WalletManager, WalletProvider,
 } from '@txnlab/use-wallet-react'
+
+// Add WalletUIProvider...
 import {
   WalletUIProvider, WalletButton,
 } from '@txnlab/use-wallet-ui-react'
-
-// Add metamask to your use-wallet config
+// ...and CSS support. See README: https://github.com/TxnLab/use-wallet-ui
+import "@txnlab/use-wallet-ui-react/dist/style.css";
 
 const walletManager = new WalletManager({
   wallets: [
     WalletId.PERA,
     WalletId.DEFLY,
     WalletId.EXODUS,
-    WalletId.METAMASK,
+    WalletId.METAMASK, // Add metamask to your use-wallet config
   ],
   defaultNetwork: NetworkId.MAINNET,
 })
