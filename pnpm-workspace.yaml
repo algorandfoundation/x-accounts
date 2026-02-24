@@ -5,6 +5,7 @@ packages:
 linkWorkspacePackages: true
 onlyBuiltDependencies:
   - '@algorandfoundation/puya-ts'
+  - bigint-buffer
   - esbuild
   - keccak
   - sharp

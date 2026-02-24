@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useWallet } from "@txnlab/use-wallet-react";
 import { WalletButton } from "@txnlab/use-wallet-ui-react";
 import { AlgorandClient } from "@algorandfoundation/algokit-utils";
@@ -7,8 +7,28 @@ import "./App.css";
 import base32 from "hi-base32";
 import type { Theme } from "@txnlab/use-wallet-ui-react";
 
-const algorand = AlgorandClient.defaultLocalNet();
-algorand.setDefaultValidityWindow(1000);
+type AlgorandNetwork = "localnet" | "testnet" | "mainnet";
+
+function getAlgorandClient(network: AlgorandNetwork): AlgorandClient {
+  switch (network) {
+    case "localnet":
+      return AlgorandClient.defaultLocalNet();
+    case "testnet":
+      return AlgorandClient.fromConfig({
+        algodConfig: {
+          server: "https://testnet-api.4160.nodely.dev",
+          token: "",
+        },
+      });
+    case "mainnet":
+      return AlgorandClient.fromConfig({
+        algodConfig: {
+          server: "https://mainnet-api.4160.nodely.dev",
+          token: "",
+        },
+      });
+  }
+}
 
 function bytesToBase32(bytes: Uint8Array): string {
   return base32.encode(bytes).replace(/=+$/, ""); // Remove padding
@@ -43,12 +63,28 @@ function PayloadDisplay({ payload }: { payload: PayloadInfo }) {
   );
 }
 
-function AlgorandActions() {
+function AlgorandActions({ network }: { network: AlgorandNetwork }) {
   const { activeAccount, signTransactions } = useWallet();
   const [sendState, setSendState] = useState<SendState>({ status: "idle" });
   const [lastPayload, setLastPayload] = useState<PayloadInfo | undefined>();
-
   const [assetId, setAssetId] = useState("");
+
+  const algorand = useMemo(() => {
+    const client = getAlgorandClient(network);
+    client.setDefaultValidityWindow(1000);
+    return client;
+  }, [network]);
+
+  const explorerBaseUrl = useMemo(() => {
+    switch (network) {
+      case "localnet":
+        return "https://l.algo.surf";
+      case "testnet":
+        return "https://testnet.algo.surf";
+      case "mainnet":
+        return "https://algo.surf";
+    }
+  }, [network]);
 
   const optInToAsset = async () => {
     if (!activeAccount) return;
@@ -86,7 +122,6 @@ function AlgorandActions() {
       setLastPayload(undefined);
 
       if (numTxns === 1 && !rekey) {
-        // Standalone transaction
         const txn = await algorand.createTransaction.payment({
           sender: activeAccount.address,
           receiver: activeAccount.address,
@@ -104,7 +139,6 @@ function AlgorandActions() {
 
         setSendState({ status: "success", txId: txn.txID(), payload });
       } else {
-        // Multiple txns
         const txns: algosdk.Transaction[] = [];
         for (let i = 0; i < numTxns; i++) {
           txns.push(
@@ -146,7 +180,7 @@ function AlgorandActions() {
           </>
         )}
         <p>Algorand address:</p>
-        <a href={`https://l.algo.surf/${activeAccount.address}`} target="_blank" rel="noopener noreferrer">
+        <a href={`${explorerBaseUrl}/${activeAccount.address}`} target="_blank" rel="noopener noreferrer">
           <code>{activeAccount.address}</code>
         </a>
       </div>
@@ -170,14 +204,14 @@ function AlgorandActions() {
       {sendState.status !== "idle" && lastPayload && <PayloadDisplay payload={lastPayload} />}
       {sendState.status === "signing" && (
         <div className="card">
-          <p>Waiting for wallet approval…</p>
+          <p>Waiting for wallet approval...</p>
         </div>
       )}
       {sendState.status === "success" && (
         <div className="card">
           <p>
             Success:{" "}
-            <a href={`https://l.algo.surf/${sendState.txId}`} target="_blank" rel="noopener noreferrer">
+            <a href={`${explorerBaseUrl}/${sendState.txId}`} target="_blank" rel="noopener noreferrer">
               {sendState.txId}
             </a>
           </p>
@@ -188,6 +222,45 @@ function AlgorandActions() {
           <p>Error: {sendState.message}</p>
         </div>
       )}
+    </div>
+  );
+}
+
+const NETWORK_LABELS: Record<AlgorandNetwork, string> = {
+  localnet: "LocalNet",
+  testnet: "TestNet",
+  mainnet: "MainNet",
+};
+
+const NETWORK_COLORS: Record<AlgorandNetwork, string> = {
+  localnet: "#f59e0b",
+  testnet: "#3b82f6",
+  mainnet: "#10b981",
+};
+
+function NetworkSelector({ network, setNetwork }: { network: AlgorandNetwork; setNetwork: (n: AlgorandNetwork) => void }) {
+  return (
+    <div style={{ display: "flex", gap: 4, background: "light-dark(#e5e5e5, #3a3a3a)", borderRadius: 8, padding: 3 }}>
+      {(["localnet", "testnet", "mainnet"] as const).map((n) => (
+        <button
+          key={n}
+          onClick={() => setNetwork(n)}
+          style={{
+            padding: "4px 10px",
+            fontSize: 13,
+            fontWeight: network === n ? 600 : 400,
+            borderRadius: 6,
+            border: "none",
+            background: network === n ? "light-dark(#fff, #555)" : "transparent",
+            color: network === n ? NETWORK_COLORS[n] : "inherit",
+            boxShadow: network === n ? "0 1px 3px rgba(0,0,0,0.15)" : "none",
+            cursor: "pointer",
+            transition: "all 0.15s",
+          }}
+        >
+          {NETWORK_LABELS[n]}
+        </button>
+      ))}
     </div>
   );
 }
@@ -218,15 +291,26 @@ function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) =
   );
 }
 
-export default function App({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
+interface AppProps {
+  theme: Theme;
+  setTheme: (t: Theme) => void;
+  network: AlgorandNetwork;
+  setNetwork: (n: AlgorandNetwork) => void;
+}
+
+export default function App({ theme, setTheme, network, setNetwork }: AppProps) {
   return (
     <div className="container">
-      <div style={{ display: "flex", alignItems: "center", gap: 8, alignSelf: "flex-end" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, alignSelf: "flex-end", flexWrap: "wrap", justifyContent: "flex-end" }}>
+        <NetworkSelector network={network} setNetwork={setNetwork} />
         <ThemeToggle theme={theme} setTheme={setTheme} />
         <WalletButton />
       </div>
       <h1>Liquid EVM Accounts</h1>
-      <AlgorandActions />
+      <p style={{ opacity: 0.6, marginTop: -8 }}>
+        Network: <strong style={{ color: NETWORK_COLORS[network] }}>{NETWORK_LABELS[network]}</strong>
+      </p>
+      <AlgorandActions network={network} />
     </div>
   );
 }
