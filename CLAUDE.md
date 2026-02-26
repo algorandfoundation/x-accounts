@@ -10,4 +10,4 @@ See [AGENTS.md](./AGENTS.md) for:
 
 ## Build
 
-- After finishing changes in `projects/use-wallet-ui/`, always run `pnpm build` (from that directory) before considering the task complete.
+- After finishing changes in `projects/use-wallet/` and `projects/use-wallet-ui/`, always run `pnpm build` (from that directory, with 4GB memory) before considering the task complete. 

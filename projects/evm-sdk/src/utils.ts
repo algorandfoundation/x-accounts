@@ -105,18 +105,48 @@ export const ALGORAND_EVM_CHAIN_CONFIG = {
   blockExplorerUrls: ["https://allo.info", "https://explorer.perawallet.app/", "https://lora.algokit.io"],
 }
 
+/**
+ * Wagmi/viem-compatible Chain definition for Algorand (Liquid Accounts).
+ * Can be passed directly to wagmi's `getDefaultConfig` or viem's `createPublicClient`.
+ */
+export const algorandChain = {
+  id: ALGORAND_CHAIN_ID,
+  name: ALGORAND_EVM_CHAIN_CONFIG.chainName,
+  nativeCurrency: ALGORAND_EVM_CHAIN_CONFIG.nativeCurrency,
+  rpcUrls: {
+    default: {
+      http: ALGORAND_EVM_CHAIN_CONFIG.rpcUrls,
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Allo",
+      url: ALGORAND_EVM_CHAIN_CONFIG.blockExplorerUrls[0],
+    },
+  },
+} as const
+
 export const EIP712_DOMAIN = {
   name: "Liquid Accounts",
   version: "1",
   chainId: ALGORAND_CHAIN_ID,
-}
+} as const
 
 /**
  * EIP-712 Types for Algorand transaction signing
  */
 export const EIP712_TYPES = {
   AlgorandTransaction: [{ name: "Transaction ID", type: "bytes32" }],
-}
+} as const
+
+/**
+ * EIP-712 domain type descriptors (included in types object for signing)
+ */
+const EIP712_DOMAIN_TYPE = [
+  { name: "name", type: "string" },
+  { name: "version", type: "string" },
+  { name: "chainId", type: "uint256" },
+] as const
 
 /**
  * Format a transaction payload (transaction ID or group ID) as EIP-712 typed data message.
@@ -125,22 +155,22 @@ export const EIP712_TYPES = {
  * @param payload - The 32-byte transaction ID or group ID
  * @returns EIP-712 message object
  */
-export function formatEIP712Message(payload: Uint8Array): { "Transaction ID": string } {
-  return { "Transaction ID": "0x" + Buffer.from(payload).toString("hex") }
+export function formatEIP712Message(payload: Uint8Array): { "Transaction ID": `0x${string}` } {
+  return { "Transaction ID": `0x${Buffer.from(payload).toString("hex")}` }
 }
 
 /**
  * Parameters passed to signMessage callbacks containing all EIP-712 typed data
  * needed to sign with any EVM wallet.
+ *
+ * Types use `as const` literals so they satisfy viem/abitype's strict
+ * TypedData generics without requiring `any` casts at the call site.
  */
 export interface SignTypedDataParams {
   domain: typeof EIP712_DOMAIN
-  types: {
-    EIP712Domain: Array<{ name: string; type: string }>
-    AlgorandTransaction: Array<{ name: string; type: string }>
-  }
+  types: typeof EIP712_TYPES & { EIP712Domain: typeof EIP712_DOMAIN_TYPE }
   primaryType: "AlgorandTransaction"
-  message: { "Transaction ID": string }
+  message: { "Transaction ID": `0x${string}` }
 }
 
 /**
@@ -154,11 +184,7 @@ export function buildTypedData(payload: Uint8Array): SignTypedDataParams {
   return {
     domain: EIP712_DOMAIN,
     types: {
-      EIP712Domain: [
-        { name: "name", type: "string" },
-        { name: "version", type: "string" },
-        { name: "chainId", type: "uint256" },
-      ],
+      EIP712Domain: EIP712_DOMAIN_TYPE,
       ...EIP712_TYPES,
     },
     primaryType: "AlgorandTransaction",

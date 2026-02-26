@@ -25,6 +25,10 @@ export default defineConfig({
       'algosdk',
       '@algorandfoundation/algokit-utils',
       'liquid-accounts-evm',
+      'wagmi',
+      '@wagmi/core',
+      'viem',
+      '@rainbow-me/rainbowkit',
     ],
   },
   optimizeDeps: {
