@@ -102,13 +102,17 @@ if (!(globalThis as any).TronWebProto) {
 // ...other imports...
 import { WalletProvider, WalletManager, WalletId, NetworkId } from '@txnlab/use-wallet-react'
 import { WalletUIProvider, WalletButton } from '@txnlab/use-wallet-ui-react'
-import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { algorandChain } from 'liquid-accounts-evm'
+// Custom getDefaultConfig from use-wallet-ui-react instead of rainbowkit
+// removes the Base Account web wallet from the default list (not supported)
+import { getDefaultConfig } from '@txnlab/use-wallet-ui-react/rainbowkit'
 // styling for use-wallet-ui and rainbowkit
+// see also https://github.com/TxnLab/use-wallet-ui/blob/2e196e9059a7ddc9dcce5a394df6773207df6289/README.md#customization
 import '@txnlab/use-wallet-ui-react/dist/style.css'
 import '@rainbow-me/rainbowkit/styles.css'
 
 // Create wagmi config with the Algorand EVM chain
+// replace values with your project name and WC ID
 const wagmiConfig = getDefaultConfig({
   appName: 'My Liquid EVM Accounts App',
   projectId: 'YOUR_WALLETCONNECT_PROJECT_ID', // from cloud.walletconnect.com

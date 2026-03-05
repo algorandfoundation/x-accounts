@@ -13,11 +13,12 @@ import { LogLevel, WalletProvider } from "@txnlab/use-wallet-react";
 import { WalletUIProvider, type Theme } from "@txnlab/use-wallet-ui-react";
 import "@txnlab/use-wallet-ui-react/dist/style.css";
 import { WalletManager, WalletId } from "@txnlab/use-wallet-react";
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { getDefaultConfig } from "@txnlab/use-wallet-ui-react/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { algorandChain } from "liquid-accounts-evm";
 import "./index.css";
 import App from "./App.tsx";
+import { ErrorBoundary } from "./ErrorBoundary.tsx";
 
 type AlgorandNetwork = "localnet" | "testnet" | "mainnet";
 
@@ -89,6 +90,8 @@ function Root() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Root />
+    <ErrorBoundary>
+      <Root />
+    </ErrorBoundary>
   </StrictMode>,
 );
