@@ -1,0 +1,11 @@
+{
+  "name": "liquid-accounts-workspace",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r run build"
+  },
+  "dependencies": {
+    "avm-x-evm": "link:projects/evm",
+    "typedoc-plugin-mermaid": "link:../../../.local/share/pnpm/global/5/node_modules/typedoc-plugin-mermaid"
+  }
+}

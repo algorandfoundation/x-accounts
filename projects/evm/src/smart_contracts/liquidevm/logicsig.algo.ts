@@ -20,30 +20,39 @@
  * EIP-712 Message Type:
  * - AlgorandTransaction(bytes32 Transaction ID)
  */
-import { assert, Bytes, Global, LogicSig, op, TemplateVar, Txn, uint64 } from '@algorandfoundation/algorand-typescript'
-import { StaticBytes } from '@algorandfoundation/algorand-typescript/arc4'
+import {
+  assert,
+  Bytes,
+  Global,
+  LogicSig,
+  op,
+  TemplateVar,
+  Txn,
+  type uint64,
+} from "@algorandfoundation/algorand-typescript";
+import { StaticBytes } from "@algorandfoundation/algorand-typescript/arc4";
 
 // Template variable: the 20-byte Ethereum address that controls this LogicSig
-const owner = TemplateVar<StaticBytes<20>>('OWNER')
+const owner = TemplateVar<StaticBytes<20>>("OWNER");
 
 export class LiquidEvmLsig extends LogicSig {
-  public program() {
+  public program(): boolean {
     // Payload to sign is the 32-byte transaction group ID (if group size > 1)
     // otherwise the transaction ID of the current transaction
-    const txnIdPayload = Global.groupSize === 1 ? Txn.txId : Global.groupId
+    const txnIdPayload = Global.groupSize === 1 ? Txn.txId : Global.groupId;
 
     // Parse arg0: Type (1 byte) || R (32 bytes) || S (32 bytes) || V (1 byte)
-    const sig = op.arg(0)
+    const sig = op.arg(0);
 
     // Verify type byte is 0x01 (EVM signature type).
     // The type byte allows future multi-scheme LogicSigs that branch on signature type
     // (e.g. 0x01 = EVM secp256k1, 0x02 = Passkey secp256r1), enabling composed auth.
-    assert(op.extract(sig, 0, 1) === Bytes.fromHex('01'))
+    assert(op.extract(sig, 0, 1) === Bytes.fromHex("01"));
 
-    const r = op.extract(sig, 1, 32)
-    const s = op.extract(sig, 33, 32)
-    const v = op.btoi(op.extract(sig, 65, 1))
-    const recoveryId: uint64 = v - 27 // Ethereum uses 27/28, AVM expects 0/1
+    const r = op.extract(sig, 1, 32);
+    const s = op.extract(sig, 33, 32);
+    const v = op.btoi(op.extract(sig, 65, 1));
+    const recoveryId: uint64 = v - 27; // Ethereum uses 27/28, AVM expects 0/1
 
     // EIP-712 Domain Separator (precomputed off-chain)
     // domainSeparator = keccak256(domainTypeHash + nameHash + versionHash + chainId)
@@ -57,24 +66,28 @@ export class LiquidEvmLsig extends LogicSig {
     // EIP-712 Message Type Hash (precomputed off-chain)
     // messageTypeHash = keccak256("AlgorandTransaction(bytes32 Transaction ID)")
     // Value: 0xa0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6
-    const domainSeparator = Bytes.fromHex('cd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6')
-    const messageTypeHash = Bytes.fromHex('a0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6')
+    const domainSeparator = Bytes.fromHex(
+      "cd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6",
+    );
+    const messageTypeHash = Bytes.fromHex(
+      "a0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6",
+    );
 
-    const messageHash = op.keccak256(messageTypeHash.concat(txnIdPayload))
+    const messageHash = op.keccak256(messageTypeHash.concat(txnIdPayload));
 
     // EIP-712 Final Digest
     // digest = keccak256("\x19\x01" + domainSeparator + messageHash)
     // Seeming inefficiency is optimized by puya -  0x1901 is concatted with domainSeparator since both are constants
-    const digest = op.keccak256(Bytes.fromHex('1901').concat(domainSeparator).concat(messageHash))
+    const digest = op.keccak256(Bytes.fromHex("1901").concat(domainSeparator).concat(messageHash));
 
     // Recover the signer's public key from the signature using ECDSA secp256k1
-    const [pubkeyX, pubkeyY] = op.ecdsaPkRecover(op.Ecdsa.Secp256k1, digest, recoveryId, r, s)
+    const [pubkeyX, pubkeyY] = op.ecdsaPkRecover(op.Ecdsa.Secp256k1, digest, recoveryId, r, s);
 
     // Derive the Ethereum address from the recovered public key
     // Ethereum address = last 20 bytes of keccak256(pubkeyX || pubkeyY)
-    const recoveredAddress = op.extract(op.keccak256(op.concat(pubkeyX, pubkeyY)), 12, 20)
+    const recoveredAddress = op.extract(op.keccak256(op.concat(pubkeyX, pubkeyY)), 12, 20);
 
     // Approve the transaction if the recovered address matches the template owner
-    return recoveredAddress === owner.bytes
+    return recoveredAddress === owner.bytes;
   }
 }

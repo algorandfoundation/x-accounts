@@ -1,16 +1,23 @@
+import type { TxnsWithSignature, TxnsWithSignMessage } from "./types.ts";
+
+/**
+ * Converts a hex string to a Uint8Array.
+ * @param hex - The hex string to convert (should not include '0x' prefix).
+ * @returns The resulting Uint8Array.
+ */
 export function hexToBytes(hex: string): Uint8Array {
-  const bytes = new Uint8Array(hex.length / 2)
+  const bytes = new Uint8Array(hex.length / 2);
   for (let i = 0; i < hex.length; i += 2) {
-    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16)
+    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
   }
-  return bytes
+  return bytes;
 }
 
 /**
  * secp256k1 curve order and half order for lower-S normalization
  */
-const SECP256K1_N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141")
-const SECP256K1_HALF_N = SECP256K1_N / 2n
+const SECP256K1_N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
+const SECP256K1_HALF_N = SECP256K1_N / 2n;
 
 /**
  * Normalize an ECDSA signature to lower-S form to prevent signature malleability.
@@ -21,79 +28,93 @@ const SECP256K1_HALF_N = SECP256K1_N / 2n
  */
 function normalizeLowerS(sigBytes: Uint8Array): Uint8Array {
   if (sigBytes.length !== 65) {
-    throw new Error("Invalid signature length")
+    throw new Error("Invalid signature length");
   }
 
   // Extract s (bytes 32-63)
-  const sBytes = sigBytes.slice(32, 64)
-  let s = 0n
+  const sBytes = sigBytes.slice(32, 64);
+  let s = 0n;
   for (let i = 0; i < 32; i++) {
-    s = (s << 8n) | BigInt(sBytes[i])
+    s = (s << 8n) | BigInt(sBytes[i]);
   }
 
   // If s is in upper half, normalize to lower half
   if (s > SECP256K1_HALF_N) {
-    s = SECP256K1_N - s
+    s = SECP256K1_N - s;
 
     // Convert back to bytes
-    const normalized = new Uint8Array(65)
-    normalized.set(sigBytes.slice(0, 32), 0) // Copy r
+    const normalized = new Uint8Array(65);
+    normalized.set(sigBytes.slice(0, 32), 0); // Copy r
 
     // Write normalized s
     for (let i = 31; i >= 0; i--) {
-      normalized[32 + i] = Number(s & 0xffn)
-      s >>= 8n
+      normalized[32 + i] = Number(s & 0xffn);
+      s >>= 8n;
     }
 
     // Flip v (27 <-> 28)
-    const v = sigBytes[64]
-    normalized[64] = v === 27 ? 28 : 27
+    const v = sigBytes[64];
+    normalized[64] = v === 27 ? 28 : 27;
 
-    return normalized
+    return normalized;
   }
 
-  return sigBytes
+  return sigBytes;
 }
 
 /**
- * LogicSig type byte for EVM (secp256k1) signatures, prepended to arg0.
+ * LogicSig type byte for EVM (secp256k1) signatures, prepended to arg0 of the LogicSig.
  * Enables future multi-scheme LogicSigs that branch on signature type
- * (e.g. 0x01 = EVM, 0x02 = Passkey), supporting composed auth like EVM || Passkey.
+ * (e.g. 0x01 = EVM, 0x02 = Passkey).
  */
-export const EVM_LSIG_TYPE = 0x01
+export const EVM_LSIG_TYPE = 0x01;
 
 /**
- * Parse 0x-prefixed 65-byte EVM signature hex into the LogicSig arg format:
- * Type (1 byte, 0x01) || R(32) || S(32) || V(1).
- * Automatically normalizes to lower-S form to prevent signature malleability.
+ * Parses a 0x-prefixed 65-byte EVM signature hex string into the LogicSig argument format:
+ * Type (1 byte, 0x01) || R(32 bytes) || S(32 bytes) || V(1 byte).
+ *
+ * Automatically normalizes the signature to its lower-S form to prevent signature malleability.
+ *
+ * @param sigHex - The 0x-prefixed hex string of the EVM signature.
+ * @returns The formatted signature for the LogicSig argument as a Uint8Array.
  */
 export function parseEvmSignature(sigHex: string): Uint8Array {
-  const hex = sigHex.startsWith("0x") ? sigHex.slice(2) : sigHex
-  const sigBytes = new Uint8Array(65)
+  const hex = sigHex.startsWith("0x") ? sigHex.slice(2) : sigHex;
+  const sigBytes = new Uint8Array(65);
   for (let i = 0; i < 65; i++) {
-    sigBytes[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16)
+    sigBytes[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16);
   }
-  const normalized = normalizeLowerS(sigBytes)
+  const normalized = normalizeLowerS(sigBytes);
 
   // Prepend type byte
-  const result = new Uint8Array(66)
-  result[0] = EVM_LSIG_TYPE
-  result.set(normalized, 1)
-  return result
+  const result = new Uint8Array(66);
+  result[0] = EVM_LSIG_TYPE;
+  result.set(normalized, 1);
+  return result;
 }
 
 /**
  * EIP-712 Domain for Liquid Accounts
  * chainId 4160 is the Algorand constant used across all networks (mainnet/testnet/localnet)
  */
-export const ALGORAND_CHAIN_ID = 4160
-export const ALGORAND_CHAIN_ID_HEX = "0x" + ALGORAND_CHAIN_ID.toString(16)
+export const ALGORAND_CHAIN_ID = 4160;
+export const ALGORAND_CHAIN_ID_HEX: string = "0x" + ALGORAND_CHAIN_ID.toString(16);
 
 /**
  * EVM chain configuration for Algorand (Liquid Accounts).
  * Use with `wallet_addEthereumChain` to register the Algorand chain in EVM wallets.
  */
-export const ALGORAND_EVM_CHAIN_CONFIG = {
+export const ALGORAND_EVM_CHAIN_CONFIG: {
+  chainId: string;
+  chainName: string;
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+  rpcUrls: string[];
+  blockExplorerUrls: string[];
+} = {
   chainId: ALGORAND_CHAIN_ID_HEX,
   chainName: "Algorand (Liquid Accounts)",
   nativeCurrency: {
@@ -102,14 +123,37 @@ export const ALGORAND_EVM_CHAIN_CONFIG = {
     decimals: 18, // MetaMask requires 18 (even though ALGO is 6)
   },
   rpcUrls: ["https://rpc-server.tasos-bitsios.workers.dev"],
-  blockExplorerUrls: ["https://allo.info", "https://explorer.perawallet.app/", "https://lora.algokit.io"],
-}
+  blockExplorerUrls: [
+    "https://allo.info",
+    "https://explorer.perawallet.app/",
+    "https://lora.algokit.io",
+  ],
+};
 
 /**
  * Wagmi/viem-compatible Chain definition for Algorand (Liquid Accounts).
  * Can be passed directly to wagmi's `getDefaultConfig` or viem's `createPublicClient`.
  */
-export const algorandChain = {
+export const algorandChain: {
+  readonly id: 4160;
+  readonly name: string;
+  readonly nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+  readonly rpcUrls: {
+    readonly default: {
+      readonly http: string[];
+    };
+  };
+  readonly blockExplorers: {
+    readonly default: {
+      readonly name: "Allo";
+      readonly url: string;
+    };
+  };
+} = {
   id: ALGORAND_CHAIN_ID,
   name: ALGORAND_EVM_CHAIN_CONFIG.chainName,
   nativeCurrency: ALGORAND_EVM_CHAIN_CONFIG.nativeCurrency,
@@ -124,29 +168,37 @@ export const algorandChain = {
       url: ALGORAND_EVM_CHAIN_CONFIG.blockExplorerUrls[0],
     },
   },
-} as const
+} as const;
 
-export const EIP712_DOMAIN = {
+/**
+ * EIP-712 domain used for Liquid Accounts.
+ * The `chainId` is set to 4160, the Algorand constant.
+ */
+export const EIP712_DOMAIN: {
+  readonly name: "Liquid Accounts";
+  readonly version: "1";
+  readonly chainId: 4160;
+} = {
   name: "Liquid Accounts",
   version: "1",
   chainId: ALGORAND_CHAIN_ID,
-} as const
+} as const;
 
 /**
- * EIP-712 Types for Algorand transaction signing
+ * EIP-712 Types for Algorand transaction signing.
  */
 export const EIP712_TYPES = {
   AlgorandTransaction: [{ name: "Transaction ID", type: "bytes32" }],
-} as const
+} as const;
 
 /**
  * EIP-712 domain type descriptors (included in types object for signing)
  */
-const EIP712_DOMAIN_TYPE = [
+export const EIP712_DOMAIN_TYPE = [
   { name: "name", type: "string" },
   { name: "version", type: "string" },
   { name: "chainId", type: "uint256" },
-] as const
+] as const;
 
 /**
  * Format a transaction payload (transaction ID or group ID) as EIP-712 typed data message.
@@ -156,7 +208,7 @@ const EIP712_DOMAIN_TYPE = [
  * @returns EIP-712 message object
  */
 export function formatEIP712Message(payload: Uint8Array): { "Transaction ID": `0x${string}` } {
-  return { "Transaction ID": `0x${Buffer.from(payload).toString("hex")}` }
+  return { "Transaction ID": `0x${Buffer.from(payload).toString("hex")}` };
 }
 
 /**
@@ -167,10 +219,10 @@ export function formatEIP712Message(payload: Uint8Array): { "Transaction ID": `0
  * TypedData generics without requiring `any` casts at the call site.
  */
 export interface SignTypedDataParams {
-  domain: typeof EIP712_DOMAIN
-  types: typeof EIP712_TYPES & { EIP712Domain: typeof EIP712_DOMAIN_TYPE }
-  primaryType: "AlgorandTransaction"
-  message: { "Transaction ID": `0x${string}` }
+  domain: typeof EIP712_DOMAIN;
+  types: typeof EIP712_TYPES & { EIP712Domain: typeof EIP712_DOMAIN_TYPE };
+  primaryType: "AlgorandTransaction";
+  message: { "Transaction ID": `0x${string}` };
 }
 
 /**
@@ -189,5 +241,16 @@ export function buildTypedData(payload: Uint8Array): SignTypedDataParams {
     },
     primaryType: "AlgorandTransaction",
     message: formatEIP712Message(payload),
-  }
+  };
+}
+
+export function isTxnsWithSignMessage(
+  options: TxnsWithSignature | TxnsWithSignMessage,
+): options is TxnsWithSignMessage {
+  return "signMessage" in options;
+}
+export function isTxnsWithSignature(
+  options: TxnsWithSignature | TxnsWithSignMessage,
+): options is TxnsWithSignature {
+  return "signature" in options;
 }

@@ -2,7 +2,9 @@ packages:
   - projects/*
   - projects/use-wallet/packages/*
   - projects/use-wallet-ui/packages/*
+
 linkWorkspacePackages: true
+
 onlyBuiltDependencies:
   - '@algorandfoundation/puya-ts'
   - bigint-buffer
@@ -10,3 +12,6 @@ onlyBuiltDependencies:
   - keccak
   - sharp
   - workerd
+
+overrides:
+  avm-x-evm: link:projects/evm

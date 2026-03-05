@@ -1,53 +1,109 @@
 {
-  "name": "smart_contracts",
+  "name": "avm-x-evm",
   "version": "1.0.0",
-  "description": "Smart contract deployer",
-  "main": "smart_contracts/index.ts",
+  "description": "Algorand Virtual Machine (AVM) LSIG Accounts for EVM wallets",
+  "keywords": [
+    "algokit",
+    "algorand",
+    "algosdk",
+    "ethereum",
+    "ethers",
+    "evm",
+    "rainbowkit",
+    "wallet",
+    "web3auth"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./teal": {
+      "types": "./dist/teal.d.ts",
+      "default": "./dist/teal.js"
+    },
+    "./extension": {
+      "types": "./dist/extension.d.ts",
+      "default": "./dist/extension.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "build": "algokit compile ts smart_contracts --output-source-map --out-dir artifacts",
-    "deploy": "ts-node-dev --transpile-only --watch .env -r dotenv/config smart_contracts/index.ts",
-    "deploy:ci": "ts-node --transpile-only -r dotenv/config smart_contracts/index.ts",
-    "lint": "eslint smart_contracts",
-    "lint:fix": "eslint smart_contracts --fix",
+    "build": "pnpm build:compile && pnpm build:copy && pnpm build:ts",
+    "build:compile": "algokit compile ts src/smart_contracts --output-source-map --out-dir artifacts",
+    "build:copy": "node scripts/copy-teal.js",
+    "build:ts": "tsc -p tsconfig.build.json",
+    "docs": "typedoc",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "audit": "better-npm-audit audit",
     "format": "prettier --write .",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch",
     "check-types": "tsc --noEmit"
   },
-  "engines": {
-    "node": ">=22.0",
-    "npm": ">=9.0"
-  },
   "dependencies": {
-    "@algorandfoundation/algorand-typescript": "^1.0.1"
+    "p-map": "^7.0.4"
   },
   "devDependencies": {
     "@algorandfoundation/algokit-client-generator": "^6.0.0",
     "@algorandfoundation/algokit-utils": "^9.0.0",
     "@algorandfoundation/algokit-utils-debug": "^1.0.4",
+    "@algorandfoundation/algorand-typescript": "^1.0.1",
     "@algorandfoundation/algorand-typescript-testing": "^1.0.1",
     "@algorandfoundation/puya-ts": "^1.0.1",
-    "@eslint/js": "^9.18.0",
+    "@algorandfoundation/wallet-provider": "1.0.0-canary.3",
+    "@boneskull/typedoc-plugin-mermaid": "^0.2.1",
     "@noble/curves": "^2.0.1",
     "@noble/hashes": "^2.0.1",
     "@noble/secp256k1": "^3.0.0",
+    "@prettier/plugin-oxc": "^0.1.3",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@tanstack/store": "0.8.0",
     "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^25.3.3",
     "@vitest/coverage-v8": "^2.1.8",
     "algosdk": "^3.0.0",
+    "before-after-hook": "^4.0.0",
     "better-npm-audit": "^3.11.0",
     "dotenv": "^16.4.7",
-    "eslint": "^9.18.0",
     "ethers": "^6.16.0",
-    "liquid-accounts-evm": "workspace:*",
+    "oxfmt": "^0.36.0",
+    "oxlint": "^1.51.0",
     "prettier": "^3.4.2",
-    "ts-node-dev": "^2.0.0",
+    "typedoc": "^0.28.17",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.19.1",
     "vitest": "^2.1.8"
   },
-  "overrides": {
-    "esbuild": "0.25.0"
+  "peerDependencies": {
+    "@algorandfoundation/algokit-utils": "^9.2.0",
+    "@algorandfoundation/wallet-provider": "1.0.0-canary.3",
+    "@tanstack/store": "0.8.0",
+    "algosdk": "^3.5.2",
+    "before-after-hook": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@algorandfoundation/wallet-provider": {
+      "optional": true
+    },
+    "@tanstack/store": {
+      "optional": true
+    },
+    "before-after-hook": {
+      "optional": true
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "pnpm run lint"
+  },
+  "engines": {
+    "node": ">=22.0",
+    "npm": ">=9.0"
   }
 }

@@ -15,7 +15,7 @@ import "@txnlab/use-wallet-ui-react/dist/style.css";
 import { WalletManager, WalletId } from "@txnlab/use-wallet-react";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-import { algorandChain } from "liquid-accounts-evm";
+import { algorandChain } from "avm-x-evm";
 import "./index.css";
 import App from "./App.tsx";
 

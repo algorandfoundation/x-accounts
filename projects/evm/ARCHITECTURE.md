@@ -22,21 +22,6 @@ A LogicSig is a stateless smart contract on Algorand that can authorize transact
 - **Signature validation**: Uses AVM's native `ecdsa_pk_recover` and `keccak256` opcodes
 - **Template-based**: Compiled per EVM address using template variables
 
-## Project Structure
-
-```
-projects/evm/
-├── smart_contracts/
-│   ├── liquidevm/
-│   │   ├── logicsig.algo.ts        # Main LogicSig contract
-│   │   └── logicsig.e2e.spec.ts    # E2E tests
-│   ├── artifacts/                   # Compiled TEAL output
-├── src/                            # SDK Source code
-│   ├── index.ts                    # LiquidEvmSdk
-│   ├── teal.ts                     # Embedded TEAL bytecode
-│   └── utils.ts                    # EIP-712 and ECDSA utils
-```
-
 ## How the Contract Works
 
 ### Signature Verification Flow
@@ -67,87 +52,6 @@ The contract uses one template variable and two precomputed constants:
 
 When compiling, the SDK substitutes the owner address into the TEAL bytecode, creating a unique LogicSig program for each EVM address.
 
-## Setup
-
-### Prerequisites
-
-- [Nodejs 22](https://nodejs.org/en/download) or later
-- [AlgoKit CLI 2.5](https://github.com/algorandfoundation/algokit-cli?tab=readme-ov-file#install) or later
-- [Docker](https://www.docker.com/) (only required for LocalNet)
-- [Puya Compiler 4.4.4](https://pypi.org/project/puyapy/) or later
-
-> For interactive tour over the codebase, download [vsls-contrib.codetour](https://marketplace.visualstudio.com/items?itemName=vsls-contrib.codetour) extension for VS Code, then open the [`.codetour.json`](./.tours/getting-started-with-your-algokit-project.tour) file in code tour extension.
-
-### Initial Setup
-
-From the **repository root**:
-
-```bash
-# Install dependencies
-algokit project bootstrap all
-
-# Start LocalNet
-algokit localnet start
-
-# Build the contract
-algokit project run build
-
-# Run tests
-algokit project run test
-```
-
-## Development Workflow
-
-### Building
-
-Compile the contract to TEAL:
-
-```bash
-# From repository root
-algokit project run build
-
-# Or from this directory
-npm run build
-```
-
-This generates TEAL bytecode in `smart_contracts/artifacts/liquidevm/`.
-
-### Testing
-
-The project includes comprehensive E2E tests that verify:
-
-- ECDSA signature verification
-- Standalone transaction signing
-- Atomic group transaction signing
-- Template variable substitution
-
-> **Important**: Rebuild the contract to ensure changes are reflected in the SDK and tests:
->
-> ```bash
-> # From repository root
-> algokit project run build
-> ```
->
-> This builds the contract TEAL → SDK imports TEAL → tests use SDK.
-
-Run tests:
-
-```bash
-npm test              # Run all tests
-npm run test:watch    # Watch mode
-```
-
-The project uses:
-
-- **vitest** for test execution
-- **@noble/secp256k1** for generating test EVM signatures
-- **AlgoKit Utils** for interacting with LocalNet
-- **avm-x-evm** (this package) for LogicSig compilation and signing
-
-### Deploying
-
-This is a LogicSig, not an application contract. It doesn't need deployment in the traditional sense. Instead, the SDK compiles it on-demand with the specific EVM address as a template parameter.
-
 ## Contract Details
 
 ### File: `smart_contracts/liquidevm/logicsig.algo.ts`
@@ -165,6 +69,7 @@ The LogicSig is written in [Algorand TypeScript](https://github.com/algorandfoun
 7. **Validate**: `recoveredAddress === owner`
 
 **Payload signed:**
+
 - Single transaction: Transaction ID
 - Atomic group: Group ID
 
@@ -185,9 +90,9 @@ The first byte of `arg[0]` is a **type byte** that identifies the signature sche
 
 The type byte enables future composition of multiple authentication methods within a single LogicSig. For example, a LogicSig could accept either an EVM (secp256k1) signature **or** a WebAuthn/Passkey (secp256r1) signature, each identified by a different type byte. The contract would branch on the type byte to select the correct verification logic, enabling multi-scheme authentication (e.g. EVM || Passkey) in a single Algorand account.
 
-| Type Byte | Scheme | Status |
-|-----------|--------|--------|
-| `0x01` | EVM (secp256k1, EIP-712) | Active |
+| Type Byte | Scheme                   | Status |
+| --------- | ------------------------ | ------ |
+| `0x01`    | EVM (secp256k1, EIP-712) | Active |
 
 ## Security Considerations
 
@@ -195,42 +100,6 @@ The type byte enables future composition of multiple authentication methods with
 - **EIP-712 domain separation**: Prevents cross-app and cross-network signature replay
 - **Template immutability**: Once compiled, the owner address cannot be changed
 - **Transaction binding**: Signatures are bound to specific transactions via txnId/groupId
-
-## Usage
-
-The SDK handles LogicSig compilation and transaction signing.
-
-Quick example:
-
-```typescript
-import { LiquidEvmSdk } from 'avm-x-evm'
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
-
-const algorand = AlgorandClient.fromEnvironment()
-const sdk = new LiquidEvmSdk({ algorand })
-
-// Get the Algorand address
-const addr = await sdk.getAddress({ 
-  evmAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2' 
-})
-
-// Fund the address (minimum 0.1 ALGO)
-// ... then sign transactions with MetaMask
-```
-
-## VS Code Debugging
-
-This project includes AlgoKit AVM Debugger support. Use `F5` or the "Debug TEAL via AlgoKit AVM Debugger" launch configuration to debug contract execution with breakpoints.
-
-Install the extension: [AlgoKit AVM Debugger](https://marketplace.visualstudio.com/items?itemName=algorandfoundation.algokit-avm-vscode-debugger)
-
-## Resources
-
-- [Algorand TypeScript Documentation](https://github.com/algorandfoundation/puya-ts)
-- [AlgoKit Documentation](https://github.com/algorandfoundation/algokit-cli)
-- [ECDSA on Algorand](https://dev.algorand.co/reference/algorand-teal/opcodes/#ecdsa_verify)
-- [LogicSig Guide](https://dev.algorand.co/concepts/smart-contracts/logic-sigs/)
-- [Main Project README](../../README.md)
 
 ## License
 

@@ -10,6 +10,6 @@ contract_name:
 include_tests:
   type: bool
   help: Should we include testing files?
-  default: 'yes'
+  default: "yes"
 
 _templates_suffix: ".j2"
