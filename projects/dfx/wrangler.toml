@@ -1,0 +1,12 @@
+name = "dfx"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[durable_objects.bindings]]
+name = "DFX_MANAGER"
+class_name = "DfxManager"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["DfxManager"]
