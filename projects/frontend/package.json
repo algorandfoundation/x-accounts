@@ -20,7 +20,7 @@
     "algosdk": "^3.5.2",
     "buffer": "^6.0.3",
     "hi-base32": "^0.5.1",
-    "liquid-accounts-evm": "workspace:*",
+    "avm-x-evm": "workspace:*",
     "lute-connect": "^1.6.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

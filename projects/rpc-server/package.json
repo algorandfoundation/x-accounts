@@ -10,7 +10,7 @@
   "dependencies": {
     "@algorandfoundation/algokit-utils": "^9.2.0",
     "algosdk": "^3.5.2",
-    "liquid-accounts-evm": "file:../evm-sdk"
+    "avm-x-evm": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4",

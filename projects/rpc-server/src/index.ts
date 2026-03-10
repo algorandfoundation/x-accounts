@@ -1,5 +1,5 @@
 import { AlgorandClient } from "@algorandfoundation/algokit-utils";
-import { LiquidEvmSdk } from "liquid-accounts-evm";
+import { LiquidEvmSdk } from "avm-x-evm";
 
 const algorand = AlgorandClient.mainNet();
 const sdk = new LiquidEvmSdk({ algorand });

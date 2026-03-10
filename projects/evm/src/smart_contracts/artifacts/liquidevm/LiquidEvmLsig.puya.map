@@ -1,0 +1,458 @@
+{
+  "version": 3,
+  "sources": [
+    "../../liquidevm/logicsig.algo.ts"
+  ],
+  "mappings": "AAyCyB;;AAAqB;;AAArB;AAAA;;;AAAyB;;AAGlC;AAKL;AAAA;;;AAA0B;;;AAA1B;AAAP;AAEU;AAAA;;;AACA;;AAAA;;;AACA;;AAAwB;;AAAxB;AACqB;;AAAJ;AAqBM;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;;AAAA;AAAb;AAKQ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAb;AAGY;AAAA;;AAAA;;AAAA;;AAIsB;AAAb;AAAX;;;AAGG;AAArB;AAAP;AAjDyD;;",
+  "op_pc_offset": 1,
+  "pc_events": {
+    "0": {
+      "op": "global GroupSize",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "2": {
+      "op": "pushint 1 // 1",
+      "defined_out": [
+        "1",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "1"
+      ]
+    },
+    "4": {
+      "op": "==",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "5": {
+      "op": "bz main_ternary_false@2",
+      "stack_out": []
+    },
+    "8": {
+      "op": "txn TxID",
+      "defined_out": [
+        "txnIdPayload#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0"
+      ]
+    },
+    "10": {
+      "block": "main_ternary_merge@3",
+      "stack_in": [
+        "txnIdPayload#0"
+      ],
+      "op": "arg_0",
+      "defined_out": [
+        "sig#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0"
+      ]
+    },
+    "11": {
+      "op": "dup",
+      "defined_out": [
+        "sig#0",
+        "sig#0 (copy)"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "sig#0 (copy)"
+      ]
+    },
+    "12": {
+      "op": "extract 0 1",
+      "defined_out": [
+        "sig#0",
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "tmp%3#0"
+      ]
+    },
+    "15": {
+      "op": "pushbytes 0x01",
+      "defined_out": [
+        "0x01",
+        "sig#0",
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "tmp%3#0",
+        "0x01"
+      ]
+    },
+    "18": {
+      "op": "==",
+      "defined_out": [
+        "sig#0",
+        "tmp%4#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "tmp%4#0"
+      ]
+    },
+    "19": {
+      "op": "assert",
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0"
+      ]
+    },
+    "20": {
+      "op": "dup",
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "sig#0 (copy)"
+      ]
+    },
+    "21": {
+      "op": "extract 1 32",
+      "defined_out": [
+        "r#0",
+        "sig#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "r#0"
+      ]
+    },
+    "24": {
+      "op": "dig 1",
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "r#0",
+        "sig#0 (copy)"
+      ]
+    },
+    "26": {
+      "op": "extract 33 32",
+      "defined_out": [
+        "r#0",
+        "s#0",
+        "sig#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "sig#0",
+        "r#0",
+        "s#0"
+      ]
+    },
+    "29": {
+      "op": "uncover 2",
+      "stack_out": [
+        "txnIdPayload#0",
+        "r#0",
+        "s#0",
+        "sig#0"
+      ]
+    },
+    "31": {
+      "op": "pushint 65 // 65",
+      "defined_out": [
+        "65",
+        "r#0",
+        "s#0",
+        "sig#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "r#0",
+        "s#0",
+        "sig#0",
+        "65"
+      ]
+    },
+    "33": {
+      "op": "getbyte",
+      "defined_out": [
+        "r#0",
+        "s#0",
+        "v#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "r#0",
+        "s#0",
+        "v#0"
+      ]
+    },
+    "34": {
+      "op": "pushint 27 // 27",
+      "defined_out": [
+        "27",
+        "r#0",
+        "s#0",
+        "v#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "r#0",
+        "s#0",
+        "v#0",
+        "27"
+      ]
+    },
+    "36": {
+      "op": "-",
+      "defined_out": [
+        "r#0",
+        "recoveryId#0",
+        "s#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "r#0",
+        "s#0",
+        "recoveryId#0"
+      ]
+    },
+    "37": {
+      "op": "pushbytes 0xa0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6",
+      "defined_out": [
+        "0xa0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6",
+        "r#0",
+        "recoveryId#0",
+        "s#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0",
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "0xa0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6"
+      ]
+    },
+    "71": {
+      "op": "uncover 4",
+      "defined_out": [
+        "0xa0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6",
+        "r#0",
+        "recoveryId#0",
+        "s#0",
+        "txnIdPayload#0"
+      ],
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "0xa0d3cab9c111e1025e8e6c24067ada7c8fff46e1696e611a8b2e5049bac4baf6",
+        "txnIdPayload#0"
+      ]
+    },
+    "73": {
+      "op": "concat",
+      "defined_out": [
+        "r#0",
+        "recoveryId#0",
+        "s#0",
+        "tmp%10#0"
+      ],
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "tmp%10#0"
+      ]
+    },
+    "74": {
+      "op": "keccak256",
+      "defined_out": [
+        "messageHash#0",
+        "r#0",
+        "recoveryId#0",
+        "s#0"
+      ],
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "messageHash#0"
+      ]
+    },
+    "75": {
+      "op": "pushbytes 0x1901cd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6",
+      "defined_out": [
+        "0x1901cd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6",
+        "messageHash#0",
+        "r#0",
+        "recoveryId#0",
+        "s#0"
+      ],
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "messageHash#0",
+        "0x1901cd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6"
+      ]
+    },
+    "111": {
+      "op": "swap",
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "0x1901cd2715b67ae987618a9e27b3a29c522b1171fd767b2224547d03747eae76adc6",
+        "messageHash#0"
+      ]
+    },
+    "112": {
+      "op": "concat",
+      "defined_out": [
+        "r#0",
+        "recoveryId#0",
+        "s#0",
+        "tmp%12#0"
+      ],
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "tmp%12#0"
+      ]
+    },
+    "113": {
+      "op": "keccak256",
+      "defined_out": [
+        "digest#0",
+        "r#0",
+        "recoveryId#0",
+        "s#0"
+      ],
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "recoveryId#0",
+        "digest#0"
+      ]
+    },
+    "114": {
+      "op": "swap",
+      "stack_out": [
+        "r#0",
+        "s#0",
+        "digest#0",
+        "recoveryId#0"
+      ]
+    },
+    "115": {
+      "op": "uncover 3",
+      "stack_out": [
+        "s#0",
+        "digest#0",
+        "recoveryId#0",
+        "r#0"
+      ]
+    },
+    "117": {
+      "op": "uncover 3",
+      "stack_out": [
+        "digest#0",
+        "recoveryId#0",
+        "r#0",
+        "s#0"
+      ]
+    },
+    "119": {
+      "op": "ecdsa_pk_recover Secp256k1",
+      "defined_out": [
+        "pubkeyX#0",
+        "pubkeyY#0"
+      ],
+      "stack_out": [
+        "pubkeyX#0",
+        "pubkeyY#0"
+      ]
+    },
+    "121": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%14#0"
+      ],
+      "stack_out": [
+        "tmp%14#0"
+      ]
+    },
+    "122": {
+      "op": "keccak256",
+      "defined_out": [
+        "tmp%15#0"
+      ],
+      "stack_out": [
+        "tmp%15#0"
+      ]
+    },
+    "123": {
+      "op": "extract 12 20",
+      "defined_out": [
+        "recoveredAddress#0"
+      ],
+      "stack_out": [
+        "recoveredAddress#0"
+      ]
+    },
+    "126": {
+      "op": "bytec_0 // TMPL_OWNER",
+      "defined_out": [
+        "TMPL_OWNER",
+        "recoveredAddress#0"
+      ],
+      "stack_out": [
+        "recoveredAddress#0",
+        "TMPL_OWNER"
+      ]
+    },
+    "127": {
+      "op": "==",
+      "defined_out": [
+        "tmp%17#0"
+      ],
+      "stack_out": [
+        "tmp%17#0"
+      ]
+    },
+    "128": {
+      "op": "return",
+      "stack_out": []
+    },
+    "129": {
+      "block": "main_ternary_false@2",
+      "stack_in": [],
+      "op": "global GroupID",
+      "defined_out": [
+        "txnIdPayload#0"
+      ],
+      "stack_out": [
+        "txnIdPayload#0"
+      ]
+    },
+    "131": {
+      "op": "b main_ternary_merge@3"
+    }
+  }
+}

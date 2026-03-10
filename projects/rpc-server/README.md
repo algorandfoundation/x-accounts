@@ -13,7 +13,7 @@ Mock Ethereum JSON-RPC server that lets MetaMask Mobile connect to Algorand as a
 | `eth_getBlockByNumber` | Minimal mock block |
 | `eth_getBalance` | Real ALGO balance from Algorand mainnet, converted from 6-decimal microAlgos to 18-decimal wei |
 
-For `eth_getBalance`, the server uses [liquid-accounts-evm](../evm-sdk/) to derive the Algorand address from the EVM address, then queries Algorand mainnet via algod.
+For `eth_getBalance`, the server uses [avm-x-evm](../evm-sdk/) to derive the Algorand address from the EVM address, then queries Algorand mainnet via algod.
 
 ## Development
 

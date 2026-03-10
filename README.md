@@ -18,7 +18,7 @@ Liquid EVM enables Ethereum wallets (MetaMask, etc.) to control Algorand account
 
 This monorepo contains:
 
-- **[Logic Sig](projects/evm-logicsig/)** - LogicSig that verifies ECDSA (secp256k1) signatures from EVM addresses
+- **[Logic Sig](projects/evm/)** - LogicSig that verifies ECDSA (secp256k1) signatures from EVM addresses
 - **[SDK](projects/evm-sdk/)** - TypeScript SDK for integrating EVM wallet signing with Algorand
 - **[use-wallet](projects/use-wallet/)** - @txnlab/use-wallet with Liquid EVM / MetaMask support
 - **[use-wallet-ui](projects/use-wallet-ui/)** - @txnlab/use-wallet-ui with Liquid EVM / MetaMask support
@@ -198,7 +198,7 @@ algokit project run test
 
 Contributions are welcome! Please see individual project READMEs for specific development guidelines:
 
-- [Smart Contract Development](projects/evm-logicsig/README.md)
+- [Smart Contract Development](projects/evm/README.md)
 - [SDK Development](projects/evm-sdk/README.md)
 - [Frontend Development](projects/frontend/README.md)
 

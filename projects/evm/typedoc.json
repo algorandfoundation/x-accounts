@@ -1,0 +1,15 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.ts", "./src/extension.ts", "./src/teal.ts"],
+  "out": "docs",
+  "name": "Account Abstraction",
+  "readme": "./README.md",
+  "theme": "default",
+  "exclude": ["**/*.spec.ts"],
+  "visibilityFilters": {
+    "protected": true,
+    "private": false
+  },
+  "ignoredHighlightLanguages": ["mermaid"],
+  "plugin": ["@boneskull/typedoc-plugin-mermaid"]
+}
