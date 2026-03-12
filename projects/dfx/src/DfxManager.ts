@@ -114,7 +114,10 @@ export class DfxManager implements DurableObject {
     const simResult = await this.simulateTxns(signedTxns as string[]);
 
     if (simResult.type === "success") {
-      return json({ status: "submitted" });
+      return json(
+        { status: "invalid", error: "Transaction is already valid — submit it directly" },
+        400
+      );
     }
 
     if (simResult.type === "other_failure") {
