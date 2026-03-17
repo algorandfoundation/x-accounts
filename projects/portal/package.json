@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && wrangler pages deploy .output/public"
+    "deploy": "vite build && wrangler deploy"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
@@ -27,6 +27,7 @@
     "vite": ">=7"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.29.1",
     "@tailwindcss/typography": "^0.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -35,6 +36,6 @@
     "tailwindcss": "^3.4",
     "tailwindcss-animate": "^1",
     "typescript": "^5",
-    "wrangler": "^4"
+    "wrangler": "^4.75.0"
   }
 }
