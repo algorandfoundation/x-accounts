@@ -18,7 +18,12 @@ export function Header() {
         isLanding && 'border-transparent',
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+      <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+        {/* Centered status badge - desktop */}
+        <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground">
+          <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
+          Private Beta
+        </div>
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
           <span className="text-primary">Algorand</span>
           <span className="text-[#CCD0D3]">x</span>
@@ -100,6 +105,13 @@ export function Header() {
               <ArrowUpRight size={16} />
             </Link>
           )}
+          {/* Status badge - mobile */}
+          <div className="mt-4 flex justify-center border-t pt-4">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
+              Private Beta
+            </div>
+          </div>
         </nav>
       )}
     </header>

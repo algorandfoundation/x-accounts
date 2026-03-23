@@ -53,7 +53,7 @@ function LandingPage() {
             />{" "}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            Connect any EVM wallet to send transactions, manage assets, and bridge tokens on Algorand &mdash; no new wallet needed.
+            No new wallet needed, no setup. Just connect any EVM wallet to send transactions, manage assets, and bridge tokens on Algorand.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" asChild>
@@ -66,15 +66,11 @@ function LandingPage() {
               <Link to="/docs">Read the Docs</Link>
             </Button>
           </div>
-          <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border bg-background px-4 py-1.5 text-sm text-muted-foreground">
-            <span className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
-            Status: Private Beta
-          </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-6xl px-4 py-20">
+      <section className="mx-auto max-w-6xl px-4 pt-10 pb-20">
         <h2 className="text-center text-3xl font-bold">Why Algorand x EVM?</h2>
         <p className="mx-auto mt-3 text-center text-muted-foreground">
           Bring the Ethereum wallet you already trust to Algorand&apos;s fast, low-cost network.
