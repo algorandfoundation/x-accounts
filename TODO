@@ -10,7 +10,6 @@
   - [ ] meta wallet, reusing liquid-ui package pages
     - [ ] move bridge to liquid-ui package
 - [ ] add swap panel
-- [ ] 
 
 - [x] coinbase wallet not prompting account when reconnecting. not fixable: Coinbase extension returns -32601 for both wallet_requestPermissions and wallet_revokePermissions; users must switch accounts inside the Coinbase extension
 
@@ -29,3 +28,19 @@
 - [x] Stale connections: "No EVM wallet connector available" (rabby extension, coming back the next day)
 
 - [ ] Manage / Receive: QR code?
+
+- if bridge sdk missing, link to portal
+
+- vue use-wallet?
+
+- [ ] bug: in portal: bridge does not auto-load chain balances, ethereum stays selected with empty (+short) asset dropdown
+- [ ] bug: in-dapp asset send icon not showing (shows "U" for USDC)
+- [ ] bug: ignore failures on some chains when looking up balances and proceed with any data available
+- [ ] bug: reloading portal (run dev) does not preserve session. frontend works
+- [ ] bug: account switcher not showing
+- [ ] fix: icon in overview
+- [ ] fix: tooltip on Pera Verified badge
+  - feat? asset page
+- chore disable user-select in all buttons
+- add to metamask in portal
+  > More page?
