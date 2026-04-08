@@ -15,7 +15,7 @@ import {
 } from '@d13co/algo-x-evm-ui'
 
 export function WalletDashboard() {
-  const { activeAddress, activeWallet, algodClient, signTransactions } = useWallet()
+  const { activeAddress, activeWallet, activeWalletAccounts, algodClient, signTransactions } = useWallet()
   const { activeNetwork } = useNetwork()
   const queryClient = useQueryClient()
   const isFetching = useIsFetching()
@@ -189,6 +189,12 @@ export function WalletDashboard() {
         walletName={walletName}
         walletIcon={walletIcon}
         onDisconnect={handleDisconnect}
+        accounts={activeWalletAccounts?.map((a) => ({
+          address: a.address,
+          displayName: a.name !== a.address ? a.name : null,
+          icon: null,
+        }))}
+        onAccountSwitch={activeWallet ? (addr: string) => activeWallet.setActiveAccount(addr) : undefined}
       />
     </div>
   )
