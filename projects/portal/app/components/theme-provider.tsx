@@ -13,10 +13,15 @@ const ThemeContext = createContext<ThemeContextValue>({
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === 'undefined') return 'system'
-    return (localStorage.getItem('theme') as Theme) || 'system'
-  })
+  const [theme, setTheme] = useState<Theme>('system')
+
+  // Read persisted theme after mount to avoid SSR hydration mismatch
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    const stored = localStorage.getItem('theme') as Theme | null
+    if (stored && stored !== 'system') setTheme(stored)
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const root = document.documentElement
@@ -33,7 +38,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
 
     apply(theme)
-    localStorage.setItem('theme', theme)
+    if (mounted) localStorage.setItem('theme', theme)
 
     if (theme === 'system') {
       const mq = window.matchMedia('(prefers-color-scheme: dark)')
@@ -41,7 +46,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       mq.addEventListener('change', handler)
       return () => mq.removeEventListener('change', handler)
     }
-  }, [theme])
+  }, [theme, mounted])
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
@@ -57,11 +62,7 @@ export function useTheme() {
 /** Returns the effective 'light' or 'dark' value, resolving 'system' to the actual preference. */
 export function useResolvedTheme(): 'light' | 'dark' {
   const { theme } = useTheme()
-  const [resolved, setResolved] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'light'
-    if (theme !== 'system') return theme
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  })
+  const [resolved, setResolved] = useState<'light' | 'dark'>('light')
 
   useEffect(() => {
     if (theme !== 'system') {
