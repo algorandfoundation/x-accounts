@@ -7,12 +7,19 @@ import {
   ManagePanel,
   useSendPanel,
   useReceivePanel,
+  useSwapPanel,
   useAssetRegistry,
   useAssets,
   usePeraAssetData,
   type WalletAdapter,
   type AssetHoldingDisplay,
 } from '@d13co/algo-x-evm-ui'
+import { RouterClient } from '@txnlab/haystack-router'
+
+const haystackRouter = new RouterClient({
+  apiKey: 'bd650cf4-3d73-4e3f-ad37-1ada754bd659',
+  autoOptIn: true,
+})
 
 export function WalletDashboard() {
   const { activeAddress, activeWallet, activeWalletAccounts, algodClient, signTransactions } = useWallet()
@@ -66,6 +73,28 @@ export function WalletDashboard() {
   const send = useSendPanel(wallet)
   const optIn = useReceivePanel(wallet, optedInAssetIds, registry)
 
+  const swapSigner = useCallback(
+    async (txnGroup: any[], indexesToSign: number[]): Promise<Uint8Array[]> => {
+      // Pass the full group with indexesToSign so the wallet knows which
+      // transactions to sign and which to skip (logic sigs etc).
+      const signed = await signTransactions(txnGroup, indexesToSign)
+      return signed.filter((s): s is Uint8Array => s != null)
+    },
+    [signTransactions],
+  )
+
+  const swapOptions = useMemo(() => ({
+    fetchQuote: (params: { fromASAID: number; toASAID: number; amount: bigint; address: string }) =>
+      haystackRouter.newQuote(params),
+    executeSwap: async (params: { quote: any; address: string; slippage: number }) => {
+      const swap = await haystackRouter.newSwap({
+        ...params,
+        signer: swapSigner,
+      })
+      return swap.execute()
+    },
+  }), [swapSigner])
+
   const { assets: assetInfoMap } = useAssets(assetIds, algodClient as any, activeNetwork)
 
   const heldAssetIds = useMemo(() => allHoldings.map((a) => Number(a.assetId)), [allHoldings])
@@ -104,6 +133,8 @@ export function WalletDashboard() {
     }
     return results
   }, [allHoldings, assetInfoMap, peraData])
+
+  const swap = useSwapPanel(wallet, swapOptions, assetHoldings)
 
   const bridgeProps = useMemo(() => {
     if (!bridge.isAvailable) return undefined
@@ -178,6 +209,7 @@ export function WalletDashboard() {
         onToggleBalance={toggleBalance}
         send={{ ...send, explorerUrl: getTxExplorerUrl(send.txId) }}
         optIn={{ ...optIn, evmAddress, explorerUrl: getTxExplorerUrl(optIn.txId), peraData, fetchPeraData: fetchPeraFor }}
+        swap={{ ...swap, accountAssets: assetHoldings.length > 0 ? assetHoldings : undefined, totalBalance, availableBalance, explorerUrl: getTxExplorerUrl(swap.txId) }}
         bridge={bridgeProps}
         assets={assetHoldings.length > 0 ? assetHoldings : undefined}
         totalBalance={totalBalance}
