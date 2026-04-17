@@ -11,17 +11,22 @@ if (typeof window !== 'undefined') {
 }
 import { WalletProvider, WalletManager, WalletId, LogLevel } from '@txnlab/use-wallet-react'
 import { WalletUIProvider } from '@txnlab/use-wallet-ui-react'
-import { getDefaultConfig } from '@txnlab/use-wallet-ui-react/rainbowkit'
+import { getDefaultConfig, createRainbowKitConfig } from '@txnlab/use-wallet-ui-react/rainbowkit'
 import { algorandChain } from 'algo-x-evm-sdk'
 
 import '@rainbow-me/rainbowkit/styles.css'
 import '@txnlab/use-wallet-ui-react/dist/style.css'
 
-const wagmiConfig = getDefaultConfig({
+export const wagmiConfig = getDefaultConfig({
   appName: 'Algo x EVM Portal',
   projectId: '3404862cca4501e4d84be405269d955c',
   chains: [algorandChain],
+  ssr: false,
 })
+
+// Create RainbowKit config eagerly so WalletUIProvider has it on first render
+// (avoids a dynamic import cycle that restructures the tree and remounts children).
+const rainbowkitConfig = createRainbowKitConfig({ wagmiConfig })
 
 function makeWalletManager() {
   return new WalletManager({
@@ -47,7 +52,7 @@ export function WalletProviders({ children }: { children: ReactNode }) {
 
   return (
     <WalletProvider manager={walletManager}>
-      <WalletUIProvider theme={resolvedTheme} wagmiConfig={wagmiConfig}>
+      <WalletUIProvider theme={resolvedTheme} rainbowkit={rainbowkitConfig}>
         {children}
       </WalletUIProvider>
     </WalletProvider>
