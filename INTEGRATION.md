@@ -53,6 +53,14 @@ pnpm add @allbridge/bridge-core-sdk
 # yarn add @allbridge/bridge-core-sdk
 ```
 
+**Recommended (Deflex DEX aggregator for swap support):**
+
+```bash
+pnpm add @deflex/deflex-sdk-js algosdk
+# npm install @deflex/deflex-sdk-js algosdk
+# yarn add @deflex/deflex-sdk-js algosdk
+```
+
 Note: This uses use-wallet v4. Migration should be straightforward/painless if you are on v2 or v3:
 
 - https://txnlab.gitbook.io/use-wallet/v3/guides/migrating-from-v2.x
@@ -141,6 +149,92 @@ function setNetwork(network: 'localnet' | 'testnet' | 'mainnet') {
   walletManager.setActiveNetwork(network)
 }
 ```
+
+## 3. Swap (Deflex)
+
+`WalletButton` exposes a `swap` prop that, when provided, enables the Swap panel inside **⚡ Manage → Swap**. The panel is router-agnostic — it just needs two adapters: `fetchQuote` (returns a displayable quote) and `executeSwap` (signs + submits the underlying transactions). The snippet below wires it up against Deflex.
+
+The `fetchQuote` adapter maps Deflex's response onto the panel's `SwapQuoteDisplay` shape. Stash the raw Deflex quote on the returned object (prefixed `_deflex`) so `executeSwap` can hand it back to `getSwapQuoteTransactions`.
+
+`executeSwap` should call `onSigned()` the moment the wallet returns the signatures, before broadcasting — this flips the panel from "awaiting signature" to "sending".
+
+```tsx
+import { useCallback, useMemo } from 'react'
+import { useWallet } from '@txnlab/use-wallet-react'
+import { WalletButton, type UseSwapOptions } from '@txnlab/use-wallet-ui-react'
+import { DeflexClient } from '@deflex/deflex-sdk-js' // adjust import to the actual Deflex SDK export
+import algosdk from 'algosdk'
+
+// Initialize once at module scope (not on every render)
+const deflex = new DeflexClient({
+  apiKey: 'YOUR_DEFLEX_API_KEY',
+  network: 'mainnet',
+})
+
+function AppContent() {
+  const { signTransactions, algodClient } = useWallet()
+
+  const swapOptions = useMemo<UseSwapOptions>(() => ({
+    // 1. Quote: fetch from Deflex and adapt to the panel's display shape
+    fetchQuote: async ({ fromASAID, toASAID, amount, address: _address }) => {
+      const dq = await deflex.getFixedInputSwapQuote(fromASAID, toASAID, amount)
+      return {
+        quote: BigInt(dq.quote),          // expected output, base units
+        amount: BigInt(amount),            // original input, base units
+        usdIn: dq.usdIn ?? 0,
+        usdOut: dq.usdOut ?? 0,
+        userPriceImpact: dq.priceImpact,
+        flattenedRoute: dq.flattenedRoute ?? {},
+        route: dq.route ?? [],
+        // Keep the raw Deflex quote so executeSwap can submit it
+        _deflex: dq,
+      } as any
+    },
+
+    // 2. Execute: fetch transactions, sign (preserving logic sig blobs), submit
+    executeSwap: async ({ quote, address, slippage, onSigned }) => {
+      const dq = (quote as any)._deflex
+      const txnGroup = await deflex.getSwapQuoteTransactions(address, dq.txnPayload, slippage)
+
+      // Decode unsigned txns; leave pre-signed logic sig blobs as-is
+      const decoded = txnGroup.txns.map((t: any) =>
+        t.logicSigBlob !== false
+          ? null
+          : algosdk.decodeUnsignedTransaction(new Uint8Array(Buffer.from(t.data, 'base64'))),
+      )
+      const indexesToSign = decoded.flatMap((t, i) => (t ? [i] : []))
+
+      // signTransactions returns (Uint8Array | null)[] — nulls for skipped indexes
+      const signed = await signTransactions(
+        decoded.map((t, i) => t ?? txnGroup.txns[i].data),
+        indexesToSign,
+      )
+
+      // Fire onSigned the moment the wallet returns, before broadcasting
+      onSigned?.()
+
+      const submission = signed.map((s, i) =>
+        s ?? new Uint8Array(Buffer.from(txnGroup.txns[i].logicSigBlob, 'base64')),
+      )
+      const { txid } = await algodClient.sendRawTransaction(submission).do()
+      const result = await algosdk.waitForConfirmation(algodClient, txid, 10)
+      return {
+        confirmedRound: BigInt(result.confirmedRound ?? 0),
+        txIds: [txid],
+      }
+    },
+  }), [signTransactions, algodClient])
+
+  return <WalletButton swap={swapOptions} />
+}
+```
+
+Notes:
+
+- Initialize the Deflex client **outside** the component (module scope) so API caches aren't rebuilt on every render.
+- The panel treats `quote` as an opaque pass-through — only the display fields (`quote`, `amount`, `usdIn`, `usdOut`, `userPriceImpact`, `flattenedRoute`, `route`) are read by the UI; the rest is round-tripped back into `executeSwap`.
+- Consult the [Deflex SDK docs](https://www.npmjs.com/package/@deflex/deflex-sdk-js) for the exact client constructor, quote response fields, and `getSwapQuoteTransactions` return shape — these may differ across SDK versions.
+- If you render the panel directly via `ManagePanel` + `useSwapPanel` (as the portal does), the same `swapOptions` object is passed to `useSwapPanel(wallet, swapOptions, assetHoldings, registry)`. See `projects/portal/app/components/app/wallet-dashboard.tsx` for a full reference.
 
 ## 4. Manage Algo x EVM Account
 

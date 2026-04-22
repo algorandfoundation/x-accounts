@@ -47,3 +47,6 @@
 
   > More page?
   - feat? asset page
+
+- INTEGRATION
+  - [ ] add pnpm-workspace overrides to address potential build issues

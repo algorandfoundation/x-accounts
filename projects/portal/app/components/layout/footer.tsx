@@ -6,6 +6,17 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:justify-between">
         <p>Algorand x EVM &mdash; Use your EVM wallet on Algorand</p>
         <nav className="flex gap-6">
+          <Link to="/terms-and-conditions" className="hover:text-foreground transition-colors">
+            Terms & Conditions
+          </Link>
+          <a
+            href="https://algorand.co/algorand-foundation/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            Privacy Policy
+          </a>
           <Link to="/docs" className="hover:text-foreground transition-colors">
             Docs
           </Link>
