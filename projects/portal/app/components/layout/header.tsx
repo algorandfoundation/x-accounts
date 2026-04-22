@@ -1,13 +1,12 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { useState } from 'react'
-import { ArrowUpRight, Menu, X } from 'lucide-react'
+import { ArrowUpRight, Book, BookOpen } from 'lucide-react'
 import { cn } from '~/lib/utils'
 import { ThemeToggle } from '~/components/theme-toggle'
+import { Button } from '~/components/ui/button'
 
-const navItems = [{ label: 'Docs', to: '/docs' as const }]
+const navItems = [{ icon: <BookOpen size="16" />, label: "Docs", to: '/docs' as const }]
 
 export function Header() {
-  const [mobileOpen, setMobileOpen] = useState(false)
   const routerState = useRouterState()
   const isLanding = routerState.location.pathname === '/'
   const isApp = routerState.location.pathname.startsWith('/app')
@@ -20,10 +19,10 @@ export function Header() {
       )}
     >
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        {/* Centered status badge - desktop */}
-        <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground">
+        {/* Centered status badge */}
+        <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 sm:flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
-          Private Beta
+          Experimental
         </div>
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
           <span className="text-primary">Algorand</span>
@@ -31,27 +30,20 @@ export function Header() {
           <span style={{ color: '#8a92b2' }}>EVM</span>
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden items-center gap-6 md:flex">
-          <nav className="flex items-center gap-6">
+        <div className="flex items-center gap-2">
+          <nav className="flex items-center gap-2">
             {navItems.map((item) => (
-              <Link
+              <Button
                 key={item.to}
-                to={item.to}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                activeProps={{ className: 'text-foreground' }}
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                aria-label={item.label}
+                asChild
               >
-                {item.label}
-              </Link>
+                <Link to={item.to}>{item.icon ? item.icon : item.label}</Link>
+              </Button>
             ))}
-            <a
-              href="https://github.com/algorandfoundation/x-accounts"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              GitHub
-            </a>
           </nav>
           <ThemeToggle />
           {!isApp && (
@@ -64,62 +56,7 @@ export function Header() {
             </Link>
           )}
         </div>
-
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
       </div>
-
-      {/* Mobile nav */}
-      {mobileOpen && (
-        <nav className="border-t p-4 md:hidden">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="block py-2 text-sm font-medium text-muted-foreground"
-              activeProps={{ className: 'text-foreground' }}
-              onClick={() => setMobileOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <a
-            href="https://github.com/algorandfoundation/x-accounts"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block py-2 text-sm font-medium text-muted-foreground"
-          >
-            GitHub
-          </a>
-          {!isApp && (
-            <Link
-              to="/app"
-              className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              onClick={() => setMobileOpen(false)}
-            >
-              Launch
-              <ArrowUpRight size={16} />
-            </Link>
-          )}
-          <div className="flex items-center gap-2 py-2">
-            <ThemeToggle />
-            <span className="text-sm text-muted-foreground">Toggle theme</span>
-          </div>
-          {/* Status badge - mobile */}
-          <div className="mt-4 flex justify-center border-t pt-4">
-            <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
-              Private Beta
-            </div>
-          </div>
-        </nav>
-      )}
     </header>
   )
 }

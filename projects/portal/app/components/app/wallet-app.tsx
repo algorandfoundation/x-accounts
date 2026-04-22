@@ -61,7 +61,7 @@ function WalletAppContent() {
             No new wallet needed, no setup. Just connect any EVM wallet to send transactions, manage assets, swap and bridge on Algorand.
           </p>
           <div data-wallet-ui className="flex flex-col gap-2 justify-center mb-8">
-            <WalletButton size="lg" className="rounded-md" />
+            <WalletButton className="rounded-md" />
             <Button variant="outline" size="lg" asChild>
               <Link to="/docs">Read the Docs</Link>
             </Button>
