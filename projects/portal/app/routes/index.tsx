@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Wallet, Zap, Shield, Split, Link2, MousePointerClick, CheckCircle, ArrowUpRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import TypingText from "~/components/ui/typing-text";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Header } from "~/components/layout/header";
 import { Footer } from "~/components/layout/footer";
+import { UseAlgorandWith } from "~/components/use-algorand-with";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -33,25 +33,7 @@ function LandingPage() {
               <path d="m959.8 1397.6v441.7l540.1-760.6z" fill="#62688f" />
             </svg>
           </div>
-          <h1 className="mx-auto mt-6 max-w-3xl text-2xl font-bold tracking-tight sm:text-3xl text-muted-foreground">
-            Use <span className="text-primary">Algorand</span> with{" "}
-            <TypingText
-              text={["MetaMask", "Rainbow", "Rabby", "Coinbase Wallet"]}
-              as="span"
-              typingSpeed={60}
-              deletingSpeed={40}
-              pauseDuration={2000}
-              showCursor={true}
-              cursorCharacter="|"
-              cursorClassName="!h-[1em] !w-[1.5px]"
-              textColors={[
-                "#F6851B",
-                "linear-gradient(to right, #0E76FD, #5F5AFA, #FF5CA0, #FF801F, #FFD014, #4BD166)",
-                "#8697FF",
-                "#0052FF",
-              ]}
-            />{" "}
-          </h1>
+          <UseAlgorandWith className="mt-6" />
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
             No new wallet needed, no setup. Just connect any EVM wallet to send transactions, manage assets, and bridge tokens on Algorand.
           </p>
