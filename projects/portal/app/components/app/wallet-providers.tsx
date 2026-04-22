@@ -99,7 +99,6 @@ function makeWalletManager() {
         id: WalletId.RAINBOWKIT,
         options: { wagmiConfig },
       },
-      WalletId.LUTE,
     ],
     defaultNetwork: 'mainnet',
   })

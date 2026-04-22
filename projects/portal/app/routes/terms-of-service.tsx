@@ -4,12 +4,12 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import { Header } from '~/components/layout/header'
 import { Footer } from '~/components/layout/footer'
-import termsContent from '~/content/terms-and-conditions.md?raw'
+import termsContent from '~/content/terms-of-service.md?raw'
 
-export const Route = createFileRoute('/terms-and-conditions')({
+export const Route = createFileRoute('/terms-of-service')({
   component: TermsPage,
   head: () => ({
-    meta: [{ title: 'Terms & Conditions — Algorand x EVM' }],
+    meta: [{ title: 'Terms of Service — Algorand x EVM' }],
   }),
 })
 
