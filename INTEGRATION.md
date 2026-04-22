@@ -252,6 +252,97 @@ The `buffer` package and `TronWebProto` stub in your entry file are required by 
 
 Access it from `{WalletButton}` → ⚡ Manage → # Bridge
 
+## 6. Swap (on-chain asset routing)
+
+The Swap panel lives inside the `{WalletButton}` → ⚡ Manage → # Swap tab. It is opt-in: if `WalletUIProvider` doesn't receive a `swap` prop, the tab is hidden.
+
+To enable it, wire up an on-chain router (e.g. [`@txnlab/haystack-router`](https://www.npmjs.com/package/@txnlab/haystack-router)) and pass a `UseSwapOptions` object to `WalletUIProvider`.
+
+### Install
+
+```bash
+pnpm add @txnlab/haystack-router
+# npm install @txnlab/haystack-router
+# yarn add @txnlab/haystack-router
+```
+
+### Configure
+
+`UseSwapOptions` has two callbacks:
+
+- `fetchQuote(params)` — returns a quote from your router
+- `executeSwap({ quote, address, slippage, onSigned })` — builds the swap, signs it with the connected wallet, submits it, and returns a transaction id
+
+Because `executeSwap` needs `signTransactions` from `useWallet()`, build the config inside a component that lives under `<WalletProvider>`. The simplest pattern is a thin wrapper that renders `<WalletUIProvider>`:
+
+```tsx
+import { useCallback, useMemo, type ReactNode } from 'react'
+import algosdk from 'algosdk'
+import { useWallet } from '@txnlab/use-wallet-react'
+import { WalletUIProvider, type UseSwapOptions } from '@txnlab/use-wallet-ui-react'
+import { RouterClient } from '@txnlab/haystack-router'
+
+const haystackRouter = new RouterClient({
+  apiKey: 'YOUR_HAYSTACK_API_KEY',
+  autoOptIn: true,
+})
+
+function WalletUIWithSwap({ children }: { children: ReactNode }) {
+  const { signTransactions } = useWallet()
+
+  const swapSigner = useCallback(
+    async (txnGroup: algosdk.Transaction[], indexesToSign: number[]): Promise<Uint8Array[]> => {
+      const signed = await signTransactions(txnGroup, indexesToSign)
+      return signed.filter((s): s is Uint8Array => s != null)
+    },
+    [signTransactions],
+  )
+
+  const swap = useMemo<UseSwapOptions>(
+    () => ({
+      fetchQuote: (params) => haystackRouter.newQuote(params),
+      executeSwap: async ({ onSigned, quote, address, slippage }) => {
+        // Wrap the signer so `onSigned` fires the moment the wallet returns —
+        // this transitions the UI from "awaiting signature" to "sending transaction".
+        const wrappedSigner = async (txnGroup: algosdk.Transaction[], indexesToSign: number[]) => {
+          const result = await swapSigner(txnGroup, indexesToSign)
+          onSigned?.()
+          return result
+        }
+        const tx = await haystackRouter.newSwap({
+          quote: quote as Parameters<typeof haystackRouter.newSwap>[0]['quote'],
+          address,
+          slippage,
+          signer: wrappedSigner,
+        })
+        return tx.execute()
+      },
+    }),
+    [swapSigner],
+  )
+
+  return (
+    <WalletUIProvider theme="system" wagmiConfig={wagmiConfig} swap={swap}>
+      {children}
+    </WalletUIProvider>
+  )
+}
+
+function Root() {
+  return (
+    <WalletProvider manager={walletManager}>
+      <WalletUIWithSwap>
+        {/* your app */}
+      </WalletUIWithSwap>
+    </WalletProvider>
+  )
+}
+```
+
+Once `swap` is on the provider, the Swap tab shows up automatically inside `<WalletButton />` — no per-button prop required.
+
+Access it from `{WalletButton}` → ⚡ Manage → # Swap
+
 ## Troubleshooting
 
 ### `Buffer` errors
