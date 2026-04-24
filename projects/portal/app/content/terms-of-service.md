@@ -1,6 +1,6 @@
 # **xChain Wallet Terms of Service**
 
-Last Updated: April 23, 2026
+Last Updated: April 28, 2026
 
 These Terms of Service (“Terms”) constitute a legally binding contract made between you and Algorand Foundation US, Inc. (“Foundation,” “we,” or “us”) that governs your access to and use of the xChain Wallet decentralized application available at [xchain.algorand.tech](http://xchain.algorand.tech) (the “xChain Wallet”) and the features, content, tools and functionality available through use of xChain Wallet (collectively, the “Services”). By using the Services in any way, you agree to be bound by these Terms. If you do not accept the terms and conditions of these Terms, you are not permitted to access or otherwise use the Services.
 
