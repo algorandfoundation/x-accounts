@@ -273,13 +273,12 @@ pnpm add @txnlab/haystack-router
 - `fetchQuote(params)` — returns a quote from your router
 - `executeSwap({ quote, address, slippage, onSigned })` — builds the swap, signs it with the connected wallet, submits it, and returns a transaction id
 
-Because `executeSwap` needs `signTransactions` from `useWallet()`, build the config inside a component that lives under `<WalletProvider>`. The simplest pattern is a thin wrapper that renders `<WalletUIProvider>`:
+Because `executeSwap` needs `signTransactions` from `useWallet()`, build the config inside a component that lives under `<WalletProvider>`. `@txnlab/use-wallet-ui-react` ships a `getSwapConfig()` helper that wires up a Haystack `RouterClient` and the wallet signer for you:
 
 ```tsx
-import { useCallback, useMemo, type ReactNode } from 'react'
-import algosdk from 'algosdk'
+import { useMemo, type ReactNode } from 'react'
 import { useWallet } from '@txnlab/use-wallet-react'
-import { WalletUIProvider, type UseSwapOptions } from '@txnlab/use-wallet-ui-react'
+import { WalletUIProvider, getSwapConfig } from '@txnlab/use-wallet-ui-react'
 import { RouterClient } from '@txnlab/haystack-router'
 
 const haystackRouter = new RouterClient({
@@ -289,36 +288,9 @@ const haystackRouter = new RouterClient({
 
 function WalletUIWithSwap({ children }: { children: ReactNode }) {
   const { signTransactions } = useWallet()
-
-  const swapSigner = useCallback(
-    async (txnGroup: algosdk.Transaction[], indexesToSign: number[]): Promise<Uint8Array[]> => {
-      const signed = await signTransactions(txnGroup, indexesToSign)
-      return signed.filter((s): s is Uint8Array => s != null)
-    },
+  const swap = useMemo(
+    () => getSwapConfig({ router: haystackRouter, signTransactions }),
     [signTransactions],
-  )
-
-  const swap = useMemo<UseSwapOptions>(
-    () => ({
-      fetchQuote: (params) => haystackRouter.newQuote(params),
-      executeSwap: async ({ onSigned, quote, address, slippage }) => {
-        // Wrap the signer so `onSigned` fires the moment the wallet returns —
-        // this transitions the UI from "awaiting signature" to "sending transaction".
-        const wrappedSigner = async (txnGroup: algosdk.Transaction[], indexesToSign: number[]) => {
-          const result = await swapSigner(txnGroup, indexesToSign)
-          onSigned?.()
-          return result
-        }
-        const tx = await haystackRouter.newSwap({
-          quote: quote as Parameters<typeof haystackRouter.newSwap>[0]['quote'],
-          address,
-          slippage,
-          signer: wrappedSigner,
-        })
-        return tx.execute()
-      },
-    }),
-    [swapSigner],
   )
 
   return (
@@ -338,6 +310,10 @@ function Root() {
   )
 }
 ```
+
+`getSwapConfig()` returns a `UseSwapOptions` object. Internally it wires `fetchQuote` to `router.newQuote`, and `executeSwap` to `router.newSwap(...).execute()` — wrapping the wallet signer so the `onSigned` hook fires the moment the wallet returns, transitioning the panel from "signing" to "sending" before submit + confirmation.
+
+If you already construct the swap options yourself (lower-level `useSwapPanel` integration, custom router), you can still hand-roll `UseSwapOptions` without the helper.
 
 Once `swap` is on the provider, the Swap tab shows up automatically inside `<WalletButton />` — no per-button prop required.
 

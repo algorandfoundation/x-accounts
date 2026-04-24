@@ -10,7 +10,7 @@ if (!(globalThis as any).TronWebProto) {
 import { StrictMode, useState, useEffect, useCallback, useMemo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { LogLevel, WalletProvider, useWallet } from "@txnlab/use-wallet-react";
-import { WalletUIProvider, type Theme, type UseSwapOptions } from "@txnlab/use-wallet-ui-react";
+import { WalletUIProvider, getSwapConfig, type Theme } from "@txnlab/use-wallet-ui-react";
 import "@txnlab/use-wallet-ui-react/dist/style.css";
 import { WalletManager, WalletId } from "@txnlab/use-wallet-react";
 import { getDefaultConfig } from "@txnlab/use-wallet-ui-react/rainbowkit";
@@ -18,7 +18,6 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { algorandChain } from "algo-x-evm-sdk";
 import { http } from "viem";
 import { RouterClient } from "@txnlab/haystack-router";
-import algosdk from "algosdk";
 import "./index.css";
 import App from "./App.tsx";
 import { ErrorBoundary } from "./ErrorBoundary.tsx";
@@ -78,41 +77,13 @@ async function sleep(ms: number) {
 // so it can call useWallet().
 function WalletUIWithSwap({ theme, children }: { theme: Theme; children: ReactNode }) {
   const { signTransactions } = useWallet();
-
-  const swapSigner = useCallback(
-    async (txnGroup: algosdk.Transaction[], indexesToSign: number[]): Promise<Uint8Array[]> => {
-      const signed = await signTransactions(txnGroup, indexesToSign);
-      return signed.filter((s): s is Uint8Array => s != null);
-    },
+  const swap = useMemo(
+    () => getSwapConfig({ router: haystackRouter, signTransactions }),
     [signTransactions],
   );
 
-  const swapOptions = useMemo<UseSwapOptions>(
-    () => ({
-      fetchQuote: (params) => haystackRouter.newQuote(params),
-      executeSwap: async ({ onSigned, quote, address, slippage }) => {
-        // Wrap the signer so we can fire `onSigned` the moment the wallet returns —
-        // this transitions the UI from "awaiting signature" to "sending transaction"
-        // before the SDK proceeds to submit + wait for confirmation.
-        const wrappedSigner = async (txnGroup: algosdk.Transaction[], indexesToSign: number[]) => {
-          const result = await swapSigner(txnGroup, indexesToSign);
-          onSigned?.();
-          return result;
-        };
-        const swap = await haystackRouter.newSwap({
-          quote: quote as Parameters<typeof haystackRouter.newSwap>[0]["quote"],
-          address,
-          slippage,
-          signer: wrappedSigner,
-        });
-        return swap.execute();
-      },
-    }),
-    [swapSigner],
-  );
-
   return (
-    <WalletUIProvider theme={theme} wagmiConfig={wagmiConfig} swap={swapOptions}>
+    <WalletUIProvider theme={theme} wagmiConfig={wagmiConfig} swap={swap}>
       {children}
     </WalletUIProvider>
   );

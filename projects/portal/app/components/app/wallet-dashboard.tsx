@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback } from 'react'
 import { useWallet, useNetwork } from '@txnlab/use-wallet-react'
 import { useQueryClient, useIsFetching } from '@tanstack/react-query'
-import { useAccountInfo, useBridgeDialog, mapBridgeToPanelProps } from '@txnlab/use-wallet-ui-react'
+import { useAccountInfo, useBridgeDialog, mapBridgeToPanelProps, getSwapConfig } from '@txnlab/use-wallet-ui-react'
 import { getOpenInEntries } from '@d13co/open-in'
 import {
   ManagePanel,
@@ -73,35 +73,10 @@ export function WalletDashboard() {
   const send = useSendPanel(wallet)
   const optIn = useReceivePanel(wallet, optedInAssetIds, registry)
 
-  const swapSigner = useCallback(
-    async (txnGroup: any[], indexesToSign: number[]): Promise<Uint8Array[]> => {
-      // Pass the full group with indexesToSign so the wallet knows which
-      // transactions to sign and which to skip (logic sigs etc).
-      const signed = await signTransactions(txnGroup, indexesToSign)
-      return signed.filter((s): s is Uint8Array => s != null)
-    },
+  const swapOptions = useMemo(
+    () => getSwapConfig({ router: haystackRouter, signTransactions }),
     [signTransactions],
   )
-
-  const swapOptions = useMemo(() => ({
-    fetchQuote: (params: { fromASAID: number; toASAID: number; amount: bigint; address: string }) =>
-      haystackRouter.newQuote(params),
-    executeSwap: async (params: { quote: any; address: string; slippage: number; onSigned?: () => void }) => {
-      const { onSigned, ...rest } = params
-      // Wrap the signer so the panel transitions from "signing" to "sending"
-      // the moment the wallet returns, before submission + confirmation.
-      const wrappedSigner = async (txnGroup: any[], indexesToSign: number[]) => {
-        const result = await swapSigner(txnGroup, indexesToSign)
-        onSigned?.()
-        return result
-      }
-      const swap = await haystackRouter.newSwap({
-        ...rest,
-        signer: wrappedSigner,
-      })
-      return swap.execute()
-    },
-  }), [swapSigner])
 
   const { assets: assetInfoMap } = useAssets(assetIds, algodClient as any, activeNetwork)
 
