@@ -1,7 +1,7 @@
 ---
 title: Security
 description: How Algorand x EVM keeps your assets secure using on-chain ECDSA verification.
-order: 6
+order: 7
 category: Advanced
 ---
 

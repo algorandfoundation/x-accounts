@@ -1,7 +1,7 @@
 ---
 title: Manage Assets
 description: How to opt into, view, and manage Algorand Standard Assets (ASAs).
-order: 5
+order: 6
 category: Using the App
 ---
 

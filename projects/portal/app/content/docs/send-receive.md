@@ -1,7 +1,7 @@
 ---
 title: Send & Receive
 description: How to send and receive ALGO and ASAs with your Algorand x EVM account.
-order: 4
+order: 5
 category: Using the App
 ---
 

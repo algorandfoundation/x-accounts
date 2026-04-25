@@ -1,7 +1,7 @@
 ---
 title: FAQ
 description: Frequently asked questions about Algorand x EVM.
-order: 7
+order: 9
 category: Advanced
 ---
 
