@@ -88,11 +88,11 @@ const notices: NoticesConfig = {
       </>
     ),
   },
-  sign: {
-    kind: 'info',
-    title: 'About signing transactions',
-    body: <p>Placeholder text explaining transaction signing</p>,
-  },
+  // sign: {
+  //   kind: 'info',
+  //   title: 'About signing transactions',
+  //   body: <p>Placeholder text explaining transaction signing</p>,
+  // },
 }
 
 function makeWalletManager() {
