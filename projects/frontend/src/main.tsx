@@ -7,16 +7,15 @@ if (!(globalThis as any).TronWebProto) {
   (globalThis as any).TronWebProto = { Transaction: {} };
 }
 
-import { StrictMode, useState, useEffect, useCallback, useMemo, type ReactNode } from "react";
+import { StrictMode, useState, useEffect, useCallback, useMemo } from "react";
 import { createRoot } from "react-dom/client";
-import { LogLevel, WalletProvider, useWallet } from "@txnlab/use-wallet-react";
-import { WalletUIProvider, getSwapConfig, type Theme } from "@txnlab/use-wallet-ui-react";
+import { LogLevel, WalletProvider } from "@txnlab/use-wallet-react";
+import { WalletUIProvider, type Theme } from "@txnlab/use-wallet-ui-react";
 import "@txnlab/use-wallet-ui-react/dist/style.css";
 import { WalletManager, WalletId } from "@txnlab/use-wallet-react";
 import { getDefaultConfig } from "@txnlab/use-wallet-ui-react/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { algorandChain } from "algo-x-evm-sdk";
-import { http } from "viem";
 import { RouterClient } from "@txnlab/haystack-router";
 import "./index.css";
 import App from "./App.tsx";
@@ -33,14 +32,6 @@ const wagmiConfig = getDefaultConfig({
   appName: "Algo x EVM Demo",
   projectId: "3404862cca4501e4d84be405269d955c",
   chains: [algorandChain],
-  // use-wallet-ui's getDefaultConfig only wires transports for its built-in
-  // bridge chains, so any extra chain we pass in (here, algorandChain) must
-  // supply its own transport — otherwise wagmi's extractRpcUrls blows up
-  // inside the MetaMask connector's initProvider. http() with no args falls
-  // back to chain.rpcUrls.default.http[0].
-  transports: {
-    [algorandChain.id]: http(),
-  },
 });
 
 function makeWalletManager(network: AlgorandNetwork) {
@@ -70,23 +61,6 @@ function getInitialNetwork(): AlgorandNetwork {
 
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// Thin wrapper that constructs swap options from the connected wallet's signer
-// and forwards them to WalletUIProvider. Needs to live inside <WalletProvider>
-// so it can call useWallet().
-function WalletUIWithSwap({ theme, children }: { theme: Theme; children: ReactNode }) {
-  const { signTransactions } = useWallet();
-  const swap = useMemo(
-    () => getSwapConfig({ router: haystackRouter, signTransactions }),
-    [signTransactions],
-  );
-
-  return (
-    <WalletUIProvider theme={theme} wagmiConfig={wagmiConfig} swap={swap}>
-      {children}
-    </WalletUIProvider>
-  );
 }
 
 function Root() {
@@ -121,9 +95,9 @@ function Root() {
 
   return (
     <WalletProvider manager={walletManager}>
-      <WalletUIWithSwap theme={theme}>
+      <WalletUIProvider theme={theme} wagmiConfig={wagmiConfig} swapRouter={haystackRouter}>
         <App theme={theme} setTheme={setTheme} network={network} setNetwork={setNetwork} />
-      </WalletUIWithSwap>
+      </WalletUIProvider>
     </WalletProvider>
   );
 }

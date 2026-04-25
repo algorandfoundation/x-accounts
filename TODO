@@ -1,5 +1,3 @@
-- giulio props
-
 - [ ] errorboundary inside use-wallet-ui 
 
 - [ ] network in eip 712 message type. Mainnet exception
@@ -50,3 +48,9 @@
 
 - INTEGRATION
   - [ ] add pnpm-workspace overrides to address potential build issues
+
+- [v] Move transport fix to use-wallet-ui/rainbowkit/getDefaultConfig() https://github.com/algorandfoundation/x-accounts/pull/15/changes#r3130323380
+
+- [ ] bridging from algorand: source confirmation actually polls for validator confirmation. this was observed in a reloaded session.
+
+- [ ] haystack referral in config

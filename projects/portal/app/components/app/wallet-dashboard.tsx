@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback } from 'react'
 import { useWallet, useNetwork } from '@txnlab/use-wallet-react'
 import { useQueryClient, useIsFetching } from '@tanstack/react-query'
-import { useAccountInfo, useBridgeDialog, mapBridgeToPanelProps, getSwapConfig } from '@txnlab/use-wallet-ui-react'
+import { useAccountInfo, useBridgeDialog, mapBridgeToPanelProps, useWalletUI } from '@txnlab/use-wallet-ui-react'
 import { getOpenInEntries } from '@d13co/open-in'
 import {
   ManagePanel,
@@ -14,12 +14,6 @@ import {
   type WalletAdapter,
   type AssetHoldingDisplay,
 } from '@d13co/algo-x-evm-ui'
-import { RouterClient } from '@txnlab/haystack-router'
-
-const haystackRouter = new RouterClient({
-  apiKey: 'bd650cf4-3d73-4e3f-ad37-1ada754bd659',
-  autoOptIn: true,
-})
 
 export function WalletDashboard() {
   const { activeAddress, activeWallet, activeWalletAccounts, algodClient, signTransactions } = useWallet()
@@ -73,10 +67,7 @@ export function WalletDashboard() {
   const send = useSendPanel(wallet)
   const optIn = useReceivePanel(wallet, optedInAssetIds, registry)
 
-  const swapOptions = useMemo(
-    () => getSwapConfig({ router: haystackRouter, signTransactions }),
-    [signTransactions],
-  )
+  const { swap: swapOptions } = useWalletUI()
 
   const { assets: assetInfoMap } = useAssets(assetIds, algodClient as any, activeNetwork)
 
@@ -117,7 +108,9 @@ export function WalletDashboard() {
     return results
   }, [allHoldings, assetInfoMap, peraData])
 
-  const swap = useSwapPanel(wallet, swapOptions, assetHoldings, registry)
+  // WalletUIProvider is configured with `swapRouter` at the root, so
+  // `swapOptions` is always populated here.
+  const swap = useSwapPanel(wallet, swapOptions!, assetHoldings, registry)
 
   const bridgeProps = useMemo(() => {
     if (!bridge.isAvailable) return undefined

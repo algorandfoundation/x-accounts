@@ -13,6 +13,7 @@ import { WalletProvider, WalletManager, WalletId, LogLevel } from '@txnlab/use-w
 import { WalletUIProvider, type NoticesConfig } from '@txnlab/use-wallet-ui-react'
 import { getDefaultConfig, createRainbowKitConfig } from '@txnlab/use-wallet-ui-react/rainbowkit'
 import { algorandChain } from 'algo-x-evm-sdk'
+import { RouterClient } from '@txnlab/haystack-router'
 
 import '@rainbow-me/rainbowkit/styles.css'
 import '@txnlab/use-wallet-ui-react/dist/style.css'
@@ -27,6 +28,13 @@ export const wagmiConfig = getDefaultConfig({
 // Create RainbowKit config eagerly so WalletUIProvider has it on first render
 // (avoids a dynamic import cycle that restructures the tree and remounts children).
 const rainbowkitConfig = createRainbowKitConfig({ wagmiConfig })
+
+// Swap router — module-scope so caches aren't rebuilt per render. Wired into
+// WalletUIProvider via `swapRouter` so every consumer reads the same config.
+const haystackRouter = new RouterClient({
+  apiKey: 'bd650cf4-3d73-4e3f-ad37-1ada754bd659',
+  autoOptIn: true,
+})
 
 const notices: NoticesConfig = {
   'evm-connect': {
@@ -110,7 +118,7 @@ export function WalletProviders({ children }: { children: ReactNode }) {
 
   return (
     <WalletProvider manager={walletManager}>
-      <WalletUIProvider theme={resolvedTheme} rainbowkit={rainbowkitConfig} notices={notices}>
+      <WalletUIProvider theme={resolvedTheme} rainbowkit={rainbowkitConfig} notices={notices} swapRouter={haystackRouter}>
         {children}
       </WalletUIProvider>
     </WalletProvider>
