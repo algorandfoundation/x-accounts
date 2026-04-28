@@ -5,14 +5,12 @@
 xChain EVM enables Ethereum wallets (MetaMask, etc.) to control Algorand accounts using an ECDSA signature verification LogicSig. Sign once with your Ethereum wallet to authorize transactions on Algorand—no seed phrases, no new wallets.
 
 > [!IMPORTANT]
-> **DO NOT PERFORM PUBLIC BETA TESTING YET**
 >
-> **The logic sig standard may still evolve, which would impact the xChain EVM derived addresses. If you onboard public beta testers, future changes would require you to support them in recovering funds from outdated derivations or migrate to the latest version.**
+> The xChain Accounts protocol is in Beta.
 >
-> Tools aiding migrations/recovery will not be in scope for this project while it is in alpha/unstable state.
->
-> Private testing is fine, so long as you are aware that future versions may derive different Algorand addresses, and you would need to recover your own funds with the corresponding version of this repo.
+> Currently, only React frontends are supported.
 
+Interested in integrating xChain Accounts? Consider filling in a [quick survey](https://forms.gle/qjY5hLREzem6Wrvk6).
 
 ## Overview
 
