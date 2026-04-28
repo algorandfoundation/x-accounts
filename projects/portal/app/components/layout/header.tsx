@@ -1,6 +1,7 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 import { ArrowUpRight, Book, BookOpen } from 'lucide-react'
 import { cn } from '~/lib/utils'
+import { Logo } from '~/components/logo'
 import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 
@@ -24,10 +25,8 @@ export function Header() {
           <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
           Experimental
         </div>
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-          <span className="text-primary">Algorand</span>
-          <span className="text-[#CCD0D3]">x</span>
-          <span style={{ color: '#8a92b2' }}>EVM</span>
+        <Link to="/" aria-label="xChain home" className="flex items-center">
+          <Logo className="h-9 w-auto" />
         </Link>
 
         <div className="flex items-center gap-2">
