@@ -16,7 +16,7 @@
     "dist/"
   ],
   "scripts": {
-    "prebuild": "node scripts/copy-teal.js",
+    "prebuild": "node scripts/copy-teal.js && node scripts/build-lsig-template.js",
     "build": "tsc"
   },
   "keywords": [],
