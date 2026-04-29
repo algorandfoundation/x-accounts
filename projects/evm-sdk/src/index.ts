@@ -1,7 +1,7 @@
 import type { AlgorandClient } from "@algorandfoundation/algokit-utils"
 import algosdk from "algosdk"
+import { ALGO_X_EVM_LSIG_TEAL } from "./generated/teal"
 import { getEvmAddressFromProgram } from "./lsig-detect"
-import { ALGO_X_EVM_LSIG_TEAL } from "./teal"
 import {
   SignTypedDataParams,
   buildTypedData,

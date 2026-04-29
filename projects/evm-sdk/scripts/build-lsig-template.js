@@ -3,7 +3,7 @@ const path = require("path")
 const { AlgorandClient } = require("@algorandfoundation/algokit-utils")
 
 const tealSrc = path.resolve(__dirname, "../../evm-logicsig/smart_contracts/artifacts/algo-x-evm/AlgoXEvmLsig.teal")
-const outFile = path.resolve(__dirname, "../src/lsig-template.ts")
+const outFile = path.resolve(__dirname, "../src/generated/lsig-template.ts")
 
 // Two distinct 20-byte sentinels with no overlap. The first is written into the
 // generated artifact (kept as a marker for the OWNER slot); the second is used
