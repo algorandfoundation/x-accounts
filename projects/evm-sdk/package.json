@@ -31,7 +31,9 @@
     "algosdk": "^3.5.2"
   },
   "devDependencies": {
+    "@algorandfoundation/algokit-utils": "^9.2.0",
     "@types/node": "^25.0.3",
+    "algosdk": "^3.5.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
