@@ -1,6 +1,7 @@
 import type { AlgorandClient } from "@algorandfoundation/algokit-utils"
 import algosdk from "algosdk"
-import { ALGO_X_EVM_LSIG_TEAL } from "./teal"
+import { ALGO_X_EVM_LSIG_TEAL } from "./generated/teal"
+import { getEvmAddressFromProgram } from "./lsig-detect"
 import {
   SignTypedDataParams,
   buildTypedData,
@@ -21,6 +22,7 @@ export {
   parseEvmSignature,
 } from "./utils"
 export type { SignTypedDataParams } from "./utils"
+export { getEvmAddressFromProgram, isXChainLsigProgram } from "./lsig-detect"
 
 export class AlgoXEvmSdk {
   private algorand: AlgorandClient
@@ -41,6 +43,7 @@ export class AlgoXEvmSdk {
         TMPL_OWNER: hexToBytes(normalized),
       })
       this.compiledCache.set(normalized, result.compiledBase64ToBytes)
+      return result.compiledBase64ToBytes
     }
     return this.compiledCache.get(normalized)!
   }
@@ -50,6 +53,60 @@ export class AlgoXEvmSdk {
     const compiled = await this.getCompiled(evmAddress)
     const lsig = new algosdk.LogicSigAccount(compiled, [])
     return lsig.address().toString()
+  }
+
+  /**
+   * Detect whether a compiled lsig program is an xChain EVM lsig and extract the
+   * embedded EVM owner address. Returns 0x-prefixed lowercase hex (42 chars), or null.
+   *
+   * Synchronous and algod-free — uses a build-time-pinned lsig template.
+   */
+  static getEvmAddressFromProgram(program: Uint8Array): `0x${string}` | null {
+    return getEvmAddressFromProgram(program)
+  }
+
+  /** Convenience wrapper that accepts an algosdk LogicSig or LogicSigAccount. */
+  static getEvmAddressFromLsig(
+    lsig: algosdk.LogicSig | algosdk.LogicSigAccount,
+  ): `0x${string}` | null {
+    const program = lsig instanceof algosdk.LogicSigAccount ? lsig.lsig.logic : lsig.logic
+    return getEvmAddressFromProgram(program)
+  }
+
+  /**
+   * Look up an Algorand account's most recent lsig-bearing transaction via the indexer
+   * and, if the lsig matches the xChain template, return the embedded EVM address.
+   *
+   * Returns null if no matching lsig transaction is found within the search window.
+   *
+   * Note: lsig programs are not stored per-account on Algorand — they are only
+   * persisted in transaction history. Accounts that have never sent a transaction
+   * cannot be detected this way.
+   *
+   * @param algorandAddress - 58-character Algorand address to inspect
+   * @param limit - max number of recent sender-side transactions to scan (default 1)
+   */
+  async getEvmAddressFromAccount({
+    algorandAddress,
+    limit = 1,
+  }: {
+    algorandAddress: string
+    limit?: number
+  }): Promise<`0x${string}` | null> {
+    const indexer = this.algorand.client.indexer
+    const result = await indexer
+      .searchForTransactions()
+      .address(algorandAddress)
+      .addressRole("sender")
+      .limit(limit)
+      .do()
+    for (const txn of result.transactions ?? []) {
+      const program = txn.signature?.logicsig?.logic
+      if (!program) continue
+      const evm = getEvmAddressFromProgram(program)
+      if (evm) return evm
+    }
+    return null
   }
 
   /** Get the payload for the EVM wallet to sign. Group ID if group.length > 1, otherwise Txn ID */

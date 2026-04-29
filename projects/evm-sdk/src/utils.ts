@@ -6,6 +6,23 @@ export function hexToBytes(hex: string): Uint8Array {
   return bytes
 }
 
+/** Decode a standard (non-URL) base64 string to bytes. Works in Node and browsers. */
+export function base64ToBytes(b64: string): Uint8Array {
+  const bin = atob(b64)
+  const out = new Uint8Array(bin.length)
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i)
+  return out
+}
+
+/** Encode bytes as 0x-prefixed lowercase hex. */
+export function bytesToHex(bytes: Uint8Array): `0x${string}` {
+  let hex = ""
+  for (let i = 0; i < bytes.length; i++) {
+    hex += bytes[i].toString(16).padStart(2, "0")
+  }
+  return `0x${hex}`
+}
+
 /**
  * secp256k1 curve order and half order for lower-S normalization
  */
@@ -153,7 +170,7 @@ const EIP712_DOMAIN_TYPE = [
  * @returns EIP-712 message object
  */
 export function formatEIP712Message(payload: Uint8Array): { "Transaction ID": `0x${string}` } {
-  return { "Transaction ID": `0x${Buffer.from(payload).toString("hex")}` }
+  return { "Transaction ID": bytesToHex(payload) as `0x${string}` }
 }
 
 /**

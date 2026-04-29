@@ -206,6 +206,24 @@ const [signed] = await sdk.signTxn({
 await algorand.client.algod.sendRawTransaction(signed).do()
 ```
 
+### Detecting xChain accounts (reverse lookup)
+
+Given the compiled bytes of an Algorand lsig (or an Algorand account that has sent at least one transaction), determine whether it is an xChain EVM lsig and recover the `0x...` EVM address embedded in it. Pattern matching is done against a build-time-pinned template — the static helpers are synchronous and require no algod connection.
+
+```typescript
+// 1) Sync — from raw compiled lsig bytes (e.g. fetched from indexer txn data)
+const evm = AlgoXEvmSdk.getEvmAddressFromProgram(programBytes)
+// => "0x742d35cc6634c0532925a3b844bc454e4438f44e" or null
+
+// 2) Sync — from an algosdk LogicSig / LogicSigAccount
+const evm = AlgoXEvmSdk.getEvmAddressFromLsig(lsig)
+
+// 3) Async — from an Algorand address (uses the SDK's indexer)
+const evm = await sdk.getEvmAddressFromAccount({ algorandAddress: "ABCD…XYZ" })
+```
+
+Note: lsig programs are not stored per-account on Algorand — they are persisted only in transaction history. `getEvmAddressFromAccount` works only for addresses that have already sent at least one transaction.
+
 ## API
 
 ### `AlgoXEvmSdk`
@@ -251,6 +269,18 @@ const payload = AlgoXEvmSdk.getSignPayload(txns)
 const signature = await getSignature(payload)
 await sdk.signTxn({ evmAddress, txns, signature })
 ```
+
+#### `static getEvmAddressFromProgram(program: Uint8Array): \`0x${string}\` | null`
+
+Pattern-matches a compiled lsig program against the xChain template. Returns the embedded 0x-prefixed lowercase EVM address (42 chars) if it matches, otherwise `null`. Synchronous and algod-free.
+
+#### `static getEvmAddressFromLsig(lsig: algosdk.LogicSig | algosdk.LogicSigAccount): \`0x${string}\` | null`
+
+Same as `getEvmAddressFromProgram` but accepts an algosdk `LogicSig` or `LogicSigAccount`.
+
+#### `getEvmAddressFromAccount({ algorandAddress, limit? }): Promise<\`0x${string}\` | null>`
+
+Queries the indexer for recent transactions sent by `algorandAddress`, finds one signed with an lsig, and returns the embedded EVM address if the lsig matches the xChain template. `limit` defaults to 1 and bounds how many recent transactions are scanned. Returns `null` if no matching lsig is found in the search window.
 
 ### Types
 
@@ -331,6 +361,14 @@ The Algorand chain ID constant: `4160` (used for EVM wallet chain registration)
 #### `hexToBytes(hex: string): Uint8Array`
 
 Converts a hex string to a `Uint8Array`.
+
+#### `getEvmAddressFromProgram(program: Uint8Array): \`0x${string}\` | null`
+
+Standalone re-export of the static class method for use without the `AlgoXEvmSdk` class. Pattern-matches a compiled lsig program against the xChain template.
+
+#### `isXChainLsigProgram(program: Uint8Array): boolean`
+
+Boolean convenience: `true` iff the compiled program matches the xChain lsig template.
 
 ## Security
 

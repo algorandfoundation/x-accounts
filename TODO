@@ -1,15 +1,15 @@
 - [ ] errorboundary inside use-wallet-ui 
 
-- [ ] network in eip 712 message type. Mainnet exception
-- [ ] name
-- [ ] 4160 chain Id in chain registry
-- [ ] look at use-wallet-ui plugin
+- [x] network in eip 712 message type. Mainnet exception
+- [x] name
+- [v] 4160 chain Id in chain registry
+- [v] look at use-wallet-ui plugin
   - michael?
 - [ ] main site
   - [ ] landing page / docs
   - [ ] meta wallet, reusing liquid-ui package pages
     - [ ] move bridge to liquid-ui package
-- [ ] add swap panel
+- [v] add swap panel
 
 - [x] coinbase wallet not prompting account when reconnecting. not fixable: Coinbase extension returns -32601 for both wallet_requestPermissions and wallet_revokePermissions; users must switch accounts inside the Coinbase extension
 
@@ -41,7 +41,7 @@
 - [ ] bug: account switcher not showing
 - [ ] fix: tooltip on Pera Verified badge
 - [ ] chore disable user-select in all buttons
-- [ ] add to metamask in portal
+- [v] add to metamask in portal
 
   > More page?
   - feat? asset page
