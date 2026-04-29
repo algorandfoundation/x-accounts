@@ -280,7 +280,7 @@ Same as `getEvmAddressFromProgram` but accepts an algosdk `LogicSig` or `LogicSi
 
 #### `getEvmAddressFromAccount({ algorandAddress, limit? }): Promise<\`0x${string}\` | null>`
 
-Queries the indexer for recent transactions sent by `algorandAddress`, finds one signed with an lsig, and returns the embedded EVM address if the lsig matches the xChain template. `limit` defaults to 50 and bounds how many recent transactions are scanned. Returns `null` if no matching lsig is found in the search window.
+Queries the indexer for recent transactions sent by `algorandAddress`, finds one signed with an lsig, and returns the embedded EVM address if the lsig matches the xChain template. `limit` defaults to 1 and bounds how many recent transactions are scanned. Returns `null` if no matching lsig is found in the search window.
 
 ### Types
 
