@@ -164,7 +164,6 @@ function AlgorandActions({ network }: { network: AlgorandNetwork }) {
   });
 
   const sendCloseOut = () => wrapAsync(async () => {
-    console.log('[sendCloseOut] activeAccount:', activeAccount)
     if (!activeAccount || !closeToAddress) return;
     const txn = await algorand.createTransaction.payment({
       sender: activeAccount.address,
@@ -362,7 +361,7 @@ function AlgorandActions({ network }: { network: AlgorandNetwork }) {
           Rekey + Pay + Close
         </button>
         <div style={{ marginTop: 8 }}>
-          <input type="text" placeholder="Close-to address" value={closeToAddress} onChange={(e) => setCloseToAddress(e.target.value)} style={{ width: 420 }} />
+          <input type="text" placeholder="Close-to address" value={closeToAddress} onChange={(e) => setCloseToAddress(e.target.value.trim())} style={{ width: 420 }} />
         </div>
       </div>
       <div className="card">

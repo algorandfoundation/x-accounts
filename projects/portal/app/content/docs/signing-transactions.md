@@ -15,7 +15,7 @@ When you do something that moves funds - sending, bridging, opting into an asset
 
 1. The app shows you a visual summary of the transactions (typically sender, receiver, amount, assets, application IDs, etc).
 2. The visualisations can be tapped to show full transaction details.
-3. A resulting transction ID is shown in `0x...` hexadecimal format.
+3. A resulting transaction ID is shown in `0x...` hexadecimal format.
 4. Tap "Review" to send the transaction to your wallet.
 5. Confirm that the transaction ID shown in your wallet matches the one displayed by the app.
 6. Sign in your wallet.
