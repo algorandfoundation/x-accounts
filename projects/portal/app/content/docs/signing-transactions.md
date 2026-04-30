@@ -43,6 +43,18 @@ When this happens:
 
 This is the same atomic-group behavior native Algorand wallets use - the only difference is that the signature comes from your EVM wallet.
 
+## Dangerous Transactions
+
+Some transactions can drain your account or transfer signing authority - they require **special attention**:
+
+- [Re-key](https://dev.algorand.co/concepts/accounts/rekeying/#rekey-to-transaction): transfers signing authority of your account to another key or program.
+- [Close account](https://dev.algorand.co/concepts/transactions/types/#close-an-account): sends all your ALGO holdings to another address.
+- [Asset opt-out](https://dev.algorand.co/concepts/transactions/types/#opt-out-of-an-asset): sends all your asset balance to another address.
+
+For these cases, a noticeable bold red coloring will appear in the transaction review panel.
+
+The warning appears if any transaction in a group is dangerous. Zero-balance opt-outs are flagged too - a prior transaction in the same group could fund the account before the opt-out executes.
+
 ---
 
 ## Under the Hood
