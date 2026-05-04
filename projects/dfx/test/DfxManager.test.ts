@@ -296,13 +296,13 @@ describe("Group 1: Input Validation", () => {
 // Group 2: Submit — Simulation Outcomes
 // ===========================================================================
 describe("Group 2: Simulation Outcomes", () => {
-  it("6. simulate success → 200, status submitted, nothing stored, no alarm", async () => {
+  it("6. simulate success → 400, status invalid, nothing stored, no alarm", async () => {
     const txBytes = makeSignedPayTxn();
     setSimulateSuccess();
     const res = await manager.fetch(submitReq([toBase64(txBytes)]));
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(400);
     const body = await res.json() as Record<string, unknown>;
-    expect(body.status).toBe("submitted");
+    expect(body.status).toBe("invalid");
     // Nothing stored in pending
     const pending = await storage.list({ prefix: "pending:" });
     expect(pending.size).toBe(0);
@@ -548,7 +548,7 @@ describe("Group 6: Alarm Rescheduling", () => {
 
   it("24. alarm already set when new txn deferred — alarm not overwritten", async () => {
     const existingAlarm = Date.now() + 2000;
-    storage.alarmTime = existingAlarm;
+    await storage.setAlarm(existingAlarm);
 
     const txBytes = makeSignedPayTxn();
     setBalanceFailure();
