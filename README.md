@@ -80,9 +80,10 @@ cd xchain-accounts
 # fetch the submodules (use-wallet, use-wallet-ui)
 git submodule update --init --recursive
 
-# Install dependencies
+# Install dependencies (use-wallet-ui is a nested pnpm workspace, needs its own install)
 # Read the output carefully, you may need to approve build scripts.
 pnpm i
+pnpm i --dir projects/use-wallet-ui
 
 # Start LocalNet
 algokit localnet start
@@ -198,6 +199,7 @@ algokit project run build
 ```
 
 This compiles, in order (per `.algokit.toml`):
+
 1. Logic sig to TEAL (`evm-logicsig`)
 2. TypeScript SDK (`evm-sdk`)
 3. Use-wallet packages (`use-wallet`)
@@ -210,9 +212,11 @@ This compiles, in order (per `.algokit.toml`):
 
 ### Test
 
+Currently `evm-logicsig` and `dfx` projects have automated tests.
+
 ```bash
-cd projects/evm-logicsig
-algokit project run test
+algokit project run test --project-name evm-logicsig
+pnpm --filter dfx test
 ```
 
 ## Contributing
@@ -234,7 +238,13 @@ Contributions are welcome! Please see individual project READMEs for specific de
 
 ## CI/CD
 
-GitHub Actions workflows are present in [`.github/workflows`](./.github/workflows) but are currently **disabled** (each file is suffixed `.disabled`). No automated testing, linting, or deployment runs on push at this time. The disabled workflows cover smart-contract CI/CD, validation, and release; re-enable by removing the `.disabled` suffix once the project is ready for automated pipelines.
+GitHub Actions workflows are present in [`.github/workflows`](./.github/workflows). On push and PR to `main`, CI runs three jobs:
+
+- **build**: installs dependencies, builds AlgoKit projects and dfx, uploads artifacts
+- **test-dfx**: runs dfx tests
+- **test-evm-logicsig**: downloads build artifacts, starts LocalNet, runs smart contract tests
+
+Additional workflows for smart-contract CI/CD, validation, and release are present but currently disabled (suffixed `.disabled`), kept as reference until the automated pipeline is fully complete.
 
 ## Resources
 
