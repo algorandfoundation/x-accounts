@@ -127,7 +127,7 @@ jobs:
       - name: Build evm-logicsig and evm-sdk
         run: |
           algokit project run build --project-name evm-logicsig
-          algokit project run build --project-name algo-x-evm-sdk
+          algokit project run build --project-name evm-sdk
 
       - name: Run tests
         run: algokit project run test --project-name 'evm-logicsig'
