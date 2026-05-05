@@ -12,4 +12,4 @@ onlyBuiltDependencies:
   - workerd
 overrides:
   typescript: 5.9.3
-  viem: 2.45.3
+  viem: 2.46.3
