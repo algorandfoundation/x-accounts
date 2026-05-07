@@ -14,11 +14,11 @@ A Cloudflare Worker + Durable Object that accepts signed Algorand transactions, 
 
 ## API
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/submit` | Submit a signed transaction group |
-| `GET` | `/health` | Returns `{ pending, lastRound }` |
-| `OPTIONS` | `*` | CORS preflight (returns 204) |
+| Method    | Path      | Description                       |
+| --------- | --------- | --------------------------------- |
+| `POST`    | `/submit` | Submit a signed transaction group |
+| `GET`     | `/health` | Returns `{ pending, lastRound }`  |
+| `OPTIONS` | `*`       | CORS preflight (returns 204)      |
 
 All responses include `Content-Type: application/json` and CORS headers (`Access-Control-Allow-Origin: *`).
 
