@@ -60,16 +60,16 @@ The logic signature:
 ### Setup
 
 ```typescript
-import { AlgorandClient } from "@algorandfoundation/algokit-utils"
-import { AlgoXEvmSdk, EIP712_DOMAIN, EIP712_TYPES } from "algo-x-evm-sdk"
-import { BrowserProvider } from "ethers"
+import { AlgorandClient } from '@algorandfoundation/algokit-utils'
+import { AlgoXEvmSdk, EIP712_DOMAIN, EIP712_TYPES } from 'algo-x-evm-sdk'
+import { BrowserProvider } from 'ethers'
 
 const algorand = AlgorandClient.fromEnvironment()
 const sdk = new AlgoXEvmSdk({ algorand })
 
 // MetaMask or other EVM wallet provider
 const provider = new BrowserProvider(window.ethereum)
-const evmAddress = (await provider.send("eth_requestAccounts", []))[0]
+const evmAddress = (await provider.send('eth_requestAccounts', []))[0]
 ```
 
 ### Get the Algorand address for an EVM account
@@ -86,8 +86,8 @@ This is useful for checking balances or displaying the address before any signin
 `getSigner` returns an algokit-utils compatible `{ addr, signer }` pair. Pass `signMessage` — a callback that receives the full EIP-712 typed data (domain, types, primaryType, message) and returns the signature.
 
 ```typescript
-import { ethers } from "ethers"
-import type { SignTypedDataParams } from "algo-x-evm-sdk"
+import { ethers } from 'ethers'
+import type { SignTypedDataParams } from 'algo-x-evm-sdk'
 
 const wallet = new ethers.Wallet(privateKey)
 
@@ -107,7 +107,7 @@ Or with MetaMask:
 ```typescript
 const signMessage = async ({ domain, types, primaryType, message }: SignTypedDataParams) => {
   const data = JSON.stringify({ domain, types, primaryType, message })
-  return provider.send("eth_signTypedData_v4", [evmAddress, data])
+  return provider.send('eth_signTypedData_v4', [evmAddress, data])
 }
 
 const { addr, signer } = await sdk.getSigner({ evmAddress, signMessage })
@@ -129,7 +129,8 @@ await algorand.send.payment({
 For grouped transactions of size > 1, the signer automatically signs the **group ID** instead of individual transaction IDs. The on-chain logic signature handles this automatically.
 
 ```typescript
-await algorand.newGroup()
+await algorand
+  .newGroup()
   .addPayment({
     sender: addr,
     receiver: someReceiver,
@@ -151,8 +152,8 @@ For full control over transaction construction and group ID assignment, use `sig
 #### Variant 1: With signMessage callback
 
 ```typescript
-import algosdk from "algosdk"
-import type { SignTypedDataParams } from "algo-x-evm-sdk"
+import algosdk from 'algosdk'
+import type { SignTypedDataParams } from 'algo-x-evm-sdk'
 
 const addr = await sdk.getAddress({ evmAddress })
 
@@ -179,8 +180,8 @@ await algorand.client.algod.sendRawTransaction(signed).do()
 #### Variant 2: With pre-computed signature
 
 ```typescript
-import algosdk from "algosdk"
-import { AlgoXEvmSdk, buildTypedData } from "algo-x-evm-sdk"
+import algosdk from 'algosdk'
+import { AlgoXEvmSdk, buildTypedData } from 'algo-x-evm-sdk'
 
 const addr = await sdk.getAddress({ evmAddress })
 
@@ -219,7 +220,7 @@ const evm = AlgoXEvmSdk.getEvmAddressFromProgram(programBytes)
 const evm = AlgoXEvmSdk.getEvmAddressFromLsig(lsig)
 
 // 3) Async — from an Algorand address (uses the SDK's indexer)
-const evm = await sdk.getEvmAddressFromAccount({ algorandAddress: "ABCD…XYZ" })
+const evm = await sdk.getEvmAddressFromAccount({ algorandAddress: 'ABCD…XYZ' })
 ```
 
 Note: lsig programs are not stored per-account on Algorand — they are persisted only in transaction history. `getEvmAddressFromAccount` works only for addresses that have already sent at least one transaction.
@@ -246,11 +247,13 @@ Returns the Algorand address and a `TransactionSigner` that can be passed direct
 The signer automatically determines what to sign: the transaction ID for standalone transactions, or the group ID for atomic groups.
 
 #### `signTxn({ evmAddress, txns, signMessage }): Promise<Uint8Array[]>`
+
 #### `signTxn({ evmAddress, txns, signature }): Promise<Uint8Array[]>`
 
 Signs one or more algosdk `Transaction` objects with the EVM lsig. Returns an array of signed transaction blobs ready for `sendRawTransaction`.
 
 **Parameters:**
+
 - `evmAddress` — hex string (with or without `0x` prefix)
 - `txns` — algosdk `Transaction[]` to sign (must already have group ID assigned via `algosdk.assignGroupID` if grouped)
 - `signMessage` — (variant 1) `(typedData: SignTypedDataParams) => Promise<string>` — receives the full EIP-712 typed data and should return the signature
@@ -259,11 +262,13 @@ Signs one or more algosdk `Transaction` objects with the EVM lsig. Returns an ar
 The payload signed is the group ID if there are more than 1 transactions, otherwise the transaction ID.
 
 **Example with callback:**
+
 ```typescript
 await sdk.signTxn({ evmAddress, txns, signMessage })
 ```
 
 **Example with pre-computed signature:**
+
 ```typescript
 const payload = AlgoXEvmSdk.getSignPayload(txns)
 const signature = await getSignature(payload)
@@ -293,10 +298,10 @@ interface SignTypedDataParams {
   domain: { name: string; version: string }
   types: {
     EIP712Domain: Array<{ name: string; type: string }>
-    "Algorand Transaction": Array<{ name: string; type: string }>
+    'Algorand Transaction': Array<{ name: string; type: string }>
   }
-  primaryType: "Algorand Transaction"
-  message: { "Transaction ID": string }
+  primaryType: 'Algorand Transaction'
+  message: { 'Transaction ID': string }
 }
 ```
 
@@ -329,7 +334,7 @@ Parses a 0x-prefixed 65-byte EVM signature hex string and returns the **66-byte 
 **Security**: Automatically normalizes signatures to lower-S form because the AVM only accepts lower-S signatures. If `s > n/2` (where n is the secp256k1 curve order), the signature is normalized to `n - s` with the recovery ID (`V`) flipped between 27 and 28.
 
 ```typescript
-const sig = parseEvmSignature("0x1234...") // 66 bytes: 0x01 || R || S || V
+const sig = parseEvmSignature('0x1234...') // 66 bytes: 0x01 || R || S || V
 // Returns lower-S–normalized signature with the LogicSig type byte prepended
 ```
 
