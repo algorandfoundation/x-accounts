@@ -637,12 +637,18 @@ importers:
       '@allbridge/bridge-core-sdk':
         specifier: ^3.29.1
         version: 3.29.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@d13co/algo-x-evm-ui':
+        specifier: workspace:*
+        version: link:../algo-x-evm-ui
       '@rainbow-me/rainbowkit':
         specifier: ^2.2.0
         version: 2.2.10(@tanstack/react-query@5.90.21(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(viem@2.46.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.4)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.46.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
       '@tailwindcss/cli':
         specifier: 4.1.18
         version: 4.1.18
+      '@tanstack/react-query':
+        specifier: '>=5.0.0'
+        version: 5.90.21(react@19.2.4)
       '@txnlab/use-wallet-react':
         specifier: link:../../../../use-wallet/packages/use-wallet-react
         version: link:../../../../use-wallet/packages/use-wallet-react
