@@ -42,4 +42,4 @@ Rather than signing raw bytes, xChain EVM uses [EIP-712](https://eips.ethereum.o
 - **You trust the Algorand network** to correctly execute the [`ecdsa_pk_recover`](https://dev.algorand.co/reference/algorand-teal/opcodes/#ecdsa_pk_recover) opcode
 - **You trust the Smart Account code** - it's open source and verifiable on-chain
 - **You trust the dApp UI** to correctly display transaction details before you sign
-    - **dApp-independent** transaction visualisation is coming soon
+  - **dApp-independent** transaction visualisation is coming soon

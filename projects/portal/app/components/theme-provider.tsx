@@ -28,9 +28,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     function apply(t: Theme) {
       if (t === 'system') {
-        const prefersDark = window.matchMedia(
-          '(prefers-color-scheme: dark)',
-        ).matches
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
         root.classList.toggle('dark', prefersDark)
       } else {
         root.classList.toggle('dark', t === 'dark')
@@ -48,11 +46,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, mounted])
 
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  )
+  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
 }
 
 export function useTheme() {

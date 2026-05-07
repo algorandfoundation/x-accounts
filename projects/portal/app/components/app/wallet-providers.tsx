@@ -46,19 +46,32 @@ const notices: NoticesConfig = {
           <li>This application is non-custodial. We do not control or store your funds, private keys, or assets.</li>
           <li>You are solely responsible for reviewing and approving all transactions initiated from your wallet.</li>
           <li>Blockchain transactions are irreversible and cannot be undone.</li>
-          <li>You are responsible for ensuring that you are interacting with the correct network, assets, and applications.</li>
           <li>
-            We are not liable for any loss of funds resulting from user error, incorrect transactions, or interactions with
-            third-party services or protocols.
+            You are responsible for ensuring that you are interacting with the correct network, assets, and
+            applications.
+          </li>
+          <li>
+            We are not liable for any loss of funds resulting from user error, incorrect transactions, or interactions
+            with third-party services or protocols.
           </li>
         </ul>
         <p>
           By continuing, you agree to our{' '}
-          <a href="https://xchain.algorand.co/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-[var(--wui-color-link)] hover:text-[var(--wui-color-link-hover)]">
+          <a
+            href="https://xchain.algorand.co/terms-of-service"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--wui-color-link)] hover:text-[var(--wui-color-link-hover)]"
+          >
             Terms of Service
           </a>{' '}
           and{' '}
-          <a href="https://algorand.co/algorand-foundation/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[var(--wui-color-link)] hover:text-[var(--wui-color-link-hover)]">
+          <a
+            href="https://algorand.co/algorand-foundation/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--wui-color-link)] hover:text-[var(--wui-color-link-hover)]"
+          >
             Privacy Policy
           </a>
           .
@@ -71,16 +84,28 @@ const notices: NoticesConfig = {
     text: (
       <>
         <p>
-          You are about to perform a cross-chain transaction. This transaction uses <a href="https://allbridge.io/" target="_blank" rel="noopener noreferrer" className="text-[var(--wui-color-link)] hover:text-[var(--wui-color-link-hover)]">
+          You are about to perform a cross-chain transaction. This transaction uses{' '}
+          <a
+            href="https://allbridge.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--wui-color-link)] hover:text-[var(--wui-color-link-hover)]"
+          >
             Allbridge
-          </a>, a third-party bridging service.
-          The Algorand Foundation does not control or guarantee the execution or outcome of this transaction.
+          </a>
+          , a third-party bridging service. The Algorand Foundation does not control or guarantee the execution or
+          outcome of this transaction.
         </p>
         <p className="mt-2">Please be aware:</p>
         <ul className="list-disc pl-5 my-2 space-y-1.5">
           <li>Cross-chain transfers may involve multiple steps across different blockchains.</li>
-          <li>Transactions may experience delays, partial completion, or failure due to network conditions or third-party services.</li>
-          <li>Smart contracts and bridging mechanisms carry inherent technical risks, including potential vulnerabilities.</li>
+          <li>
+            Transactions may experience delays, partial completion, or failure due to network conditions or third-party
+            services.
+          </li>
+          <li>
+            Smart contracts and bridging mechanisms carry inherent technical risks, including potential vulnerabilities.
+          </li>
           <li>You may incur fees on multiple networks, which may not be recoverable if a transaction fails.</li>
           <li>Assets received on another chain may be wrapped or represented differently than the original asset.</li>
         </ul>
@@ -126,7 +151,12 @@ export function WalletProviders({ children }: { children: ReactNode }) {
 
   return (
     <WalletProvider manager={walletManager}>
-      <WalletUIProvider theme={resolvedTheme} rainbowkit={rainbowkitConfig} notices={notices} swapRouter={haystackRouter}>
+      <WalletUIProvider
+        theme={resolvedTheme}
+        rainbowkit={rainbowkitConfig}
+        notices={notices}
+        swapRouter={haystackRouter}
+      >
         {children}
       </WalletUIProvider>
     </WalletProvider>

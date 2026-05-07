@@ -7,8 +7,14 @@ const root = import.meta.dirname
 
 // Correct @tanstack/store paths — pnpm hoists 0.8.0 from use-wallet but
 // @tanstack/react-router@1.167 needs 0.9.2 (has createStore/atom)
-const tanstackStorePath = path.resolve(root, '../../node_modules/.pnpm/@tanstack+store@0.9.2/node_modules/@tanstack/store/dist/esm/index.js')
-const tanstackReactStorePath = path.resolve(root, '../../node_modules/.pnpm/@tanstack+react-store@0.9.2_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/@tanstack/react-store/dist/esm/index.js')
+const tanstackStorePath = path.resolve(
+  root,
+  '../../node_modules/.pnpm/@tanstack+store@0.9.2/node_modules/@tanstack/store/dist/esm/index.js',
+)
+const tanstackReactStorePath = path.resolve(
+  root,
+  '../../node_modules/.pnpm/@tanstack+react-store@0.9.2_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/@tanstack/react-store/dist/esm/index.js',
+)
 
 // Real file shims for CJS packages (virtual modules break with /@fs/ served deps)
 const shimDir = path.resolve(root, 'app/shims')
@@ -25,11 +31,16 @@ export default defineConfig({
       enforce: 'pre',
       resolveId(id, _importer, options) {
         if (options?.ssr) return
-        try { if (this?.environment?.name === 'ssr') return } catch {}
+        try {
+          if (this?.environment?.name === 'ssr') return
+        } catch {}
         if (id === '@tanstack/store') return { id: tanstackStorePath, external: false }
         if (id === '@tanstack/react-store') return { id: tanstackReactStorePath, external: false }
         // buffer is handled by optimizeDeps.include below — don't intercept it here
-        if (id === 'use-sync-external-store/shim/with-selector' || id === 'use-sync-external-store/shim/with-selector.js')
+        if (
+          id === 'use-sync-external-store/shim/with-selector' ||
+          id === 'use-sync-external-store/shim/with-selector.js'
+        )
           return { id: path.join(shimDir, 'use-sync-external-store-with-selector.js'), external: false }
         if (id === 'use-sync-external-store/shim' || id === 'use-sync-external-store/shim/index.js')
           return { id: path.join(shimDir, 'use-sync-external-store.js'), external: false }

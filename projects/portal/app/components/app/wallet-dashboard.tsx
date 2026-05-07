@@ -149,7 +149,9 @@ export function WalletDashboard() {
   const toggleBalance = useCallback(() => {
     setShowAvailable((v) => {
       const next = !v
-      try { localStorage.setItem('portal:balance-pref', next ? 'available' : 'total') } catch {}
+      try {
+        localStorage.setItem('portal:balance-pref', next ? 'available' : 'total')
+      } catch {}
       return next
     })
   }, [])
@@ -185,8 +187,22 @@ export function WalletDashboard() {
         showAvailableBalance={showAvailable}
         onToggleBalance={toggleBalance}
         send={{ ...send, explorerUrl: getTxExplorerUrl(send.txId) }}
-        optIn={{ ...optIn, evmAddress, explorerUrl: getTxExplorerUrl(optIn.txId), peraData, fetchPeraData: fetchPeraFor }}
-        swap={{ ...swap, accountAssets: assetHoldings.length > 0 ? assetHoldings : undefined, totalBalance, availableBalance, explorerUrl: getTxExplorerUrl(swap.txId), peraData, fetchPeraData: fetchPeraFor }}
+        optIn={{
+          ...optIn,
+          evmAddress,
+          explorerUrl: getTxExplorerUrl(optIn.txId),
+          peraData,
+          fetchPeraData: fetchPeraFor,
+        }}
+        swap={{
+          ...swap,
+          accountAssets: assetHoldings.length > 0 ? assetHoldings : undefined,
+          totalBalance,
+          availableBalance,
+          explorerUrl: getTxExplorerUrl(swap.txId),
+          peraData,
+          fetchPeraData: fetchPeraFor,
+        }}
         bridge={bridgeProps}
         assets={assetHoldings.length > 0 ? assetHoldings : undefined}
         totalBalance={totalBalance}
