@@ -7,3 +7,7 @@ name = 'portal'
 
 [project.run]
 build = { commands = ['pnpm run build'], description = 'Build portal' }
+lint = { commands = ['pnpm run lint'], description = 'Lint portal' }
+format = { commands = ['pnpm run format'], description = 'Format portal code' }
+format-check = { commands = ['pnpm run format:check'], description = 'Check portal formatting' }
+typecheck = { commands = ['pnpm run typecheck'], description = 'Typecheck portal' }
