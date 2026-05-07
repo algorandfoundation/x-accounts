@@ -3,8 +3,8 @@ import { Buffer } from 'buffer'
 ;(globalThis as unknown as Record<string, unknown>).Buffer = Buffer
 // TODO figure this out
 // Stub TronWeb globals required by Allbridge SDK's bundled tronweb dependency
-if (!(globalThis as any).TronWebProto) {
-  ;(globalThis as any).TronWebProto = { Transaction: {} }
+if (!(globalThis as unknown as Record<string, unknown>).TronWebProto) {
+  ;(globalThis as unknown as Record<string, unknown>).TronWebProto = { Transaction: {} }
 }
 
 import { StrictMode, useState, useEffect, useCallback, useMemo } from 'react'
@@ -63,6 +63,7 @@ async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 function Root() {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem('app-theme')
@@ -72,19 +73,23 @@ function Root() {
 
   const [network, setNetworkState] = useState<AlgorandNetwork>(getInitialNetwork)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const walletManager = useMemo(() => makeWalletManager(network), [])
 
-  const setNetwork = useCallback((n: AlgorandNetwork) => {
-    ;(async () => {
-      localStorage.setItem('algorand-network', n)
-      setNetworkState(n)
-      // important! if multiple networks are supported, the wallet manager needs to be informed of network changes so it can update its internal state and reinitialize connections as needed
-      walletManager.setActiveNetwork(n)
-      // dirty temp workaround for a network sync bug
-      await sleep(100)
-      window.location.reload()
-    })()
-  }, [])
+  const setNetwork = useCallback(
+    (n: AlgorandNetwork) => {
+      void (async () => {
+        localStorage.setItem('algorand-network', n)
+        setNetworkState(n)
+        // important! if multiple networks are supported, the wallet manager needs to be informed of network changes so it can update its internal state and reinitialize connections as needed
+        await walletManager.setActiveNetwork(n)
+        // dirty temp workaround for a network sync bug
+        await sleep(100)
+        window.location.reload()
+      })()
+    },
+    [walletManager],
+  )
 
   useEffect(() => {
     localStorage.setItem('app-theme', theme)
