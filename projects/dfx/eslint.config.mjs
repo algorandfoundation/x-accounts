@@ -12,7 +12,14 @@ export default tseslint.config(
       globals: {
         ...globals.node,
       },
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
   ...baseConfig,
+  {
+    files: ['*.config.ts'],
+    extends: [tseslint.configs.disableTypeChecked],
+  },
 )
