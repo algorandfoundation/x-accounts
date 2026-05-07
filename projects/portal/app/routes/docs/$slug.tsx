@@ -14,9 +14,7 @@ export const Route = createFileRoute('/docs/$slug')({
   head: ({ loaderData }) => ({
     meta: [
       { title: `${loaderData?.meta.title ?? 'Doc'} — xChain EVM Docs` },
-      ...(loaderData?.meta.description
-        ? [{ name: 'description', content: loaderData.meta.description }]
-        : []),
+      ...(loaderData?.meta.description ? [{ name: 'description', content: loaderData.meta.description }] : []),
     ],
   }),
 })
@@ -24,17 +22,16 @@ export const Route = createFileRoute('/docs/$slug')({
 function DocPage() {
   const doc = Route.useLoaderData()
   const allDocs = getDocs()
-  const currentIndex = allDocs.findIndex(
-    (d) => d.meta.slug === doc.meta.slug,
-  )
+  const currentIndex = allDocs.findIndex((d) => d.meta.slug === doc.meta.slug)
   const prev = currentIndex > 0 ? allDocs[currentIndex - 1] : null
-  const next =
-    currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null
+  const next = currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null
 
   return (
     <div>
       <article className="prose dark:prose-invert max-w-none">
-        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{doc.content}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+          {doc.content}
+        </Markdown>
       </article>
 
       {/* Prev/Next navigation */}

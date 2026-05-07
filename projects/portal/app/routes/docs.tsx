@@ -25,7 +25,12 @@ function DocsSidebar({ onNavigate }: { onNavigate?: () => void }) {
         return (
           <div key={doc.slug}>
             {showCategory && (
-              <p className={cn('mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground', currentCategory !== docs[0].category && '!mt-6')}>
+              <p
+                className={cn(
+                  'mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground',
+                  currentCategory !== docs[0].category && '!mt-6',
+                )}
+              >
                 {doc.category}
               </p>
             )}
@@ -36,8 +41,7 @@ function DocsSidebar({ onNavigate }: { onNavigate?: () => void }) {
                 'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground',
               )}
               activeProps={{
-                className:
-                  'bg-accent text-accent-foreground font-medium',
+                className: 'bg-accent text-accent-foreground font-medium',
               }}
               onClick={onNavigate}
             >
@@ -70,21 +74,14 @@ function DocsLayout() {
 
       <div className="mx-auto flex w-full max-w-6xl flex-1">
         {/* Sidebar - desktop: static in flex, mobile: fixed overlay */}
-        <aside
-          className={cn(
-            'hidden w-64 shrink-0 border-r p-4 pt-6 lg:block',
-          )}
-        >
+        <aside className={cn('hidden w-64 shrink-0 border-r p-4 pt-6 lg:block')}>
           <DocsSidebar />
         </aside>
 
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
           <>
-            <div
-              className="fixed inset-0 top-28 z-20 bg-black/20 lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            />
+            <div className="fixed inset-0 top-28 z-20 bg-black/20 lg:hidden" onClick={() => setSidebarOpen(false)} />
             <aside className="fixed left-0 top-28 bottom-0 z-30 w-64 overflow-y-auto bg-background p-4 shadow-lg lg:hidden">
               <DocsSidebar onNavigate={() => setSidebarOpen(false)} />
             </aside>

@@ -11,9 +11,7 @@ export function ThemeToggle() {
 
   // Resolve what's actually shown
   const isDark =
-    mounted &&
-    (theme === 'dark' ||
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches))
+    mounted && (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches))
 
   function cycle() {
     setTheme(isDark ? 'light' : 'dark')

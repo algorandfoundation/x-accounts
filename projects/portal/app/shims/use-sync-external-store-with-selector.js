@@ -14,7 +14,8 @@ export function useSyncExternalStoreWithSelector(subscribe, getSnapshot, getServ
     const snapshot = getSnapshot()
     if (snapshot === prevSnapshotRef.current && prevRef.current !== undefined) return prevRef.current
     const next = selectorRef.current(snapshot)
-    if (prevRef.current !== undefined && isEqualRef.current && isEqualRef.current(prevRef.current, next)) return prevRef.current
+    if (prevRef.current !== undefined && isEqualRef.current && isEqualRef.current(prevRef.current, next))
+      return prevRef.current
     prevSnapshotRef.current = snapshot
     prevRef.current = next
     return next
