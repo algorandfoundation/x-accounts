@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback } from 'react'
 import { useWallet, useNetwork } from '@txnlab/use-wallet-react'
 import { useQueryClient, useIsFetching } from '@tanstack/react-query'
 import { useAccountInfo, useBridgeDialog, mapBridgeToPanelProps, useWalletUI } from '@txnlab/use-wallet-ui-react'
-import { getOpenInEntries } from '@d13co/open-in'
+import { getOpenInEntries, type Network } from '@d13co/open-in'
 import {
   ManagePanel,
   useSendPanel,
@@ -13,6 +13,7 @@ import {
   usePeraAssetData,
   type WalletAdapter,
   type AssetHoldingDisplay,
+  type AssetLookupClient,
 } from '@d13co/algo-x-evm-ui'
 
 export function WalletDashboard() {
@@ -20,7 +21,7 @@ export function WalletDashboard() {
   const { activeNetwork } = useNetwork()
   const queryClient = useQueryClient()
   const isFetching = useIsFetching()
-  const { bridge, openBridge, enableBridge } = useBridgeDialog()
+  const { bridge, enableBridge } = useBridgeDialog()
 
   const [showAvailable, setShowAvailable] = useState(() => {
     try {
@@ -51,7 +52,7 @@ export function WalletDashboard() {
   const registry = useAssetRegistry(algodClient, activeNetwork)
 
   const onTransactionSuccess = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ['account-info'] })
+    void queryClient.invalidateQueries({ queryKey: ['account-info'] })
   }, [queryClient])
 
   const wallet: WalletAdapter = useMemo(
@@ -69,7 +70,7 @@ export function WalletDashboard() {
 
   const { swap: swapOptions } = useWalletUI()
 
-  const { assets: assetInfoMap } = useAssets(assetIds, algodClient as any, activeNetwork)
+  const { assets: assetInfoMap } = useAssets(assetIds, algodClient as AssetLookupClient | undefined, activeNetwork)
 
   const heldAssetIds = useMemo(() => allHoldings.map((a) => Number(a.assetId)), [allHoldings])
   const { peraData, fetchFor: fetchPeraFor } = usePeraAssetData(heldAssetIds, activeNetwork)
@@ -127,10 +128,10 @@ export function WalletDashboard() {
   const getTxExplorerUrl = useCallback(
     (txId: string | null) => {
       if (!txId || !activeNetwork) return null
-      const entries = getOpenInEntries(activeNetwork as any, 'transaction')
+      const entries = getOpenInEntries(activeNetwork as Network, 'transaction')
       const first = entries[0]
       if (!first) return null
-      return first.getUrl(activeNetwork as any, 'transaction', txId)
+      return first.getUrl(activeNetwork as Network, 'transaction', txId)
     },
     [activeNetwork],
   )
@@ -138,10 +139,10 @@ export function WalletDashboard() {
   // Explore account in block explorer
   const handleExplore = useMemo(() => {
     if (!activeAddress || !activeNetwork) return undefined
-    const entries = getOpenInEntries(activeNetwork as any, 'account')
+    const entries = getOpenInEntries(activeNetwork as Network, 'account')
     const first = entries[0]
     if (!first) return undefined
-    const url = first.getUrl(activeNetwork as any, 'account', activeAddress)
+    const url = first.getUrl(activeNetwork as Network, 'account', activeAddress)
     if (!url) return undefined
     return () => window.open(url, '_blank', 'noopener,noreferrer')
   }, [activeAddress, activeNetwork])
@@ -151,7 +152,9 @@ export function WalletDashboard() {
       const next = !v
       try {
         localStorage.setItem('portal:balance-pref', next ? 'available' : 'total')
-      } catch {}
+      } catch {
+        // ignore storage errors
+      }
       return next
     })
   }, [])

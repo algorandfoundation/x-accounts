@@ -15,20 +15,18 @@ export const Route = createFileRoute('/docs')({
 
 function DocsSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const docs = getDocNav()
-  let currentCategory = ''
 
   return (
     <nav className="space-y-1">
-      {docs.map((doc) => {
-        const showCategory = doc.category !== currentCategory
-        currentCategory = doc.category
+      {docs.map((doc, i) => {
+        const showCategory = i === 0 || doc.category !== docs[i - 1].category
         return (
           <div key={doc.slug}>
             {showCategory && (
               <p
                 className={cn(
                   'mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground',
-                  currentCategory !== docs[0].category && '!mt-6',
+                  doc.category !== docs[0].category && '!mt-6',
                 )}
               >
                 {doc.category}

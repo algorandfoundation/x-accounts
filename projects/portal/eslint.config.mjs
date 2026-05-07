@@ -18,7 +18,20 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
     },
   },
+  {
+    files: ['**/routes/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+
   ...baseConfig,
 )
