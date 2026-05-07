@@ -231,7 +231,11 @@ describe('LogicSig EVM signature validation', () => {
         sigBytes[i] = 0
       }
 
-      const invalidSig = '0x' + Array.from(sigBytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+      const invalidSig =
+        '0x' +
+        Array.from(sigBytes)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
 
       // Should fail during ECDSA recovery
       const [signed] = await sdk.signTxn({
@@ -274,7 +278,11 @@ describe('LogicSig EVM signature validation', () => {
         sigBytes[i] = 0xff
       }
 
-      const invalidSig = '0x' + Array.from(sigBytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+      const invalidSig =
+        '0x' +
+        Array.from(sigBytes)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
 
       // Should fail during ECDSA recovery
       const [signed] = await sdk.signTxn({
@@ -317,7 +325,11 @@ describe('LogicSig EVM signature validation', () => {
         sigBytes[i] = 0
       }
 
-      const invalidSig = '0x' + Array.from(sigBytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+      const invalidSig =
+        '0x' +
+        Array.from(sigBytes)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
 
       // Should fail during ECDSA recovery
       const [signed] = await sdk.signTxn({
@@ -360,7 +372,11 @@ describe('LogicSig EVM signature validation', () => {
         sigBytes[i] = 0xff
       }
 
-      const invalidSig = '0x' + Array.from(sigBytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+      const invalidSig =
+        '0x' +
+        Array.from(sigBytes)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
 
       // Should fail during ECDSA recovery
       const [signed] = await sdk.signTxn({
@@ -401,7 +417,11 @@ describe('LogicSig EVM signature validation', () => {
       // Mutate V to invalid value (not 27 or 28)
       sigBytes[64] = 29
 
-      const invalidSig = '0x' + Array.from(sigBytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+      const invalidSig =
+        '0x' +
+        Array.from(sigBytes)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
 
       // Should fail - invalid recovery ID after subtraction (29 - 27 = 2, valid is 0 or 1)
       const [signed] = await sdk.signTxn({
@@ -443,7 +463,11 @@ describe('LogicSig EVM signature validation', () => {
       const v = sigBytes[64]
       sigBytes[64] = v === 27 ? 28 : 27
 
-      const invalidSig = '0x' + Array.from(sigBytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+      const invalidSig =
+        '0x' +
+        Array.from(sigBytes)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
 
       // Should fail - recovers different public key, address won't match
       const [signed] = await sdk.signTxn({
@@ -478,7 +502,11 @@ describe('LogicSig EVM signature validation', () => {
       // Set V to valid value to avoid early rejection
       randomSig[64] = 27
 
-      const invalidSig = '0x' + Array.from(randomSig).map((b) => b.toString(16).padStart(2, '0')).join('')
+      const invalidSig =
+        '0x' +
+        Array.from(randomSig)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
 
       // Should fail - invalid signature
       const [signed] = await sdk.signTxn({
@@ -582,7 +610,11 @@ describe('LogicSig EVM signature validation', () => {
         const v = sigBytes[64]
         upperSBytes[64] = v === 27 ? 28 : 27
 
-        upperSSig = '0x' + Array.from(upperSBytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+        upperSSig =
+          '0x' +
+          Array.from(upperSBytes)
+            .map((b) => b.toString(16).padStart(2, '0'))
+            .join('')
       }
 
       // Verify that we have an upper-S signature for testing

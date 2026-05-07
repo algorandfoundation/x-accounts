@@ -162,6 +162,7 @@ The LogicSig is written in [Algorand TypeScript](https://github.com/algorandfoun
 7. **Validate**: `recoveredAddress === owner`
 
 **Payload signed:**
+
 - Single transaction: Transaction ID
 - Atomic group: Group ID
 
@@ -182,9 +183,9 @@ The first byte of `arg[0]` is a **type byte** that identifies the signature sche
 
 The type byte enables future composition of multiple authentication methods within a single LogicSig. For example, a LogicSig could accept either an EVM (secp256k1) signature **or** a WebAuthn/Passkey (secp256r1) signature, each identified by a different type byte. The contract would branch on the type byte to select the correct verification logic, enabling multi-scheme authentication (e.g. EVM || Passkey) in a single Algorand account.
 
-| Type Byte | Scheme | Status |
-|-----------|--------|--------|
-| `0x01` | EVM (secp256k1, EIP-712) | Active |
+| Type Byte | Scheme                   | Status |
+| --------- | ------------------------ | ------ |
+| `0x01`    | EVM (secp256k1, EIP-712) | Active |
 
 ## Security Considerations
 
@@ -207,8 +208,8 @@ const algorand = AlgorandClient.fromEnvironment()
 const sdk = new AlgoXEvmSdk({ algorand })
 
 // Get the Algorand address
-const addr = await sdk.getAddress({ 
-  evmAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2' 
+const addr = await sdk.getAddress({
+  evmAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2',
 })
 
 // Fund the address (minimum 0.1 ALGO)
