@@ -3,8 +3,8 @@ import {
   LSIG_OWNER_OFFSET,
   LSIG_TEMPLATE_BASE64,
   LSIG_TEMPLATE_LENGTH,
-} from "./generated/lsig-template"
-import { base64ToBytes, bytesToHex } from "./utils"
+} from './generated/lsig-template'
+import { base64ToBytes, bytesToHex } from './utils'
 
 const TEMPLATE_BYTES = base64ToBytes(LSIG_TEMPLATE_BASE64)
 
