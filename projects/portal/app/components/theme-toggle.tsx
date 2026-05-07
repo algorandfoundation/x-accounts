@@ -1,17 +1,12 @@
 import { Moon, Sun } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useTheme } from './theme-provider'
+import { useResolvedTheme, useTheme } from './use-theme'
 import { Button } from './ui/button'
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { setTheme } = useTheme()
+  const resolvedTheme = useResolvedTheme()
 
-  useEffect(() => setMounted(true), [])
-
-  // Resolve what's actually shown
-  const isDark =
-    mounted && (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches))
+  const isDark = resolvedTheme === 'dark'
 
   function cycle() {
     setTheme(isDark ? 'light' : 'dark')

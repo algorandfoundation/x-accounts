@@ -33,7 +33,9 @@ export default defineConfig({
         if (options?.ssr) return
         try {
           if (this?.environment?.name === 'ssr') return
-        } catch {}
+        } catch {
+          // environment API unavailable in some Vite versions
+        }
         if (id === '@tanstack/store') return { id: tanstackStorePath, external: false }
         if (id === '@tanstack/react-store') return { id: tanstackReactStorePath, external: false }
         // buffer is handled by optimizeDeps.include below — don't intercept it here

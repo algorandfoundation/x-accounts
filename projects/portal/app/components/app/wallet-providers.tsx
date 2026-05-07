@@ -1,12 +1,12 @@
 import { Buffer } from 'buffer'
 import { type ReactNode, useMemo } from 'react'
-import { useResolvedTheme } from '~/components/theme-provider'
+import { useResolvedTheme } from '~/components/use-theme'
 
 // Polyfills for wallet/bridge SDK dependencies (client-only via lazy load)
 if (typeof window !== 'undefined') {
-  ;(globalThis as any).Buffer = Buffer
-  if (!(globalThis as any).TronWebProto) {
-    ;(globalThis as any).TronWebProto = { Transaction: {} }
+  ;(globalThis as Record<string, unknown>).Buffer = Buffer
+  if (!(globalThis as Record<string, unknown>).TronWebProto) {
+    ;(globalThis as Record<string, unknown>).TronWebProto = { Transaction: {} }
   }
 }
 import { WalletProvider, WalletManager, WalletId, LogLevel } from '@txnlab/use-wallet-react'
@@ -18,6 +18,7 @@ import { RouterClient } from '@txnlab/haystack-router'
 import '@rainbow-me/rainbowkit/styles.css'
 import '@txnlab/use-wallet-ui-react/dist/style.css'
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const wagmiConfig = getDefaultConfig({
   appName: 'xChain EVM Portal',
   projectId: '3404862cca4501e4d84be405269d955c',

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -7,21 +7,14 @@ interface ThemeContextValue {
   setTheme: (theme: Theme) => void
 }
 
-const ThemeContext = createContext<ThemeContextValue>({
+// eslint-disable-next-line react-refresh/only-export-components
+export const ThemeContext = createContext<ThemeContextValue>({
   theme: 'system',
   setTheme: () => {},
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('system')
-
-  // Read persisted theme after mount to avoid SSR hydration mismatch
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    const stored = localStorage.getItem('theme') as Theme | null
-    if (stored && stored !== 'system') setTheme(stored)
-    setMounted(true)
-  }, [])
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem('theme') as Theme | null) ?? 'system')
 
   useEffect(() => {
     const root = document.documentElement
@@ -36,7 +29,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
 
     apply(theme)
-    if (mounted) localStorage.setItem('theme', theme)
+    localStorage.setItem('theme', theme)
 
     if (theme === 'system') {
       const mq = window.matchMedia('(prefers-color-scheme: dark)')
@@ -44,31 +37,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       mq.addEventListener('change', handler)
       return () => mq.removeEventListener('change', handler)
     }
-  }, [theme, mounted])
-
-  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
-}
-
-export function useTheme() {
-  return useContext(ThemeContext)
-}
-
-/** Returns the effective 'light' or 'dark' value, resolving 'system' to the actual preference. */
-export function useResolvedTheme(): 'light' | 'dark' {
-  const { theme } = useTheme()
-  const [resolved, setResolved] = useState<'light' | 'dark'>('light')
-
-  useEffect(() => {
-    if (theme !== 'system') {
-      setResolved(theme)
-      return
-    }
-    const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    setResolved(mq.matches ? 'dark' : 'light')
-    const handler = (e: MediaQueryListEvent) => setResolved(e.matches ? 'dark' : 'light')
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
   }, [theme])
 
-  return resolved
+  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
 }

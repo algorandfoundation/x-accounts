@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { ArrowUpRight, Book, BookOpen } from 'lucide-react'
+import { ArrowUpRight, BookOpen } from 'lucide-react'
 import { cn } from '~/lib/utils'
 import { Logo } from '~/components/logo'
 import { ThemeToggle } from '~/components/theme-toggle'
