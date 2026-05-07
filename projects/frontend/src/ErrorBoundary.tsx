@@ -8,6 +8,7 @@ interface State {
   error: Error | null
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 function ErrorDialog({ error }: { error: Error }) {
   const text = `${error.message}\n\n${error.stack ?? ''}`.trim()
 
