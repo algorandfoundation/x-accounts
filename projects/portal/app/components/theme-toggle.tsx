@@ -1,15 +1,15 @@
-import { Moon, Sun } from 'lucide-react'
-import { useResolvedTheme, useTheme } from './use-theme'
-import { Button } from './ui/button'
+import { Moon, Sun } from "lucide-react"
+import { useResolvedTheme, useTheme } from "./use-theme"
+import { Button } from "./ui/button"
 
 export function ThemeToggle() {
   const { setTheme } = useTheme()
   const resolvedTheme = useResolvedTheme()
 
-  const isDark = resolvedTheme === 'dark'
+  const isDark = resolvedTheme === "dark"
 
   function cycle() {
-    setTheme(isDark ? 'light' : 'dark')
+    setTheme(isDark ? "light" : "dark")
   }
 
   return (

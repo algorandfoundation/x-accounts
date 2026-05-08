@@ -16,9 +16,9 @@ export function base64ToBytes(b64: string): Uint8Array {
 
 /** Encode bytes as 0x-prefixed lowercase hex. */
 export function bytesToHex(bytes: Uint8Array): `0x${string}` {
-  let hex = ''
+  let hex = ""
   for (let i = 0; i < bytes.length; i++) {
-    hex += bytes[i].toString(16).padStart(2, '0')
+    hex += bytes[i].toString(16).padStart(2, "0")
   }
   return `0x${hex}`
 }
@@ -26,7 +26,7 @@ export function bytesToHex(bytes: Uint8Array): `0x${string}` {
 /**
  * secp256k1 curve order and half order for lower-S normalization
  */
-const SECP256K1_N = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141')
+const SECP256K1_N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141")
 const SECP256K1_HALF_N = SECP256K1_N / 2n
 
 /**
@@ -38,7 +38,7 @@ const SECP256K1_HALF_N = SECP256K1_N / 2n
  */
 function normalizeLowerS(sigBytes: Uint8Array): Uint8Array {
   if (sigBytes.length !== 65) {
-    throw new Error('Invalid signature length')
+    throw new Error("Invalid signature length")
   }
 
   // Extract s (bytes 32-63)
@@ -85,7 +85,7 @@ export const EVM_LSIG_TYPE = 0x01
  * Automatically normalizes to lower-S form to prevent signature malleability.
  */
 export function parseEvmSignature(sigHex: string): Uint8Array {
-  const hex = sigHex.startsWith('0x') ? sigHex.slice(2) : sigHex
+  const hex = sigHex.startsWith("0x") ? sigHex.slice(2) : sigHex
   const sigBytes = new Uint8Array(65)
   for (let i = 0; i < 65; i++) {
     sigBytes[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16)
@@ -103,7 +103,7 @@ export function parseEvmSignature(sigHex: string): Uint8Array {
  * Algorand chain ID used for EVM wallet chain registration (wallet_addEthereumChain)
  */
 export const ALGORAND_CHAIN_ID = 4160
-export const ALGORAND_CHAIN_ID_HEX = '0x' + ALGORAND_CHAIN_ID.toString(16)
+export const ALGORAND_CHAIN_ID_HEX = "0x" + ALGORAND_CHAIN_ID.toString(16)
 
 /**
  * EVM chain configuration for Algorand.
@@ -111,14 +111,14 @@ export const ALGORAND_CHAIN_ID_HEX = '0x' + ALGORAND_CHAIN_ID.toString(16)
  */
 export const ALGORAND_EVM_CHAIN_CONFIG = {
   chainId: ALGORAND_CHAIN_ID_HEX,
-  chainName: 'Algorand',
+  chainName: "Algorand",
   nativeCurrency: {
-    name: 'ALGO',
-    symbol: 'ALGO',
+    name: "ALGO",
+    symbol: "ALGO",
     decimals: 18, // MetaMask requires 18 (even though ALGO is 6)
   },
-  rpcUrls: ['https://x-evm-rpc.algorand.tech'],
-  blockExplorerUrls: ['https://allo.info', 'https://explorer.perawallet.app/', 'https://lora.algokit.io'],
+  rpcUrls: ["https://x-evm-rpc.algorand.tech"],
+  blockExplorerUrls: ["https://allo.info", "https://explorer.perawallet.app/", "https://lora.algokit.io"],
 }
 
 /**
@@ -136,30 +136,30 @@ export const algorandChain = {
   },
   blockExplorers: {
     default: {
-      name: 'Allo',
+      name: "Allo",
       url: ALGORAND_EVM_CHAIN_CONFIG.blockExplorerUrls[0],
     },
   },
 } as const
 
 export const EIP712_DOMAIN = {
-  name: 'Algorand x EVM',
-  version: '1',
+  name: "Algorand x EVM",
+  version: "1",
 } as const
 
 /**
  * EIP-712 Types for Algorand transaction signing
  */
 export const EIP712_TYPES = {
-  'Algorand Transaction': [{ name: 'Transaction ID', type: 'bytes32' }],
+  "Algorand Transaction": [{ name: "Transaction ID", type: "bytes32" }],
 }
 
 /**
  * EIP-712 domain type descriptors (included in types object for signing)
  */
 const EIP712_DOMAIN_TYPE = [
-  { name: 'name', type: 'string' },
-  { name: 'version', type: 'string' },
+  { name: "name", type: "string" },
+  { name: "version", type: "string" },
 ] as const
 
 /**
@@ -169,8 +169,8 @@ const EIP712_DOMAIN_TYPE = [
  * @param payload - The 32-byte transaction ID or group ID
  * @returns EIP-712 message object
  */
-export function formatEIP712Message(payload: Uint8Array): { 'Transaction ID': `0x${string}` } {
-  return { 'Transaction ID': bytesToHex(payload) as `0x${string}` }
+export function formatEIP712Message(payload: Uint8Array): { "Transaction ID": `0x${string}` } {
+  return { "Transaction ID": bytesToHex(payload) as `0x${string}` }
 }
 
 /**
@@ -183,8 +183,8 @@ export function formatEIP712Message(payload: Uint8Array): { 'Transaction ID': `0
 export interface SignTypedDataParams {
   domain: typeof EIP712_DOMAIN
   types: typeof EIP712_TYPES & { EIP712Domain: typeof EIP712_DOMAIN_TYPE }
-  primaryType: 'Algorand Transaction'
-  message: { 'Transaction ID': `0x${string}` }
+  primaryType: "Algorand Transaction"
+  message: { "Transaction ID": `0x${string}` }
 }
 
 /**
@@ -201,7 +201,7 @@ export function buildTypedData(payload: Uint8Array): SignTypedDataParams {
       EIP712Domain: EIP712_DOMAIN_TYPE,
       ...EIP712_TYPES,
     },
-    primaryType: 'Algorand Transaction',
+    primaryType: "Algorand Transaction",
     message: formatEIP712Message(payload),
   }
 }

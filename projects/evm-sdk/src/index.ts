@@ -1,8 +1,8 @@
-import type { AlgorandClient } from '@algorandfoundation/algokit-utils'
-import algosdk from 'algosdk'
-import { ALGO_X_EVM_LSIG_TEAL } from './generated/teal'
-import { getEvmAddressFromProgram } from './lsig-detect'
-import { SignTypedDataParams, buildTypedData, hexToBytes, parseEvmSignature } from './utils'
+import type { AlgorandClient } from "@algorandfoundation/algokit-utils"
+import algosdk from "algosdk"
+import { ALGO_X_EVM_LSIG_TEAL } from "./generated/teal"
+import { getEvmAddressFromProgram } from "./lsig-detect"
+import { SignTypedDataParams, buildTypedData, hexToBytes, parseEvmSignature } from "./utils"
 export {
   ALGORAND_CHAIN_ID,
   ALGORAND_CHAIN_ID_HEX,
@@ -15,9 +15,9 @@ export {
   formatEIP712Message,
   hexToBytes,
   parseEvmSignature,
-} from './utils'
-export type { SignTypedDataParams } from './utils'
-export { getEvmAddressFromProgram, isXChainLsigProgram } from './lsig-detect'
+} from "./utils"
+export type { SignTypedDataParams } from "./utils"
+export { getEvmAddressFromProgram, isXChainLsigProgram } from "./lsig-detect"
 
 export class AlgoXEvmSdk {
   private algorand: AlgorandClient
@@ -28,7 +28,7 @@ export class AlgoXEvmSdk {
   }
 
   private static normalizeAddress(evmAddress: string): string {
-    return evmAddress.startsWith('0x') ? evmAddress.slice(2).toLowerCase() : evmAddress.toLowerCase()
+    return evmAddress.startsWith("0x") ? evmAddress.slice(2).toLowerCase() : evmAddress.toLowerCase()
   }
 
   private async getCompiled(evmAddress: string): Promise<Uint8Array> {
@@ -90,7 +90,7 @@ export class AlgoXEvmSdk {
     const result = await indexer
       .searchForTransactions()
       .address(algorandAddress)
-      .addressRole('sender')
+      .addressRole("sender")
       .limit(limit)
       .do()
     for (const txn of result.transactions ?? []) {
@@ -105,7 +105,7 @@ export class AlgoXEvmSdk {
   /** Get the payload for the EVM wallet to sign. Group ID if group.length > 1, otherwise Txn ID */
   static getSignPayload(txnGroup: algosdk.Transaction[]): Uint8Array {
     if (txnGroup.length === 0) {
-      throw new Error('Cannot get sign payload from empty transaction group')
+      throw new Error("Cannot get sign payload from empty transaction group")
     }
     // For grouped txns of more than 1, sign the group ID; for standalone sign the txn ID
     return txnGroup.length > 1 ? txnGroup[0].group! : txnGroup[0].rawTxID()
@@ -184,7 +184,7 @@ export class AlgoXEvmSdk {
       const payload = AlgoXEvmSdk.getSignPayload(txns)
       evmSig = await signMessage(buildTypedData(payload))
     } else {
-      throw new Error('Either signMessage or signature must be provided')
+      throw new Error("Either signMessage or signature must be provided")
     }
 
     const sigBytes = parseEvmSignature(evmSig)

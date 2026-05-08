@@ -1,7 +1,7 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
-import { getDocs } from '~/lib/docs'
+import { createFileRoute, Navigate } from "@tanstack/react-router"
+import { getDocs } from "~/lib/docs"
 
-export const Route = createFileRoute('/docs/')({
+export const Route = createFileRoute("/docs/")({
   component: DocsIndex,
 })
 

@@ -1,14 +1,14 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-import { baseConfig } from '../../eslint.config.base.mjs'
+import js from "@eslint/js"
+import globals from "globals"
+import reactHooks from "eslint-plugin-react-hooks"
+import reactRefresh from "eslint-plugin-react-refresh"
+import tseslint from "typescript-eslint"
+import { baseConfig } from "../../eslint.config.base.mjs"
 
 export default tseslint.config(
-  { ignores: ['dist', '**/*.gen.ts'] },
+  { ignores: ["dist", "**/*.gen.ts"] },
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.{ts,tsx}"],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -23,13 +23,13 @@ export default tseslint.config(
       },
     },
     rules: {
-      'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
+      "react-refresh/only-export-components": ["error", { allowConstantExport: true }],
     },
   },
   {
-    files: ['**/routes/**/*.{ts,tsx}'],
+    files: ["**/routes/**/*.{ts,tsx}"],
     rules: {
-      'react-refresh/only-export-components': 'off',
+      "react-refresh/only-export-components": "off",
     },
   },
 

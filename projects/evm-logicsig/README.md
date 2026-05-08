@@ -201,15 +201,15 @@ See the [algo-x-evm-sdk SDK](../evm-sdk/README.md) for integration examples.
 Quick example:
 
 ```typescript
-import { AlgoXEvmSdk } from 'algo-x-evm-sdk'
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
+import { AlgoXEvmSdk } from "algo-x-evm-sdk"
+import { AlgorandClient } from "@algorandfoundation/algokit-utils"
 
 const algorand = AlgorandClient.fromEnvironment()
 const sdk = new AlgoXEvmSdk({ algorand })
 
 // Get the Algorand address
 const addr = await sdk.getAddress({
-  evmAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2',
+  evmAddress: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2",
 })
 
 // Fund the address (minimum 0.1 ALGO)

@@ -1,27 +1,27 @@
-import { Buffer } from 'buffer'
-import { type ReactNode, useMemo } from 'react'
-import { useResolvedTheme } from '~/components/use-theme'
+import { Buffer } from "buffer"
+import { type ReactNode, useMemo } from "react"
+import { useResolvedTheme } from "~/components/use-theme"
 
 // Polyfills for wallet/bridge SDK dependencies (client-only via lazy load)
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   ;(globalThis as Record<string, unknown>).Buffer = Buffer
   if (!(globalThis as Record<string, unknown>).TronWebProto) {
     ;(globalThis as Record<string, unknown>).TronWebProto = { Transaction: {} }
   }
 }
-import { WalletProvider, WalletManager, WalletId, LogLevel } from '@txnlab/use-wallet-react'
-import { WalletUIProvider, type NoticesConfig } from '@txnlab/use-wallet-ui-react'
-import { getDefaultConfig, createRainbowKitConfig } from '@txnlab/use-wallet-ui-react/rainbowkit'
-import { algorandChain } from 'algo-x-evm-sdk'
-import { RouterClient } from '@txnlab/haystack-router'
+import { WalletProvider, WalletManager, WalletId, LogLevel } from "@txnlab/use-wallet-react"
+import { WalletUIProvider, type NoticesConfig } from "@txnlab/use-wallet-ui-react"
+import { getDefaultConfig, createRainbowKitConfig } from "@txnlab/use-wallet-ui-react/rainbowkit"
+import { algorandChain } from "algo-x-evm-sdk"
+import { RouterClient } from "@txnlab/haystack-router"
 
-import '@rainbow-me/rainbowkit/styles.css'
-import '@txnlab/use-wallet-ui-react/dist/style.css'
+import "@rainbow-me/rainbowkit/styles.css"
+import "@txnlab/use-wallet-ui-react/dist/style.css"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const wagmiConfig = getDefaultConfig({
-  appName: 'xChain EVM Portal',
-  projectId: '3404862cca4501e4d84be405269d955c',
+  appName: "xChain EVM Portal",
+  projectId: "3404862cca4501e4d84be405269d955c",
   chains: [algorandChain],
   ssr: false,
 })
@@ -33,13 +33,13 @@ const rainbowkitConfig = createRainbowKitConfig({ wagmiConfig })
 // Swap router — module-scope so caches aren't rebuilt per render. Wired into
 // WalletUIProvider via `swapRouter` so every consumer reads the same config.
 const haystackRouter = new RouterClient({
-  apiKey: 'bd650cf4-3d73-4e3f-ad37-1ada754bd659',
+  apiKey: "bd650cf4-3d73-4e3f-ad37-1ada754bd659",
   autoOptIn: true,
 })
 
 const notices: NoticesConfig = {
-  'evm-connect': {
-    kind: 'disclaimer',
+  "evm-connect": {
+    kind: "disclaimer",
     text: (
       <>
         <p>By connecting your wallet, you acknowledge and agree that:</p>
@@ -57,7 +57,7 @@ const notices: NoticesConfig = {
           </li>
         </ul>
         <p>
-          By continuing, you agree to our{' '}
+          By continuing, you agree to our{" "}
           <a
             href="https://xchain.algorand.co/terms-of-service"
             target="_blank"
@@ -65,8 +65,8 @@ const notices: NoticesConfig = {
             className="text-[var(--wui-color-link)] hover:text-[var(--wui-color-link-hover)]"
           >
             Terms of Service
-          </a>{' '}
-          and{' '}
+          </a>{" "}
+          and{" "}
           <a
             href="https://algorand.co/algorand-foundation/privacy-policy"
             target="_blank"
@@ -81,11 +81,11 @@ const notices: NoticesConfig = {
     ),
   },
   bridge: {
-    kind: 'disclaimer',
+    kind: "disclaimer",
     text: (
       <>
         <p>
-          You are about to perform a cross-chain transaction. This transaction uses{' '}
+          You are about to perform a cross-chain transaction. This transaction uses{" "}
           <a
             href="https://allbridge.io/"
             target="_blank"
@@ -120,12 +120,12 @@ const notices: NoticesConfig = {
   //   body: <p>Placeholder text explaining transaction signing</p>,
   // },
   bridgeFooter: {
-    kind: 'footer',
-    text: 'Cross-chain transfers are facilitated by Allbridge, a third-party provider. The Foundation does not operate or control this service and does not guarantee the execution, security, or outcome of any transactions.',
+    kind: "footer",
+    text: "Cross-chain transfers are facilitated by Allbridge, a third-party provider. The Foundation does not operate or control this service and does not guarantee the execution, security, or outcome of any transactions.",
   },
   bridgeSign: {
-    kind: 'info',
-    body: 'This transaction may involve cross-chain activity and could take several minutes to complete depending on network conditions.',
+    kind: "info",
+    body: "This transaction may involve cross-chain activity and could take several minutes to complete depending on network conditions.",
   },
 }
 
@@ -142,7 +142,7 @@ function makeWalletManager() {
         options: { wagmiConfig },
       },
     ],
-    defaultNetwork: 'mainnet',
+    defaultNetwork: "mainnet",
   })
 }
 

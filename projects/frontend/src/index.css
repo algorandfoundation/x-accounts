@@ -51,7 +51,7 @@ button:focus-visible {
 
 /* Wallet UI dark theme — Algorand teal primary on algo-black backgrounds.
    Double selector bumps specificity above the injected wallet-ui defaults. */
-[data-wallet-theme][data-theme='dark'] {
+[data-wallet-theme][data-theme="dark"] {
   --wui-color-primary: #17cac6;
   --wui-color-primary-hover: #2ecfcc;
   --wui-color-primary-text: #001324;

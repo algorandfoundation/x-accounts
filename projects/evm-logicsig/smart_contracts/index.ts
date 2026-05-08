@@ -1,8 +1,8 @@
-import { Config } from '@algorandfoundation/algokit-utils'
-import { registerDebugEventHandlers } from '@algorandfoundation/algokit-utils-debug'
-import { consoleLogger } from '@algorandfoundation/algokit-utils/types/logging'
-import * as fs from 'node:fs'
-import * as path from 'node:path'
+import { Config } from "@algorandfoundation/algokit-utils"
+import { registerDebugEventHandlers } from "@algorandfoundation/algokit-utils-debug"
+import { consoleLogger } from "@algorandfoundation/algokit-utils/types/logging"
+import * as fs from "node:fs"
+import * as path from "node:path"
 
 // Uncomment the traceAll option to enable auto generation of AVM Debugger compliant sourceMap and simulation trace file for all AVM calls.
 // Learn more about using AlgoKit AVM Debugger to debug your TEAL source codes and inspect various kinds of Algorand transactions in atomic groups -> https://github.com/algorandfoundation/algokit-avm-vscode-Debugger
@@ -19,8 +19,8 @@ const baseDir = path.resolve(__dirname)
 
 // function to validate and dynamically import a module
 async function importDeployerIfExists(dir: string) {
-  const deployerPath = path.resolve(dir, 'deploy-config')
-  if (fs.existsSync(deployerPath + '.ts') || fs.existsSync(deployerPath + '.js')) {
+  const deployerPath = path.resolve(dir, "deploy-config")
+  if (fs.existsSync(deployerPath + ".ts") || fs.existsSync(deployerPath + ".js")) {
     const deployer = await import(deployerPath)
     return { ...deployer, name: path.basename(dir) }
   }

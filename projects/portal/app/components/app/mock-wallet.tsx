@@ -1,12 +1,12 @@
-import { Wallet, Send, ArrowDownToLine, ArrowRightLeft, Settings } from 'lucide-react'
-import { Button } from '~/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { Badge } from '~/components/ui/badge'
+import { Wallet, Send, ArrowDownToLine, ArrowRightLeft, Settings } from "lucide-react"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Badge } from "~/components/ui/badge"
 
 const mockAssets = [
-  { name: 'ALGO', amount: '142.38', usd: '$28.47', id: 0 },
-  { name: 'USDC', amount: '500.00', usd: '$500.00', id: 31566704 },
-  { name: 'goETH', amount: '0.125', usd: '$412.50', id: 386195940 },
+  { name: "ALGO", amount: "142.38", usd: "$28.47", id: 0 },
+  { name: "USDC", amount: "500.00", usd: "$500.00", id: 31566704 },
+  { name: "goETH", amount: "0.125", usd: "$412.50", id: 386195940 },
 ]
 
 export function MockWalletDashboard() {

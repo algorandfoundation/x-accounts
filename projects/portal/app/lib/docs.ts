@@ -1,7 +1,7 @@
 // Load all markdown files at build time via Vite's import.meta.glob
-const docModules = import.meta.glob<string>('../content/docs/*.md', {
-  query: '?raw',
-  import: 'default',
+const docModules = import.meta.glob<string>("../content/docs/*.md", {
+  query: "?raw",
+  import: "default",
   eager: true,
 })
 
@@ -25,8 +25,8 @@ function parseFrontmatter(raw: string): {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
   if (!match) return { meta: {}, content: raw }
   const meta: Record<string, string> = {}
-  for (const line of match[1].split('\n')) {
-    const colonIdx = line.indexOf(':')
+  for (const line of match[1].split("\n")) {
+    const colonIdx = line.indexOf(":")
     if (colonIdx > 0) {
       meta[line.slice(0, colonIdx).trim()] = line.slice(colonIdx + 1).trim()
     }
@@ -37,14 +37,14 @@ function parseFrontmatter(raw: string): {
 function parseDocs(): Doc[] {
   return Object.entries(docModules)
     .map(([path, raw]) => {
-      const slug = path.split('/').pop()!.replace('.md', '')
+      const slug = path.split("/").pop()!.replace(".md", "")
       const { meta, content } = parseFrontmatter(raw)
       return {
         meta: {
           title: meta.title || slug,
-          description: meta.description || '',
-          order: parseInt(meta.order || '99', 10),
-          category: meta.category || 'General',
+          description: meta.description || "",
+          order: parseInt(meta.order || "99", 10),
+          category: meta.category || "General",
           slug,
         },
         content,

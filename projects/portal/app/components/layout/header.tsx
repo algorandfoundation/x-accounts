@@ -1,20 +1,20 @@
-import { Link, useRouterState } from '@tanstack/react-router'
-import { ArrowUpRight, BookOpen } from 'lucide-react'
-import { cn } from '~/lib/utils'
-import { Logo } from '~/components/logo'
-import { ThemeToggle } from '~/components/theme-toggle'
-import { Button } from '~/components/ui/button'
+import { Link, useRouterState } from "@tanstack/react-router"
+import { ArrowUpRight, BookOpen } from "lucide-react"
+import { cn } from "~/lib/utils"
+import { Logo } from "~/components/logo"
+import { ThemeToggle } from "~/components/theme-toggle"
+import { Button } from "~/components/ui/button"
 
-const navItems = [{ icon: <BookOpen size="16" />, label: 'Docs', to: '/docs' as const }]
+const navItems = [{ icon: <BookOpen size="16" />, label: "Docs", to: "/docs" as const }]
 
 export function Header() {
   const routerState = useRouterState()
-  const isLanding = routerState.location.pathname === '/'
-  const isApp = routerState.location.pathname.startsWith('/app')
+  const isLanding = routerState.location.pathname === "/"
+  const isApp = routerState.location.pathname.startsWith("/app")
 
   return (
     <header
-      className={cn('sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm', isLanding && 'border-transparent')}
+      className={cn("sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm", isLanding && "border-transparent")}
     >
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         {/* Centered status badge */}

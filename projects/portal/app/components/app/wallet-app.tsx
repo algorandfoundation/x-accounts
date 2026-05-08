@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from '@tanstack/react-router'
-import { useWallet, WalletId } from '@txnlab/use-wallet-react'
-import { ConnectWalletButton } from '@txnlab/use-wallet-ui-react'
-import { WalletProviders, wagmiConfig } from './wallet-providers'
-import { WalletDashboard } from './wallet-dashboard'
-import { UseAlgorandWith } from '~/components/use-algorand-with'
-import { Button } from '../ui/button'
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Link } from "@tanstack/react-router"
+import { useWallet, WalletId } from "@txnlab/use-wallet-react"
+import { ConnectWalletButton } from "@txnlab/use-wallet-ui-react"
+import { WalletProviders, wagmiConfig } from "./wallet-providers"
+import { WalletDashboard } from "./wallet-dashboard"
+import { UseAlgorandWith } from "~/components/use-algorand-with"
+import { Button } from "../ui/button"
 
 /**
  * Listens to wallet state and calls `onResolved` once we know the final
@@ -30,7 +30,7 @@ function WalletResolver({ onResolved }: { onResolved: () => void }) {
     // (no session to restore) or connected (Bridge will sync it).
     const check = () => {
       const { status, connections } = wagmiConfig.state
-      if (status === 'disconnected' && connections.size === 0) {
+      if (status === "disconnected" && connections.size === 0) {
         firedRef.current = true
         onResolved()
         return true
@@ -62,7 +62,7 @@ function WalletAppContent() {
     rk.connect().catch((err: unknown) => {
       const message = err instanceof Error ? err.message : String(err)
       if (!/dismissed|cancel/i.test(message)) {
-        console.warn('Wallet connect failed:', message)
+        console.warn("Wallet connect failed:", message)
       }
     })
   }, [wallets])

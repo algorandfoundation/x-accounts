@@ -1,15 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { lazy, Suspense } from 'react'
-import { Header } from '~/components/layout/header'
-import { Footer } from '~/components/layout/footer'
+import { createFileRoute } from "@tanstack/react-router"
+import { lazy, Suspense } from "react"
+import { Header } from "~/components/layout/header"
+import { Footer } from "~/components/layout/footer"
 
 // Lazy-load wallet components to keep them client-only (SSR-safe)
-const WalletApp = lazy(() => import('~/components/app/wallet-app'))
+const WalletApp = lazy(() => import("~/components/app/wallet-app"))
 
-export const Route = createFileRoute('/app')({
+export const Route = createFileRoute("/app")({
   component: AppPage,
   head: () => ({
-    meta: [{ title: 'xChain EVM Portal' }],
+    meta: [{ title: "xChain EVM Portal" }],
   }),
 })
 

@@ -1,9 +1,9 @@
-const fs = require('fs')
-const path = require('path')
-const { AlgorandClient } = require('@algorandfoundation/algokit-utils')
+const fs = require("fs")
+const path = require("path")
+const { AlgorandClient } = require("@algorandfoundation/algokit-utils")
 
-const tealSrc = path.resolve(__dirname, '../../evm-logicsig/smart_contracts/artifacts/algo-x-evm/AlgoXEvmLsig.teal')
-const outFile = path.resolve(__dirname, '../src/generated/lsig-template.ts')
+const tealSrc = path.resolve(__dirname, "../../evm-logicsig/smart_contracts/artifacts/algo-x-evm/AlgoXEvmLsig.teal")
+const outFile = path.resolve(__dirname, "../src/generated/lsig-template.ts")
 
 // Two distinct 20-byte sentinels with no overlap. The first is written into the
 // generated artifact (kept as a marker for the OWNER slot); the second is used
@@ -22,7 +22,7 @@ function getAlgorandClient() {
       algodConfig: {
         server: process.env.ALGOD_SERVER,
         port: process.env.ALGOD_PORT,
-        token: process.env.ALGOD_TOKEN ?? '',
+        token: process.env.ALGOD_TOKEN ?? "",
       },
     })
   }
@@ -42,14 +42,14 @@ function findUniqueSubsequence(haystack, needle) {
 }
 
 function bytesToBase64(bytes) {
-  return Buffer.from(bytes).toString('base64')
+  return Buffer.from(bytes).toString("base64")
 }
 
 async function main() {
   if (!fs.existsSync(tealSrc)) {
     throw new Error(`TEAL source not found at ${tealSrc} — run copy-teal.js first.`)
   }
-  const teal = fs.readFileSync(tealSrc, 'utf8')
+  const teal = fs.readFileSync(tealSrc, "utf8")
 
   const algorand = getAlgorandClient()
 
@@ -60,7 +60,7 @@ async function main() {
       algorand.app.compileTealTemplate(teal, { TMPL_OWNER: SENTINEL_B }),
     ])
   } catch (err) {
-    const where = process.env.ALGOD_SERVER ?? 'https://mainnet-api.algonode.cloud (default)'
+    const where = process.env.ALGOD_SERVER ?? "https://mainnet-api.algonode.cloud (default)"
     throw new Error(
       `Failed to compile TEAL via algod (${where}): ${err.message}\n` +
         `Set ALGOD_SERVER / ALGOD_PORT / ALGOD_TOKEN to point at a reachable algod node.`,
@@ -77,8 +77,8 @@ async function main() {
   }
 
   const offsetA = findUniqueSubsequence(programA, SENTINEL_A)
-  if (offsetA === -1) throw new Error('Sentinel A not found in compiled program — TEAL template structure changed.')
-  if (offsetA === -2) throw new Error('Sentinel A appeared more than once — pick a different sentinel pattern.')
+  if (offsetA === -1) throw new Error("Sentinel A not found in compiled program — TEAL template structure changed.")
+  if (offsetA === -2) throw new Error("Sentinel A appeared more than once — pick a different sentinel pattern.")
 
   const offsetB = findUniqueSubsequence(programB, SENTINEL_B)
   if (offsetB !== offsetA) {

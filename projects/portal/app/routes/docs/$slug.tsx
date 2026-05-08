@@ -1,10 +1,10 @@
-import { createFileRoute, notFound, Link } from '@tanstack/react-router'
-import { getDocBySlug, getDocs } from '~/lib/docs'
-import Markdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
+import { createFileRoute, notFound, Link } from "@tanstack/react-router"
+import { getDocBySlug, getDocs } from "~/lib/docs"
+import Markdown from "react-markdown"
+import rehypeRaw from "rehype-raw"
+import remarkGfm from "remark-gfm"
 
-export const Route = createFileRoute('/docs/$slug')({
+export const Route = createFileRoute("/docs/$slug")({
   loader: ({ params }) => {
     const doc = getDocBySlug(params.slug)
     if (!doc) throw notFound()
@@ -13,8 +13,8 @@ export const Route = createFileRoute('/docs/$slug')({
   component: DocPage,
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.meta.title ?? 'Doc'} — xChain EVM Docs` },
-      ...(loaderData?.meta.description ? [{ name: 'description', content: loaderData.meta.description }] : []),
+      { title: `${loaderData?.meta.title ?? "Doc"} — xChain EVM Docs` },
+      ...(loaderData?.meta.description ? [{ name: "description", content: loaderData.meta.description }] : []),
     ],
   }),
 })

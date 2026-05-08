@@ -1,10 +1,10 @@
-import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import globals from 'globals'
-import { baseConfig } from '../../eslint.config.base.mjs'
+import eslint from "@eslint/js"
+import tseslint from "typescript-eslint"
+import globals from "globals"
+import { baseConfig } from "../../eslint.config.base.mjs"
 
 export default tseslint.config(
-  { ignores: ['dist/'] },
+  { ignores: ["dist/"] },
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
