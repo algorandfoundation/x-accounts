@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
-    throw redirect({ href: "https://algorand.co/xchain" });
+    if (import.meta.env.PROD) throw redirect({ href: "https://algorand.co/xchain" });
+    throw redirect({ to: "/app" });
   },
 });
