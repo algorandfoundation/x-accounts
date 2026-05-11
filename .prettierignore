@@ -1,1 +1,7 @@
 pnpm-lock.yaml
+.claude
+.github/skills
+AGENTS.md
+.algokit
+**/generated/*.ts
+*.gen.ts
