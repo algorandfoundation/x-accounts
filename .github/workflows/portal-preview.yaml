@@ -2,6 +2,7 @@ name: Portal Preview
 
 on:
   pull_request:
+    branches: [main]
     paths:
       - "projects/portal/**"
       - "projects/evm-sdk/**"
