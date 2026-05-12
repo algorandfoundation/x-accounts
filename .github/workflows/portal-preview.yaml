@@ -75,6 +75,7 @@ jobs:
         env:
           PREVIEW_URL: ${{ steps.deploy-preview.outputs.deployment-url }}
         run: |
-          echo "Preview URL: ${PREVIEW_URL}"
+          PREVIEW_APP_URL="${PREVIEW_URL%/}/app"
+          echo "Preview URL: ${PREVIEW_APP_URL}"
           echo "## Portal preview" >> "$GITHUB_STEP_SUMMARY"
-          echo "${PREVIEW_URL}" >> "$GITHUB_STEP_SUMMARY"
+          echo "${PREVIEW_APP_URL}" >> "$GITHUB_STEP_SUMMARY"
