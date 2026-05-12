@@ -11,14 +11,14 @@ on:
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - ".github/workflows/portal-cd.yaml"
+  workflow_dispatch:
 
 concurrency:
-  group: portal-cd-${{ github.ref }}
+  group: deploy-portal-production
   cancel-in-progress: false
 
 permissions:
   contents: read
-  id-token: write
 
 defaults:
   run:
@@ -26,6 +26,7 @@ defaults:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: portal-production
@@ -71,3 +72,5 @@ jobs:
         with:
           workingDirectory: projects/portal
           command: deploy
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

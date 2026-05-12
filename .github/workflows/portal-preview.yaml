@@ -17,7 +17,6 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write
 
 defaults:
   run:
@@ -26,6 +25,8 @@ defaults:
 jobs:
   preview:
     runs-on: ubuntu-latest
+    environment:
+      name: portal-preview
     steps:
       - name: Rewrite SSH to HTTPS for submodule checkout
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
@@ -66,6 +67,8 @@ jobs:
         with:
           workingDirectory: projects/portal
           command: versions upload --message "PR #${{ github.event.number }} (${{ github.sha }})"
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Print preview URL
         env:

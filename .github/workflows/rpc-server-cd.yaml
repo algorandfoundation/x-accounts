@@ -9,14 +9,14 @@ on:
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - ".github/workflows/rpc-server-cd.yaml"
+  workflow_dispatch:
 
 concurrency:
-  group: rpc-server-cd-${{ github.ref }}
+  group: deploy-rpc-server-production
   cancel-in-progress: false
 
 permissions:
   contents: read
-  id-token: write
 
 defaults:
   run:
@@ -24,6 +24,7 @@ defaults:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: rpc-server-production
@@ -57,3 +58,5 @@ jobs:
         with:
           workingDirectory: projects/rpc-server
           command: deploy
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
