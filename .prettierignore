@@ -2,6 +2,7 @@ pnpm-lock.yaml
 .claude
 .github/skills
 AGENTS.md
+.mcp.json
 .algokit
 **/generated/*.ts
 *.gen.ts
