@@ -2,36 +2,36 @@
   "folders": [
     {
       "name": "ROOT",
-      "path": "./"
+      "path": "./",
     },
     {
-      "path": "./projects/evm-logicsig"
+      "path": "./projects/evm-logicsig",
     },
     {
-      "path": "./projects/evm-sdk"
+      "path": "./projects/evm-sdk",
     },
     {
-      "path": "./projects/frontend"
+      "path": "./projects/frontend",
     },
     {
-      "path": "./projects/rpc-server"
+      "path": "./projects/rpc-server",
     },
     {
-      "path": "./projects/use-wallet"
+      "path": "./projects/use-wallet",
     },
     {
-      "path": "./projects/use-wallet-ui"
-    }
+      "path": "./projects/use-wallet-ui",
+    },
   ],
   "settings": {
     "files.exclude": {
-      "projects/": true
+      "projects/": true,
     },
     "files.eol": "\n",
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
+      "source.organizeImports": "explicit",
     },
     "eslint.enable": true,
     "eslint.validate": ["typescript", "typescriptreact"],
@@ -41,16 +41,12 @@
       "**/node_modules": true,
       "**/dist": true,
       "**/build": true,
-      "**/.algokit": true
+      "**/.algokit": true,
     },
-    "typescript.preferences.importModuleSpecifier": "relative"
+    "typescript.preferences.importModuleSpecifier": "relative",
   },
   "extensions": {
-    "recommendations": [
-      "esbenp.prettier-vscode",
-      "dbaeumer.vscode-eslint",
-      "joshx.workspace-terminals"
-    ]
+    "recommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint", "joshx.workspace-terminals"],
   },
   "tasks": {
     "version": "2.0.0",
@@ -61,24 +57,24 @@
         "args": ["localnet", "start"],
         "type": "shell",
         "options": {
-          "cwd": "${workspaceFolder}"
+          "cwd": "${workspaceFolder}",
         },
-        "problemMatcher": []
+        "problemMatcher": [],
       },
       {
         "label": "Build contracts (+ LocalNet)",
         "command": "algokit",
         "args": ["project", "run", "build"],
         "options": {
-          "cwd": "${workspaceFolder}"
+          "cwd": "${workspaceFolder}",
         },
         "dependsOn": "Start AlgoKit LocalNet",
-        "problemMatcher": []
-      }
-    ]
+        "problemMatcher": [],
+      },
+    ],
   },
   "launch": {
     "configurations": [],
-    "compounds": []
-  }
+    "compounds": [],
+  },
 }

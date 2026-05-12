@@ -4,23 +4,26 @@ packages:
   - projects/use-wallet-ui/packages/*
 linkWorkspacePackages: true
 onlyBuiltDependencies:
-  - '@algorandfoundation/puya-ts'
+  - "@algorandfoundation/puya-ts"
   - bigint-buffer
   - esbuild
   - keccak
   - sharp
   - workerd
 overrides:
-  typescript: 5.9.3         # pinned to fix build issues across workspace
-  viem: 2.46.3              # pinned to match use-wallet-ui submodule
-  axios: ^1.15.2            # frontend>@allbridge>axios, frontend>@allbridge>axios>tronweb>axios
-  lodash: ^4.18.1           # use-wallet-ui>react>vite-plugin-dts>@microsoft/api-extractor>lodash
-  'ws@7': ^7.5.10           # use-wallet>@blockshake/defly-connect>@walletconnect/client>...>ws
-  'ws@8': ^8.17.1           # frontend>@allbridge>@stacks/blockchain-api-client>ws
-  'minimatch@9': ^9.0.9     # evm-logicsig>@vitest/coverage-v8>test-exclude>minimatch, use-wallet>@vue/test-utils>...>minimatch
-  'minimatch@10': ^10.2.5   # evm-logicsig>@algorandfoundation/puya-ts>minimatch
-  'picomatch@4': ^4.0.4     # dfx>vitest>picomatch
+  typescript: 5.9.3 # pinned to fix build issues across workspace
+  viem: 2.46.3 # pinned to match use-wallet-ui submodule
+  axios: ^1.15.2 # frontend>@allbridge>axios, frontend>@allbridge>axios>tronweb>axios
+  lodash: ^4.18.1 # use-wallet-ui>react>vite-plugin-dts>@microsoft/api-extractor>lodash
+  fast-uri: ^3.1.2 # evm-logicsig>better-npm-audit>table>ajv>fast-uri
+  "ws@7": ^7.5.10 # use-wallet>@blockshake/defly-connect>@walletconnect/client>...>ws
+  "ws@8": ^8.17.1 # frontend>@allbridge>@stacks/blockchain-api-client>ws
+  "minimatch@9": ^9.0.9 # evm-logicsig>@vitest/coverage-v8>test-exclude>minimatch, use-wallet>@vue/test-utils>...>minimatch
+  "minimatch@10": ^10.2.5 # evm-logicsig>@algorandfoundation/puya-ts>minimatch
+  "picomatch@4": ^4.0.4 # dfx>vitest>picomatch
 auditConfig:
   ignoreCves:
-    - CVE-2025-3194   # bigint-buffer: no upstream patch; vuln is in @allbridge's Solana path, unused by xChain
-    - CVE-2025-66020  # valibot: v0 to v1 override breaks @mysten/sui build; vuln is in @allbridge's Sui path, unused by xChain
+    - CVE-2025-3194 # bigint-buffer: no upstream patch; vuln is in @allbridge's Solana path, unused by xChain
+    - CVE-2025-66020 # valibot: v0 to v1 override breaks @mysten/sui build; vuln is in @allbridge's Sui path, unused by xChain
+minimumReleaseAgeExclude:
+  - "fast-uri@3.1.2" # fixed version, 5 days old, remove once minimum release age is accomplished

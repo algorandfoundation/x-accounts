@@ -2,6 +2,9 @@
 # Add the full SHA of reformat/style commits so blame shows real authors.
 # Configure locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
 
+# style: apply prettier formatting on root files
+befe236e829dcbcb6483cd8de22117f7407ae9cb
+
 # style: enforce double quotes
 7e80e9a48f1df6b64e0c81d2e3af5d42b0f3e8dc
 
