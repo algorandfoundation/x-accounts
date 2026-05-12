@@ -57,7 +57,7 @@ jobs:
 
       - name: Build workspace dependencies
         run: |
-          pnpm --filter evm-sdk run build
+          pnpm --filter algo-x-evm-sdk run build
           pnpm --filter use-wallet run build
           pnpm --filter use-wallet-ui run build
 

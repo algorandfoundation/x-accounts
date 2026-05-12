@@ -45,7 +45,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build evm-sdk
-        run: pnpm --filter evm-sdk run build
+        run: pnpm --filter algo-x-evm-sdk run build
 
       - name: Typecheck
         run: pnpm --filter rpc-server run typecheck
