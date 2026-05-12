@@ -56,6 +56,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  .prose :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: 5rem;
+  }
 }
 
 /* Wallet UI component theme — maps portal colors to algo-x-evm-ui CSS vars.

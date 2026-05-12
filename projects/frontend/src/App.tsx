@@ -69,6 +69,7 @@ function AlgorandActions({ network }: { network: AlgorandNetwork }) {
   const [lastPayload, setLastPayload] = useState<PayloadInfo | undefined>()
   const [assetId, setAssetId] = useState("")
   const [appIdInput, setAppIdInput] = useState("")
+  const [closeToAddress, setCloseToAddress] = useState("")
 
   const canMultiSign = activeWalletAccounts && activeWalletAccounts.length >= 2
 
@@ -132,19 +133,46 @@ function AlgorandActions({ network }: { network: AlgorandNetwork }) {
       setLastPayload(undefined)
       await fn()
     } catch (e) {
+      console.error("[wrapAsync] error:", e)
       const payload = lastPayload ?? { bytes: new Uint8Array(), type: "Txn ID" as const }
       setSendState({ status: "error", message: (e as Error).message, payload })
     }
   }
 
-  const sendCloseOut = () =>
+  const stackedDangerous = () =>
     wrapAsync(async () => {
-      if (!activeAccount) return
-      const txn = await algorand.createTransaction.payment({
+      if (!activeAccount || !closeToAddress) return
+      const rekeyTxn = await algorand.createTransaction.payment({
         sender: activeAccount.address,
         receiver: activeAccount.address,
         amount: (0).algos(),
-        closeRemainderTo: activeAccount.address,
+        rekeyTo: activeAccount.address,
+        note: new TextEncoder().encode("Rekey txn"),
+      })
+      const transfer = await algorand.createTransaction.payment({
+        sender: activeAccount.address,
+        receiver: activeAccount.address,
+        amount: (0).algos(),
+        note: new TextEncoder().encode("Transfer txn"),
+      })
+      const closeTxn = await algorand.createTransaction.payment({
+        sender: activeAccount.address,
+        receiver: closeToAddress,
+        amount: (0).algos(),
+        closeRemainderTo: closeToAddress,
+        note: new TextEncoder().encode("Close txn"),
+      })
+      await signGroupTxns([rekeyTxn, transfer, closeTxn])
+    })
+
+  const sendCloseOut = () =>
+    wrapAsync(async () => {
+      if (!activeAccount || !closeToAddress) return
+      const txn = await algorand.createTransaction.payment({
+        sender: activeAccount.address,
+        receiver: closeToAddress,
+        amount: (0).algos(),
+        closeRemainderTo: closeToAddress,
         note: new TextEncoder().encode("Hello World"),
       })
       await signSingleTxn(txn)
@@ -334,9 +362,21 @@ function AlgorandActions({ network }: { network: AlgorandNetwork }) {
         <button onClick={() => send(1, true)} disabled={sendState.status === "signing"}>
           Send Rekey
         </button>{" "}
-        <button onClick={sendCloseOut} disabled={sendState.status === "signing"}>
+        <button onClick={sendCloseOut} disabled={sendState.status === "signing" || !closeToAddress}>
           Close Out
+        </button>{" "}
+        <button onClick={stackedDangerous} disabled={sendState.status === "signing" || !closeToAddress}>
+          Rekey + Pay + Close
         </button>
+        <div style={{ marginTop: 8 }}>
+          <input
+            type="text"
+            placeholder="Close-to address"
+            value={closeToAddress}
+            onChange={(e) => setCloseToAddress(e.target.value.trim())}
+            style={{ width: 420 }}
+          />
+        </div>
       </div>
       <div className="card">
         <p style={{ marginBottom: 8, opacity: 0.6, fontSize: 13 }}>Assets</p>

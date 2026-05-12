@@ -2,6 +2,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router"
 import { getDocBySlug, getDocs } from "~/lib/docs"
 import Markdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
+import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
 
 export const Route = createFileRoute("/docs/$slug")({
@@ -29,7 +30,7 @@ function DocPage() {
   return (
     <div>
       <article className="prose dark:prose-invert max-w-none">
-        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSlug]}>
           {doc.content}
         </Markdown>
       </article>
