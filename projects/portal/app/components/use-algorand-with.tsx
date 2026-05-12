@@ -1,17 +1,14 @@
-import { cn } from "~/lib/utils";
-import TypingText from "~/components/ui/typing-text";
+import { cn } from "~/lib/utils"
+import TypingText from "~/components/ui/typing-text"
 
 type Props = {
-  className?: string;
-};
+  className?: string
+}
 
 export function UseAlgorandWith({ className }: Props) {
   return (
     <h1
-      className={cn(
-        "mx-auto max-w-3xl text-2xl font-bold tracking-tight sm:text-3xl text-muted-foreground",
-        className,
-      )}
+      className={cn("mx-auto max-w-3xl text-2xl font-bold tracking-tight sm:text-3xl text-muted-foreground", className)}
     >
       Use <span className="text-primary">Algorand</span> with{" "}
       <TypingText
@@ -31,5 +28,5 @@ export function UseAlgorandWith({ className }: Props) {
         ]}
       />{" "}
     </h1>
-  );
+  )
 }

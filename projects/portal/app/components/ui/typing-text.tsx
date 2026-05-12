@@ -1,13 +1,6 @@
+/* eslint-disable react-hooks/refs */
 import { gsap } from "gsap"
-import {
-  createElement,
-  type ElementType,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react"
+import { createElement, type ElementType, useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 interface TypingTextProps {
   className?: string
@@ -91,8 +84,8 @@ const TypingText = ({
     }
 
     const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
+      (entries) => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true)
           }
@@ -140,21 +133,21 @@ const TypingText = ({
             onSentenceComplete(textArray[currentTextIndex], currentTextIndex)
           }
 
-          setCurrentTextIndex(prev => (prev + 1) % textArray.length)
+          setCurrentTextIndex((prev) => (prev + 1) % textArray.length)
           setCurrentCharIndex(0)
           timeout = setTimeout(() => {
             /* intentional pause between sentences */
           }, pauseDuration)
         } else {
           timeout = setTimeout(() => {
-            setDisplayedText(prev => prev.slice(0, -1))
+            setDisplayedText((prev) => prev.slice(0, -1))
           }, deletingSpeed)
         }
       } else if (currentCharIndex < processedText.length) {
         timeout = setTimeout(
           () => {
-            setDisplayedText(prev => prev + processedText[currentCharIndex])
-            setCurrentCharIndex(prev => prev + 1)
+            setDisplayedText((prev) => prev + processedText[currentCharIndex])
+            setCurrentCharIndex((prev) => prev + 1)
           },
           variableSpeed ? getRandomSpeed() : typingSpeed,
         )

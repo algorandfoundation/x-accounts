@@ -19,11 +19,11 @@
  * EIP-712 Message Type:
  * - Algorand Transaction(bytes32 Transaction ID)
  */
-import { assert, Bytes, Global, LogicSig, op, TemplateVar, Txn, uint64 } from '@algorandfoundation/algorand-typescript'
-import { StaticBytes } from '@algorandfoundation/algorand-typescript/arc4'
+import { assert, Bytes, Global, LogicSig, op, TemplateVar, Txn, uint64 } from "@algorandfoundation/algorand-typescript"
+import { StaticBytes } from "@algorandfoundation/algorand-typescript/arc4"
 
 // Template variable: the 20-byte Ethereum address that controls this LogicSig
-const owner = TemplateVar<StaticBytes<20>>('OWNER')
+const owner = TemplateVar<StaticBytes<20>>("OWNER")
 
 export class AlgoXEvmLsig extends LogicSig {
   public program() {
@@ -37,7 +37,7 @@ export class AlgoXEvmLsig extends LogicSig {
     // Verify type byte is 0x01 (EVM signature type).
     // The type byte allows future multi-scheme LogicSigs that branch on signature type
     // (e.g. 0x01 = EVM secp256k1, 0x02 = Passkey secp256r1), enabling composed auth.
-    assert(op.extract(sig, 0, 1) === Bytes.fromHex('01'))
+    assert(op.extract(sig, 0, 1) === Bytes.fromHex("01"))
 
     const r = op.extract(sig, 1, 32)
     const s = op.extract(sig, 33, 32)
@@ -55,15 +55,15 @@ export class AlgoXEvmLsig extends LogicSig {
     // EIP-712 Message Type Hash (precomputed off-chain)
     // messageTypeHash = keccak256("Algorand Transaction(bytes32 Transaction ID)")
     // Value: 0x612f2598ebd964c16ba67a8b06d6f08ce24ab0911f0ff5a267a22fe01e687334
-    const domainSeparator = Bytes.fromHex('cef8b9829414ba4a13ea8f8c442b747ffe119c643d2213d22b4e137036a2d573')
-    const messageTypeHash = Bytes.fromHex('612f2598ebd964c16ba67a8b06d6f08ce24ab0911f0ff5a267a22fe01e687334')
+    const domainSeparator = Bytes.fromHex("cef8b9829414ba4a13ea8f8c442b747ffe119c643d2213d22b4e137036a2d573")
+    const messageTypeHash = Bytes.fromHex("612f2598ebd964c16ba67a8b06d6f08ce24ab0911f0ff5a267a22fe01e687334")
 
     const messageHash = op.keccak256(messageTypeHash.concat(txnIdPayload))
 
     // EIP-712 Final Digest
     // digest = keccak256("\x19\x01" + domainSeparator + messageHash)
     // Seeming inefficiency is optimized by puya -  0x1901 is concatted with domainSeparator since both are constants
-    const digest = op.keccak256(Bytes.fromHex('1901').concat(domainSeparator).concat(messageHash))
+    const digest = op.keccak256(Bytes.fromHex("1901").concat(domainSeparator).concat(messageHash))
 
     // Recover the signer's public key from the signature using ECDSA secp256k1
     const [pubkeyX, pubkeyY] = op.ecdsaPkRecover(op.Ecdsa.Secp256k1, digest, recoveryId, r, s)

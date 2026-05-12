@@ -6,4 +6,8 @@ type = "sdk"
 name = 'rpc-server'
 
 [project.run]
-build = { commands = ['pnpm run build'] }
+build = { commands = ['pnpm run build'], description = 'Build RPC server' }
+lint = { commands = ['pnpm run lint'], description = 'Lint RPC server' }
+format = { commands = ['pnpm run format'], description = 'Format RPC server code' }
+format-check = { commands = ['pnpm run format:check'], description = 'Check RPC server formatting' }
+typecheck = { commands = ['pnpm run typecheck'], description = 'Typecheck RPC server' }

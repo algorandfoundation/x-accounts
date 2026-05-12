@@ -1,10 +1,8 @@
-import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import globals from 'globals'
+import tseslint from "typescript-eslint"
+import globals from "globals"
+import { baseConfig } from "../../eslint.config.base.mjs"
 
 export default tseslint.config(
-  eslint.configs.recommended,
-  tseslint.configs.recommended,
   {
     languageOptions: {
       globals: {
@@ -12,7 +10,8 @@ export default tseslint.config(
       },
     },
     rules: {
-      '@typescript-eslint/explicit-member-accessibility': 'warn',
+      "@typescript-eslint/explicit-member-accessibility": "warn",
     },
   },
-);
+  ...baseConfig,
+)

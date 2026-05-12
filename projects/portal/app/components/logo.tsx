@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import { cn } from '~/lib/utils'
+import type { SVGProps } from "react"
+import { cn } from "~/lib/utils"
 
 export function Logo({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -8,7 +8,7 @@ export function Logo({ className, ...props }: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="xChain"
-      className={cn('h-8 w-auto', className)}
+      className={cn("h-8 w-auto", className)}
       {...props}
     >
       <g className="fill-algo-blue dark:fill-white">

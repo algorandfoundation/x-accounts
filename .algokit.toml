@@ -7,5 +7,9 @@ projects_root_path = 'projects'
 
 [project.run]
 build = ['evm-logicsig', 'evm-sdk', 'use-wallet', 'use-wallet-ui', 'portal', 'frontend', 'rpc-server']
-
 build2 = ['use-wallet', 'use-wallet-ui', 'frontend']
+test = ['evm-logicsig']
+lint = ['evm-logicsig', 'evm-sdk', 'frontend', 'portal', 'rpc-server']
+format-check = ['evm-logicsig', 'evm-sdk', 'frontend', 'portal', 'rpc-server']
+typecheck = ['evm-logicsig', 'evm-sdk', 'frontend', 'portal', 'rpc-server']
+

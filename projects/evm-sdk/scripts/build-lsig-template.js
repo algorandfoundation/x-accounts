@@ -113,8 +113,7 @@ async function main() {
 
   fs.writeFileSync(outFile, contents)
   console.log(
-    `Wrote ${path.relative(process.cwd(), outFile)} ` +
-      `(program=${programA.length}B, ownerOffset=${offsetA})`,
+    `Wrote ${path.relative(process.cwd(), outFile)} ` + `(program=${programA.length}B, ownerOffset=${offsetA})`,
   )
 }
 

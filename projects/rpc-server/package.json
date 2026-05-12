@@ -6,7 +6,12 @@
     "build": "tsc --noEmit",
     "logs": "wrangler tail",
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@algorandfoundation/algokit-utils": "^9.2.0",

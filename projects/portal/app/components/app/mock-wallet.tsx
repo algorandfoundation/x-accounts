@@ -1,12 +1,12 @@
-import { Wallet, Send, ArrowDownToLine, ArrowRightLeft, Settings } from 'lucide-react'
-import { Button } from '~/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { Badge } from '~/components/ui/badge'
+import { Wallet, Send, ArrowDownToLine, ArrowRightLeft, Settings } from "lucide-react"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Badge } from "~/components/ui/badge"
 
 const mockAssets = [
-  { name: 'ALGO', amount: '142.38', usd: '$28.47', id: 0 },
-  { name: 'USDC', amount: '500.00', usd: '$500.00', id: 31566704 },
-  { name: 'goETH', amount: '0.125', usd: '$412.50', id: 386195940 },
+  { name: "ALGO", amount: "142.38", usd: "$28.47", id: 0 },
+  { name: "USDC", amount: "500.00", usd: "$500.00", id: 31566704 },
+  { name: "goETH", amount: "0.125", usd: "$412.50", id: 386195940 },
 ]
 
 export function MockWalletDashboard() {
@@ -20,12 +20,8 @@ export function MockWalletDashboard() {
               <Wallet size={20} />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">
-                EVM Wallet
-              </p>
-              <p className="font-mono text-sm">
-                0x71C7...3a4F
-              </p>
+              <p className="text-sm text-muted-foreground">EVM Wallet</p>
+              <p className="font-mono text-sm">0x71C7...3a4F</p>
             </div>
           </div>
           <Badge>Connected</Badge>
@@ -35,15 +31,10 @@ export function MockWalletDashboard() {
       {/* Algorand address */}
       <Card>
         <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground mb-1">
-            Algorand Address (derived)
-          </p>
-          <p className="font-mono text-sm break-all">
-            ALGO7X...MOCK...EVM4
-          </p>
+          <p className="text-sm text-muted-foreground mb-1">Algorand Address (derived)</p>
+          <p className="font-mono text-sm break-all">ALGO7X...MOCK...EVM4</p>
           <p className="mt-2 text-xs text-muted-foreground">
-            This address is deterministically derived from your EVM wallet
-            and secured by an on-chain Smart Account.
+            This address is deterministically derived from your EVM wallet and secured by an on-chain Smart Account.
           </p>
         </CardContent>
       </Card>
@@ -75,21 +66,14 @@ export function MockWalletDashboard() {
         </CardHeader>
         <CardContent className="space-y-0 p-0">
           {mockAssets.map((asset) => (
-            <div
-              key={asset.id}
-              className="flex items-center justify-between border-t px-6 py-4 first:border-t-0"
-            >
+            <div key={asset.id} className="flex items-center justify-between border-t px-6 py-4 first:border-t-0">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-bold">
                   {asset.name.slice(0, 2)}
                 </div>
                 <div>
                   <p className="text-sm font-medium">{asset.name}</p>
-                  {asset.id > 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      ASA #{asset.id}
-                    </p>
-                  )}
+                  {asset.id > 0 && <p className="text-xs text-muted-foreground">ASA #{asset.id}</p>}
                 </div>
               </div>
               <div className="text-right">

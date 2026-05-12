@@ -17,7 +17,12 @@
   ],
   "scripts": {
     "prebuild": "node scripts/copy-teal.js && node scripts/build-lsig-template.js",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",

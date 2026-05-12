@@ -8,3 +8,7 @@ artifacts = "src/"
 
 [project.run]
 build = { commands = ['pnpm run build'], description = 'Build SDK' }
+lint = { commands = ['pnpm run lint'], description = 'Lint SDK' }
+format = { commands = ['pnpm run format'], description = 'Format SDK code' }
+format-check = { commands = ['pnpm run format:check'], description = 'Check SDK formatting' }
+typecheck = { commands = ['pnpm run typecheck'], description = 'Typecheck SDK' }

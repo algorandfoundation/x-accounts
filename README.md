@@ -80,9 +80,13 @@ cd xchain-accounts
 # fetch the submodules (use-wallet, use-wallet-ui)
 git submodule update --init --recursive
 
-# Install dependencies
+# Install dependencies (use-wallet-ui is a nested pnpm workspace, needs its own install)
 # Read the output carefully, you may need to approve build scripts.
 pnpm i
+pnpm i --dir projects/use-wallet-ui
+
+# Set up git hooks (husky + lint-staged) - run once after cloning
+pnpm exec husky
 
 # Start LocalNet
 algokit localnet start
@@ -131,8 +135,8 @@ pnpm add algo-x-evm-sdk
 Basic usage:
 
 ```typescript
-import { AlgoXEvmSdk } from 'algo-x-evm-sdk'
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
+import { AlgoXEvmSdk } from "algo-x-evm-sdk"
+import { AlgorandClient } from "@algorandfoundation/algokit-utils"
 
 // Initialize
 const algorand = AlgorandClient.fromEnvironment()
@@ -140,20 +144,20 @@ const sdk = new AlgoXEvmSdk({ algorand })
 
 // Get Algorand address for an EVM address
 const algoAddress = await sdk.getAddress({
-  evmAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2'
+  evmAddress: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2",
 })
 
 // Get a transaction signer (EIP-712 typed data signing)
-const evmAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2'
+const evmAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb2"
 const { addr, signer } = await sdk.getSigner({
   evmAddress,
   signMessage: async ({ domain, types, primaryType, message }) => {
     const data = JSON.stringify({ domain, types, primaryType, message })
     return window.ethereum.request({
-      method: 'eth_signTypedData_v4',
-      params: [evmAddress, data]
+      method: "eth_signTypedData_v4",
+      params: [evmAddress, data],
     })
-  }
+  },
 })
 
 // Use with algokit-utils
@@ -161,7 +165,7 @@ await algorand.send.payment({
   sender: addr,
   signer: signer,
   receiver: recipientAddress,
-  amount: (1).algos()
+  amount: (1).algos(),
 })
 ```
 
@@ -198,6 +202,7 @@ algokit project run build
 ```
 
 This compiles, in order (per `.algokit.toml`):
+
 1. Logic sig to TEAL (`evm-logicsig`)
 2. TypeScript SDK (`evm-sdk`)
 3. Use-wallet packages (`use-wallet`)
@@ -210,9 +215,11 @@ This compiles, in order (per `.algokit.toml`):
 
 ### Test
 
+Currently `evm-logicsig` and `dfx` projects have automated tests.
+
 ```bash
-cd projects/evm-logicsig
 algokit project run test
+pnpm --filter dfx test
 ```
 
 ## Contributing
@@ -234,7 +241,12 @@ Contributions are welcome! Please see individual project READMEs for specific de
 
 ## CI/CD
 
-GitHub Actions workflows are present in [`.github/workflows`](./.github/workflows) but are currently **disabled** (each file is suffixed `.disabled`). No automated testing, linting, or deployment runs on push at this time. The disabled workflows cover smart-contract CI/CD, validation, and release; re-enable by removing the `.disabled` suffix once the project is ready for automated pipelines.
+GitHub Actions workflows are present in [`.github/workflows`](./.github/workflows). On PR to `main`, CI runs two jobs:
+
+- **test**: Installs dependencies, starts localnet and runs existing first-party project tests (dfx and evm-logicsig)
+- **build**: Installs dependencies, builds AlgoKit projects and dfx - Gated by test
+
+Additional workflows for smart-contract CI/CD, validation, and release are present but currently disabled (suffixed `.disabled`), kept as reference until the automated pipeline is fully complete.
 
 ## Resources
 

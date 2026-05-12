@@ -1,11 +1,11 @@
-import { createFileRoute, notFound, Link } from '@tanstack/react-router'
-import { getDocBySlug, getDocs } from '~/lib/docs'
-import Markdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import rehypeSlug from 'rehype-slug'
-import remarkGfm from 'remark-gfm'
+import { createFileRoute, notFound, Link } from "@tanstack/react-router"
+import { getDocBySlug, getDocs } from "~/lib/docs"
+import Markdown from "react-markdown"
+import rehypeRaw from "rehype-raw"
+import rehypeSlug from "rehype-slug"
+import remarkGfm from "remark-gfm"
 
-export const Route = createFileRoute('/docs/$slug')({
+export const Route = createFileRoute("/docs/$slug")({
   loader: ({ params }) => {
     const doc = getDocBySlug(params.slug)
     if (!doc) throw notFound()
@@ -14,10 +14,8 @@ export const Route = createFileRoute('/docs/$slug')({
   component: DocPage,
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.meta.title ?? 'Doc'} — xChain EVM Docs` },
-      ...(loaderData?.meta.description
-        ? [{ name: 'description', content: loaderData.meta.description }]
-        : []),
+      { title: `${loaderData?.meta.title ?? "Doc"} — xChain EVM Docs` },
+      ...(loaderData?.meta.description ? [{ name: "description", content: loaderData.meta.description }] : []),
     ],
   }),
 })
@@ -25,17 +23,16 @@ export const Route = createFileRoute('/docs/$slug')({
 function DocPage() {
   const doc = Route.useLoaderData()
   const allDocs = getDocs()
-  const currentIndex = allDocs.findIndex(
-    (d) => d.meta.slug === doc.meta.slug,
-  )
+  const currentIndex = allDocs.findIndex((d) => d.meta.slug === doc.meta.slug)
   const prev = currentIndex > 0 ? allDocs[currentIndex - 1] : null
-  const next =
-    currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null
+  const next = currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null
 
   return (
     <div>
       <article className="prose dark:prose-invert max-w-none">
-        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSlug]}>{doc.content}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSlug]}>
+          {doc.content}
+        </Markdown>
       </article>
 
       {/* Prev/Next navigation */}

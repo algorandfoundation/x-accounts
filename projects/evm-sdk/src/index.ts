@@ -2,12 +2,7 @@ import type { AlgorandClient } from "@algorandfoundation/algokit-utils"
 import algosdk from "algosdk"
 import { ALGO_X_EVM_LSIG_TEAL } from "./generated/teal"
 import { getEvmAddressFromProgram } from "./lsig-detect"
-import {
-  SignTypedDataParams,
-  buildTypedData,
-  hexToBytes,
-  parseEvmSignature,
-} from "./utils"
+import { SignTypedDataParams, buildTypedData, hexToBytes, parseEvmSignature } from "./utils"
 export {
   ALGORAND_CHAIN_ID,
   ALGORAND_CHAIN_ID_HEX,
@@ -66,9 +61,7 @@ export class AlgoXEvmSdk {
   }
 
   /** Convenience wrapper that accepts an algosdk LogicSig or LogicSigAccount. */
-  static getEvmAddressFromLsig(
-    lsig: algosdk.LogicSig | algosdk.LogicSigAccount,
-  ): `0x${string}` | null {
+  static getEvmAddressFromLsig(lsig: algosdk.LogicSig | algosdk.LogicSigAccount): `0x${string}` | null {
     const program = lsig instanceof algosdk.LogicSigAccount ? lsig.lsig.logic : lsig.logic
     return getEvmAddressFromProgram(program)
   }
@@ -169,11 +162,7 @@ export class AlgoXEvmSdk {
    * const signed = await sdk.signTxn({ evmAddress, txns, signature })
    * ```
    */
-  async signTxn(params: {
-    evmAddress: string
-    txns: algosdk.Transaction[]
-    signature: string
-  }): Promise<Uint8Array[]>
+  async signTxn(params: { evmAddress: string; txns: algosdk.Transaction[]; signature: string }): Promise<Uint8Array[]>
 
   async signTxn({
     evmAddress,

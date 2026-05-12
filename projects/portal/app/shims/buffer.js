@@ -11,14 +11,14 @@
 // into Vite's dep graph. Use the pre-bundled version if available.
 let _Buffer
 
-if (typeof globalThis !== 'undefined' && globalThis.Buffer) {
+if (typeof globalThis !== "undefined" && globalThis.Buffer) {
   _Buffer = globalThis.Buffer
-} else if (typeof window !== 'undefined') {
+} else if (typeof window !== "undefined") {
   // Minimal Buffer polyfill for the operations wallet libs need
   // (from/alloc/isBuffer/toString for base64/hex encoding)
   const { Buffer: B } = await import(
     /* @vite-ignore */
-    '/node_modules/.vite/deps/buffer.js'
+    "/node_modules/.vite/deps/buffer.js"
   )
   _Buffer = B
   globalThis.Buffer = B

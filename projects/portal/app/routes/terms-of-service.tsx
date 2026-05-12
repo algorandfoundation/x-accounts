@@ -1,15 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
-import Markdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
-import { Header } from '~/components/layout/header'
-import { Footer } from '~/components/layout/footer'
-import termsContent from '~/content/terms-of-service.md?raw'
+import { createFileRoute } from "@tanstack/react-router"
+import Markdown from "react-markdown"
+import rehypeRaw from "rehype-raw"
+import remarkGfm from "remark-gfm"
+import { Header } from "~/components/layout/header"
+import { Footer } from "~/components/layout/footer"
+import termsContent from "~/content/terms-of-service.md?raw"
 
-export const Route = createFileRoute('/terms-of-service')({
+export const Route = createFileRoute("/terms-of-service")({
   component: TermsPage,
   head: () => ({
-    meta: [{ title: 'Terms of Service — xChain EVM' }],
+    meta: [{ title: "Terms of Service — xChain EVM" }],
   }),
 })
 
