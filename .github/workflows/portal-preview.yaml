@@ -55,12 +55,12 @@ jobs:
 
       - name: Build workspace dependencies
         run: |
-          pnpm --filter algo-x-evm-sdk run build
-          pnpm --filter use-wallet run build:packages
-          pnpm --filter use-wallet-ui run build
+          pnpm --filter ./projects/evm-sdk run build
+          pnpm --filter ./projects/use-wallet run build:packages
+          pnpm --filter ./projects/use-wallet-ui run build
 
       - name: Build portal
-        run: pnpm --filter algo-x-evm-portal run build
+        run: pnpm --filter ./projects/portal run build
 
       - name: Upload preview version to Cloudflare
         id: deploy-preview

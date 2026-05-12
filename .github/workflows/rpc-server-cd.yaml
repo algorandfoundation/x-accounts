@@ -45,13 +45,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build evm-sdk
-        run: pnpm --filter algo-x-evm-sdk run build
+        run: pnpm --filter ./projects/evm-sdk run build
 
       - name: Typecheck
-        run: pnpm --filter rpc-server run typecheck
+        run: pnpm --filter ./projects/rpc-server run typecheck
 
       - name: Build
-        run: pnpm --filter rpc-server run build
+        run: pnpm --filter ./projects/rpc-server run build
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3.15.0
