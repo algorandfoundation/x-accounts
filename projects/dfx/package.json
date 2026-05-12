@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "wrangler deploy --dry-run",
     "dev": "wrangler dev",
     "logs": "wrangler tail",
     "deploy": "wrangler deploy",
