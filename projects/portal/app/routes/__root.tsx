@@ -1,25 +1,20 @@
-import {
-  HeadContent,
-  Outlet,
-  Scripts,
-  createRootRoute,
-} from '@tanstack/react-router'
-import { ThemeProvider } from '~/components/theme-provider'
-import appCss from '~/styles/globals.css?url'
+import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router"
+import { ThemeProvider } from "~/components/theme-provider"
+import appCss from "~/styles/globals.css?url"
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'xChain EVM — Use Your EVM Wallet on Algorand' },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "xChain EVM — Use Your EVM Wallet on Algorand" },
       {
-        name: 'description',
+        name: "description",
         content:
-          'Connect MetaMask or any EVM wallet to send transactions, manage assets, and bridge tokens on Algorand.',
+          "Connect MetaMask or any EVM wallet to send transactions, manage assets, and bridge tokens on Algorand.",
       },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   component: RootComponent,
   notFoundComponent: NotFound,

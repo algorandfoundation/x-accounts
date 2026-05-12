@@ -1,1 +1,1 @@
-export { useSyncExternalStore } from 'react'
+export { useSyncExternalStore } from "react"

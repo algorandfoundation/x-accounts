@@ -11,3 +11,4 @@ coverage
 # don't format ide files
 .idea
 smart_contracts/artifacts
+.algokit

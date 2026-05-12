@@ -1,0 +1,24 @@
+# Commits listed here are ignored by git blame.
+# Add the full SHA of reformat/style commits so blame shows real authors.
+# Configure locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: enforce double quotes
+7e80e9a48f1df6b64e0c81d2e3af5d42b0f3e8dc
+
+# style: dfx: apply prettier formatting
+c37fca6817d1967ae078f2a9dc6c280f8eae160d
+
+# style: evm-logicsig: apply prettier formatting
+4d9ae55b3a5ed205717640af12470a1445fe673b
+
+# style: rpc-server: apply prettier formatting
+21d2a12efd10416aee787bdbc8cfbc4dcbbb9337
+
+# style: evm-sdk: apply prettier formatting
+81dc098a150d0fca748afcaff00c048bf638b97b
+
+# style: frontend: apply prettier formatting
+d75f03a98fadd3654604bef9ae924276d83dbb76
+
+# style: portal: apply prettier formatting
+4de3a817aa6521f448865d1659bd5d177ad38786

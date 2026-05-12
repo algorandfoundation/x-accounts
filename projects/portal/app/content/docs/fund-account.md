@@ -24,20 +24,20 @@ Bridging is powered by [Allbridge](https://allbridge.io/) and works in both dire
 <details>
 <summary>Supported Networks</summary>
 
-| Network | Chain | Tokens |
-|---------|-------|--------|
-| Ethereum | ETH | USDC, USDT, USDe |
-| Arbitrum | ARB | USDC, USDT, USDe |
-| Optimism | OPT | USDC, USDT |
-| Base | BAS | USDC |
-| Polygon | POL | USDC, USDT |
-| Avalanche | AVA | USDC, USDT |
-| BNB Chain | BSC | USDC, USDT |
-| Celo | CEL | USDT |
-| Sonic | SNC | USDC |
-| Unichain | UNI | USDC, USDT |
-| Linea | LIN | USDC |
-| Algorand | ALG | USDC |
+| Network   | Chain | Tokens           |
+| --------- | ----- | ---------------- |
+| Ethereum  | ETH   | USDC, USDT, USDe |
+| Arbitrum  | ARB   | USDC, USDT, USDe |
+| Optimism  | OPT   | USDC, USDT       |
+| Base      | BAS   | USDC             |
+| Polygon   | POL   | USDC, USDT       |
+| Avalanche | AVA   | USDC, USDT       |
+| BNB Chain | BSC   | USDC, USDT       |
+| Celo      | CEL   | USDT             |
+| Sonic     | SNC   | USDC             |
+| Unichain  | UNI   | USDC, USDT       |
+| Linea     | LIN   | USDC             |
+| Algorand  | ALG   | USDC             |
 
 > Available tokens and routes depend on Allbridge liquidity and may change.
 
@@ -75,11 +75,11 @@ For testing, use the official Algorand TestNet faucet:
 
 Algorand accounts must maintain a minimum balance:
 
-| Account State | Minimum Balance |
-|---------------|----------------|
-| Basic account | 0.1 ALGO |
-| Per opted-in ASA | +0.1 ALGO |
-| Per app opt-in | +0.1 ALGO |
+| Account State    | Minimum Balance |
+| ---------------- | --------------- |
+| Basic account    | 0.1 ALGO        |
+| Per opted-in ASA | +0.1 ALGO       |
+| Per app opt-in   | +0.1 ALGO       |
 
 For example, if you opt into 3 ASAs, your minimum balance is 0.4 ALGO. Any amount above the minimum is available for transactions.
 

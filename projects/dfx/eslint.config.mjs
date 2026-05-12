@@ -3,15 +3,20 @@ import globals from "globals"
 import { baseConfig } from "../../eslint.config.base.mjs"
 
 export default tseslint.config(
+  { ignores: ["dist/", "test/"] },
   {
     languageOptions: {
       globals: {
         ...globals.node,
       },
-    },
-    rules: {
-      "@typescript-eslint/explicit-member-accessibility": "warn",
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
   ...baseConfig,
+  {
+    files: ["*.config.ts"],
+    extends: [tseslint.configs.disableTypeChecked],
+  },
 )

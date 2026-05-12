@@ -7,3 +7,7 @@ name = 'frontend'
 
 [project.run]
 build = { commands = ['pnpm run build'], description = 'Build frontend' }
+lint = { commands = ['pnpm run lint'], description = 'Lint frontend' }
+format = { commands = ['pnpm run format'], description = 'Format frontend code' }
+format-check = { commands = ['pnpm run format:check'], description = 'Check frontend formatting' }
+typecheck = { commands = ['pnpm run typecheck'], description = 'Typecheck frontend' }

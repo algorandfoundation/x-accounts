@@ -1,23 +1,20 @@
-import { Link, useRouterState } from '@tanstack/react-router'
-import { ArrowUpRight, Book, BookOpen } from 'lucide-react'
-import { cn } from '~/lib/utils'
-import { Logo } from '~/components/logo'
-import { ThemeToggle } from '~/components/theme-toggle'
-import { Button } from '~/components/ui/button'
+import { Link, useRouterState } from "@tanstack/react-router"
+import { ArrowUpRight, BookOpen } from "lucide-react"
+import { cn } from "~/lib/utils"
+import { Logo } from "~/components/logo"
+import { ThemeToggle } from "~/components/theme-toggle"
+import { Button } from "~/components/ui/button"
 
-const navItems = [{ icon: <BookOpen size="16" />, label: "Docs", to: '/docs' as const }]
+const navItems = [{ icon: <BookOpen size="16" />, label: "Docs", to: "/docs" as const }]
 
 export function Header() {
   const routerState = useRouterState()
-  const isLanding = routerState.location.pathname === '/'
-  const isApp = routerState.location.pathname.startsWith('/app')
+  const isLanding = routerState.location.pathname === "/"
+  const isApp = routerState.location.pathname.startsWith("/app")
 
   return (
     <header
-      className={cn(
-        'sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm',
-        isLanding && 'border-transparent',
-      )}
+      className={cn("sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm", isLanding && "border-transparent")}
     >
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         {/* Centered status badge */}
@@ -32,14 +29,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <nav className="flex items-center gap-2">
             {navItems.map((item) => (
-              <Button
-                key={item.to}
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9"
-                aria-label={item.label}
-                asChild
-              >
+              <Button key={item.to} variant="ghost" size="icon" className="h-9 w-9" aria-label={item.label} asChild>
                 <Link to={item.to}>{item.icon ? item.icon : item.label}</Link>
               </Button>
             ))}

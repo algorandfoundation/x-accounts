@@ -129,7 +129,8 @@ await algorand.send.payment({
 For grouped transactions of size > 1, the signer automatically signs the **group ID** instead of individual transaction IDs. The on-chain logic signature handles this automatically.
 
 ```typescript
-await algorand.newGroup()
+await algorand
+  .newGroup()
   .addPayment({
     sender: addr,
     receiver: someReceiver,
@@ -246,11 +247,13 @@ Returns the Algorand address and a `TransactionSigner` that can be passed direct
 The signer automatically determines what to sign: the transaction ID for standalone transactions, or the group ID for atomic groups.
 
 #### `signTxn({ evmAddress, txns, signMessage }): Promise<Uint8Array[]>`
+
 #### `signTxn({ evmAddress, txns, signature }): Promise<Uint8Array[]>`
 
 Signs one or more algosdk `Transaction` objects with the EVM lsig. Returns an array of signed transaction blobs ready for `sendRawTransaction`.
 
 **Parameters:**
+
 - `evmAddress` — hex string (with or without `0x` prefix)
 - `txns` — algosdk `Transaction[]` to sign (must already have group ID assigned via `algosdk.assignGroupID` if grouped)
 - `signMessage` — (variant 1) `(typedData: SignTypedDataParams) => Promise<string>` — receives the full EIP-712 typed data and should return the signature
@@ -259,11 +262,13 @@ Signs one or more algosdk `Transaction` objects with the EVM lsig. Returns an ar
 The payload signed is the group ID if there are more than 1 transactions, otherwise the transaction ID.
 
 **Example with callback:**
+
 ```typescript
 await sdk.signTxn({ evmAddress, txns, signMessage })
 ```
 
 **Example with pre-computed signature:**
+
 ```typescript
 const payload = AlgoXEvmSdk.getSignPayload(txns)
 const signature = await getSignature(payload)

@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { useWallet, WalletId } from "@txnlab/use-wallet-react";
-import { ConnectWalletButton } from "@txnlab/use-wallet-ui-react";
-import { WalletProviders, wagmiConfig } from "./wallet-providers";
-import { WalletDashboard } from "./wallet-dashboard";
-import { UseAlgorandWith } from "~/components/use-algorand-with";
-import { Button } from "../ui/button";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Link } from "@tanstack/react-router"
+import { useWallet, WalletId } from "@txnlab/use-wallet-react"
+import { ConnectWalletButton } from "@txnlab/use-wallet-ui-react"
+import { WalletProviders, wagmiConfig } from "./wallet-providers"
+import { WalletDashboard } from "./wallet-dashboard"
+import { UseAlgorandWith } from "~/components/use-algorand-with"
+import { Button } from "../ui/button"
 
 /**
  * Listens to wallet state and calls `onResolved` once we know the final
@@ -13,59 +13,59 @@ import { Button } from "../ui/button";
  * Renders nothing — lives inside WalletProviders only to access the hook.
  */
 function WalletResolver({ onResolved }: { onResolved: () => void }) {
-  const { activeAddress, isReady } = useWallet();
-  const firedRef = useRef(false);
+  const { activeAddress, isReady } = useWallet()
+  const firedRef = useRef(false)
 
   useEffect(() => {
-    if (firedRef.current) return;
+    if (firedRef.current) return
     if (activeAddress) {
-      firedRef.current = true;
-      onResolved();
-      return;
+      firedRef.current = true
+      onResolved()
+      return
     }
-    if (!isReady) return;
+    if (!isReady) return
 
     // Manager is ready but no wallet connected.
     // Subscribe to wagmi status — resolve once it settles to disconnected
     // (no session to restore) or connected (Bridge will sync it).
     const check = () => {
-      const { status, connections } = wagmiConfig.state;
+      const { status, connections } = wagmiConfig.state
       if (status === "disconnected" && connections.size === 0) {
-        firedRef.current = true;
-        onResolved();
-        return true;
+        firedRef.current = true
+        onResolved()
+        return true
       }
-      return false;
-    };
+      return false
+    }
     // Already settled?
-    if (check()) return;
+    if (check()) return
     // Otherwise wait for wagmi to settle
     return wagmiConfig.subscribe(
       (state) => `${state.status}:${state.connections.size}`,
       () => check(),
-    );
-  }, [activeAddress, isReady, onResolved]);
+    )
+  }, [activeAddress, isReady, onResolved])
 
-  return null;
+  return null
 }
 
 function WalletAppContent() {
-  const { activeAddress, wallets } = useWallet();
+  const { activeAddress, wallets } = useWallet()
 
   // Open RainbowKit's connect modal directly, skipping the intermediate
   // ConnectWalletMenu dialog. We still go through use-wallet's connect()
   // so wagmi → use-wallet state sync, connector metadata, and the
   // 'evm-connect' disclaimer continue to work as configured.
   const handleConnect = useCallback(() => {
-    const rk = wallets.find((w) => w.id === WalletId.RAINBOWKIT);
-    if (!rk) return;
+    const rk = wallets.find((w) => w.id === WalletId.RAINBOWKIT)
+    if (!rk) return
     rk.connect().catch((err: unknown) => {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = err instanceof Error ? err.message : String(err)
       if (!/dismissed|cancel/i.test(message)) {
-        console.warn("Wallet connect failed:", message);
+        console.warn("Wallet connect failed:", message)
       }
-    });
-  }, [wallets]);
+    })
+  }, [wallets])
 
   return (
     <>
@@ -87,7 +87,8 @@ function WalletAppContent() {
           </div>
           <UseAlgorandWith className="mb-2 text-center" />
           <p className="mx-auto mb-2 max-w-2xl text-lg text-muted-foreground">
-            No new wallet needed, no setup. Just connect any EVM wallet to send transactions, manage assets, swap and bridge on Algorand.
+            No new wallet needed, no setup. Just connect any EVM wallet to send transactions, manage assets, swap and
+            bridge on Algorand.
           </p>
           <div data-wallet-ui className="flex flex-col gap-2 justify-center mb-8">
             <ConnectWalletButton className="rounded-md" onClick={handleConnect} />
@@ -99,12 +100,12 @@ function WalletAppContent() {
       )}
       <WalletDashboard />
     </>
-  );
+  )
 }
 
 export default function WalletApp() {
-  const [resolved, setResolved] = useState(false);
-  const onResolved = useCallback(() => setResolved(true), []);
+  const [resolved, setResolved] = useState(false)
+  const onResolved = useCallback(() => setResolved(true), [])
 
   const content = useMemo(() => {
     if (!resolved) {
@@ -115,10 +116,10 @@ export default function WalletApp() {
           </div>
           <WalletResolver onResolved={onResolved} />
         </>
-      );
+      )
     }
-    return <WalletAppContent />;
-  }, [resolved, onResolved]);
+    return <WalletAppContent />
+  }, [resolved, onResolved])
 
-  return <WalletProviders>{content}</WalletProviders>;
+  return <WalletProviders>{content}</WalletProviders>
 }
