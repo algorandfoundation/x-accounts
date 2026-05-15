@@ -1,7 +1,15 @@
 name = "algo-x-evm-portal"
+main = "@tanstack/react-start/server-entry"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
-main = "@tanstack/react-start/server-entry"
 
-[observability]
+[observability.logs]
 enabled = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+
+[[routes]]
+pattern = "xchain.algorand.co"
+custom_domain = true

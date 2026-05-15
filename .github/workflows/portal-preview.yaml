@@ -1,0 +1,81 @@
+name: Portal Preview
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "projects/portal/**"
+      - "projects/evm-sdk/**"
+      - "projects/use-wallet"
+      - "projects/use-wallet-ui"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/portal-preview.yaml"
+
+concurrency:
+  group: portal-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    environment:
+      name: portal-preview
+    steps:
+      - name: Rewrite SSH to HTTPS for submodule checkout
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          submodules: recursive
+
+      - uses: pnpm/action-setup@8912a9102ac27614460f54aedde9e1e7f9aec20d # v6.0.5
+        with:
+          version: 10
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22.x
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            projects/use-wallet-ui/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm install --frozen-lockfile --dir projects/use-wallet-ui
+
+      - name: Build workspace dependencies
+        run: |
+          pnpm --filter ./projects/evm-sdk run build
+          pnpm --filter ./projects/use-wallet run build:packages
+          pnpm --filter ./projects/use-wallet-ui run build
+
+      - name: Build portal
+        run: pnpm --filter ./projects/portal run build
+
+      - name: Upload preview version to Cloudflare
+        id: deploy-preview
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3.15.0
+        with:
+          workingDirectory: projects/portal
+          command: versions upload --message "PR #${{ github.event.number }} (${{ github.sha }})"
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Print preview URL
+        env:
+          PREVIEW_URL: ${{ steps.deploy-preview.outputs.deployment-url }}
+        run: |
+          PREVIEW_APP_URL="${PREVIEW_URL%/}/app"
+          echo "Preview URL: ${PREVIEW_APP_URL}"
+          echo "## Portal preview" >> "$GITHUB_STEP_SUMMARY"
+          echo "${PREVIEW_APP_URL}" >> "$GITHUB_STEP_SUMMARY"

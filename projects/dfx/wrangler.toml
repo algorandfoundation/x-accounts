@@ -3,6 +3,13 @@ main = "src/index.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
+[observability.logs]
+enabled = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+
 [[durable_objects.bindings]]
 name = "DFX_MANAGER"
 class_name = "DfxManager"
@@ -10,3 +17,7 @@ class_name = "DfxManager"
 [[migrations]]
 tag = "v1"
 new_classes = ["DfxManager"]
+
+[[routes]]
+pattern = "dfx-api.algorand.co"
+custom_domain = true

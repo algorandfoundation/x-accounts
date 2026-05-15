@@ -70,12 +70,12 @@ jobs:
       - name: Format check
         run: |
           algokit project run format-check
-          pnpm --filter dfx run format:check
+          pnpm --filter ./projects/dfx run format:check
 
       - name: Lint
         run: |
           algokit project run lint
-          pnpm --filter dfx run lint
+          pnpm --filter ./projects/dfx run lint
 
       - name: Build evm-sdk and submodules
         run: |
@@ -86,10 +86,10 @@ jobs:
       - name: Typecheck
         run: |
           algokit project run typecheck
-          pnpm --filter dfx run typecheck
+          pnpm --filter ./projects/dfx run typecheck
 
       - name: Test dfx
-        run: pnpm --filter dfx test
+        run: pnpm --filter ./projects/dfx test
 
       - name: Build emv-logicsig
         run: algokit project run build --project-name evm-logicsig
@@ -102,7 +102,7 @@ jobs:
 
       - name: Build remaining projects
         run: |
-          pnpm --filter dfx build
+          pnpm --filter ./projects/dfx build
           algokit project run build --project-name rpc-server
           algokit project run build --project-name frontend
           algokit project run build --project-name portal

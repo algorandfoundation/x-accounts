@@ -2,7 +2,13 @@ name = "x-evm-rpc-server"
 main = "src/index.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
-account_id = "72f5c3bf37e8e96111f551909c08e13e"
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
 
 [[routes]]
 pattern = "x-evm-rpc.algorand.tech"

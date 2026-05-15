@@ -241,12 +241,23 @@ Contributions are welcome! Please see individual project READMEs for specific de
 
 ## CI/CD
 
-GitHub Actions workflows are present in [`.github/workflows`](./.github/workflows). On PR to `main`, CI runs two jobs:
+GitHub Actions workflows live in [`.github/workflows`](./.github/workflows).
 
-- **test**: Installs dependencies, starts localnet and runs existing first-party project tests (dfx and evm-logicsig)
-- **build**: Installs dependencies, builds AlgoKit projects and dfx - Gated by test
+### CI
 
-Additional workflows for smart-contract CI/CD, validation, and release are present but currently disabled (suffixed `.disabled`), kept as reference until the automated pipeline is fully complete.
+CI runs on PRs to `main`. The shape for now is simple and fail-fast, reusing work from previous steps:
+
+```text
+audit || install -> format -> lint -> typecheck -> unit-tests -> build -> e2e-tests
+```
+
+### CD
+
+Production deploy workflows exist for `portal`, `rpc-server`, and `dfx`. They run on `main` changes for their project paths and can also be triggered manually from GitHub Actions.
+
+Portal previews are uploaded for PRs targeting `main` that touch the portal or its workspace dependencies.
+
+Additional smart-contract CI/CD, validation, and release workflows are present but disabled (`.disabled`) and kept as reference.
 
 ## Resources
 
