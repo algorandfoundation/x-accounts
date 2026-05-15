@@ -17,7 +17,7 @@ main_ternary_merge@3:
     // const sig = op.arg(0)
     arg_0
     // smart_contracts/algo-x-evm/logicsig.algo.ts:40
-    // assert(op.extract(sig, 0, 1) === Bytes.fromHex('01'))
+    // assert(op.extract(sig, 0, 1) === Bytes.fromHex("01"))
     dup
     extract 0 1
     pushbytes 0x01
@@ -47,7 +47,7 @@ main_ternary_merge@3:
     concat
     keccak256
     // smart_contracts/algo-x-evm/logicsig.algo.ts:66
-    // const digest = op.keccak256(Bytes.fromHex('1901').concat(domainSeparator).concat(messageHash))
+    // const digest = op.keccak256(Bytes.fromHex("1901").concat(domainSeparator).concat(messageHash))
     pushbytes 0x1901cef8b9829414ba4a13ea8f8c442b747ffe119c643d2213d22b4e137036a2d573
     swap
     concat

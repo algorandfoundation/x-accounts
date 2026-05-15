@@ -27,7 +27,6 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "packageManager": "pnpm@10.11.0",
   "dependencies": {
     "p-map": "^7.0.4"
   },
