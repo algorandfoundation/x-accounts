@@ -11,9 +11,5 @@ invocation_logs = true
 enabled = false
 
 [[routes]]
-pattern = "xchain.algorand.tech"
-custom_domain = true
-
-[[routes]]
 pattern = "xchain.algorand.co"
 custom_domain = true
