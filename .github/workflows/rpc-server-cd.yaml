@@ -13,7 +13,7 @@ on:
 
 concurrency:
   group: deploy-rpc-server-production
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: read
