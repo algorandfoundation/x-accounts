@@ -6,3 +6,4 @@ AGENTS.md
 .algokit
 **/generated/*.ts
 *.gen.ts
+**/artifacts/**
